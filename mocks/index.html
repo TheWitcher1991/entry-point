@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Точка входа — Реальные задачи, подтверждённый опыт</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166666'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>Т</text></svg>">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        Точка входа
+      </a>
+
+      <nav class="header__nav">
+        <a href="catalog.html" class="header__nav-link active">Задачи</a>
+        <a href="#" class="header__nav-link">Компании</a>
+        <a href="#" class="header__nav-link">Как это работает</a>
+      </nav>
+
+      <div class="header__actions">
+        <button class="theme-toggle" aria-label="Переключить тему">
+          <svg class="theme-toggle__icon--light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
+        <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+        <button class="header__mobile-toggle" aria-label="Меню">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero__title">
+        Реальные задачи — <span class="hero__title-accent">подтверждённый опыт</span>
+      </h1>
+      <p class="hero__subtitle">
+        IT-компании публикуют небольшие задачи. Вы выполняете, получаете подтверждение навыков и карьерное продолжение.
+      </p>
+      <div class="hero__actions">
+        <a href="catalog.html" class="btn btn--primary btn--lg">Найти задачу</a>
+        <a href="#" class="btn btn--secondary btn--lg">Опубликовать задачу</a>
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <div class="hero__stat-value">120+</div>
+          <div class="hero__stat-label">задач опубликовано</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">45</div>
+          <div class="hero__stat-label">компаний на платформе</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">890</div>
+          <div class="hero__stat-label">участников</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">78%</div>
+          <div class="hero__stat-label">задач завершены успешно</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== POPULAR TASKS ========== -->
+  <section class="section section--surface">
+    <div class="container">
+      <div class="section__header">
+        <h2 class="section__title">Популярные задачи</h2>
+        <p class="section__subtitle">Актуальные задачи от IT-компаний прямо сейчас</p>
+      </div>
+
+      <div class="tasks-grid">
+        <!-- Task Card 1 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">Verba Tech</span>
+                <span class="task-card__company-meta">Стартап · 12 сотрудников</span>
+              </div>
+            </div>
+            <span class="badge badge--accent">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Telegram-бот для автоматизации заявок</h3>
+          <p class="task-card__description">
+            Разработка бота на Node.js для обработки пользовательских заявок с интеграцией в CRM-систему. Нужно реализовать парсинг сообщений, валидацию данных и отправку уведомлений.
+          </p>
+          <div class="task-card__tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">Telegram Bot API</span>
+            <span class="tag">PostgreSQL</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              14 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              3 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">12 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task Card 2 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23FFF3E0'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23E65100' font-family='sans-serif'%3ED%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">DataFlow</span>
+                <span class="task-card__company-meta">Студия разработки · 28 сотрудников</span>
+              </div>
+            </div>
+            <span class="badge badge--accent">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Дизайн UI-компонента дашборда аналитики</h3>
+          <p class="task-card__description">
+            Нужно спроектировать и отрисовать набор компонентов для дашборда: графики, карточки показателей, фильтры и таблицы. Результат в Figma.
+          </p>
+          <div class="task-card__tags">
+            <span class="tag">Figma</span>
+            <span class="tag">UI/UX</span>
+            <span class="tag">Дизайн-система</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              10 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Лёгкая
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              2 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">8 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task Card 3 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F5E9'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%231B5E20' font-family='sans-serif'%3EM%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">MindBridge</span>
+                <span class="task-card__company-meta">SaaS-компания · 45 сотрудников</span>
+              </div>
+            </div>
+            <span class="badge badge--accent">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">API-интеграция с платёжной системой</h3>
+          <p class="task-card__description">
+            Интеграция REST API платёжного провайдера в существующий бэкенд. Реализовать создание платежей, проверку статусов и обработку вебхуков.
+          </p>
+          <div class="task-card__tags">
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">REST API</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              21 день
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              1 место
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">5 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task Card 4 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23F3E5F5'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%234A148C' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">PixelForge</span>
+                <span class="task-card__company-meta">Digital-агентство · 18 сотрудников</span>
+              </div>
+            </div>
+            <span class="badge badge--accent">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Автотесты для модуля авторизации</h3>
+          <p class="task-card__description">
+            Написание E2E-тестов для функционала регистрации, входа, восстановления пароля и сброса сессий. Использование Playwright или Cypress.
+          </p>
+          <div class="task-card__tags">
+            <span class="tag">TypeScript</span>
+            <span class="tag">Playwright</span>
+            <span class="tag">Тестирование</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              7 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Лёгкая
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              2 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">15 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--space-8);">
+        <a href="catalog.html" class="btn btn--secondary">Смотреть все задачи</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="section">
+    <div class="container">
+      <div class="section__header">
+        <h2 class="section__title">Как это работает</h2>
+        <p class="section__subtitle">Пять простых шагов от регистрации до подтверждённого опыта</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-card__number">1</div>
+          <h3 class="step-card__title">Создайте профиль</h3>
+          <p class="step-card__text">Укажите навыки, технологии и портфолио. Подключите GitHub.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">2</div>
+          <h3 class="step-card__title">Найдите задачу</h3>
+          <p class="step-card__text">Используйте фильтры по технологиям, уровню и срокам.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">3</div>
+          <h3 class="step-card__title">Подайте заявку</h3>
+          <p class="step-card__text">Опишите мотивацию. Компания выберет исполнителя.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">4</div>
+          <h3 class="step-card__title">Выполните задачу</h3>
+          <p class="step-card__text">Работайте в рабочем пространстве, общайтесь с компанией.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">5</div>
+          <h3 class="step-card__title">Получите результат</h3>
+          <p class="step-card__text">Подтверждённый опыт, отзыв и возможность карьерного роста.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURES ========== -->
+  <section class="section section--surface">
+    <div class="container">
+      <div class="section__header">
+        <h2 class="section__title">Для кого платформа</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="card feature-card">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 class="feature-card__title">Студентам и начинающим</h3>
+          <p class="feature-card__text">Получите реальный коммерческий опыт, подтвердите навыки и начните карьеру в IT.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <h3 class="feature-card__title">IT-компаниям</h3>
+          <p class="feature-card__text">Оцените кандидата по результату реальной работы, а не по резюме.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="feature-card__title">Безопасно и прозрачно</h3>
+          <p class="feature-card__text">Небольшие задачи без доступа к критическим данным. Модерация и защита.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA ========== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-section__card">
+        <h2 class="cta-section__title">Начните свой путь в IT сегодня</h2>
+        <p class="cta-section__text">
+          Не рассказывайте, что умеете — покажите результат.
+        </p>
+        <div class="cta-section__actions">
+          <a href="register.html" class="btn btn--cta btn--lg">Зарегистрироваться</a>
+          <a href="catalog.html" class="btn btn--cta-outline btn--lg">Посмотреть задачи</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="index.html" class="header__logo">
+            <div class="header__logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+            Точка входа
+          </a>
+          <p class="footer__brand-desc">
+            Платформа проектного старта карьеры. Реальные задачи IT-компаний для начинающих специалистов.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer__col-title">Платформа</h4>
+          <div class="footer__links">
+            <a href="catalog.html" class="footer__link">Каталог задач</a>
+            <a href="#" class="footer__link">Компании</a>
+            <a href="#" class="footer__link">Как это работает</a>
+            <a href="#" class="footer__link">Для компаний</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer__col-title">Участникам</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Создать профиль</a>
+            <a href="#" class="footer__link">Как найти задачу</a>
+            <a href="#" class="footer__link">Советы по портфолио</a>
+            <a href="#" class="footer__link">FAQ</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer__col-title">Правовая информация</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Пользовательское соглашение</a>
+            <a href="#" class="footer__link">Политика конфиденциальности</a>
+            <a href="#" class="footer__link">Правила публикации</a>
+            <a href="#" class="footer__link">Контакты</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span>© 2026 Точка входа. Все права защищены.</span>
+        <span>Сделано с заботой о начинающих специалистах</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav__inner">
+      <a href="index.html" class="mobile-nav__item active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Главная
+      </a>
+      <a href="catalog.html" class="mobile-nav__item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Задачи
+      </a>
+      <a href="#" class="mobile-nav__item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Компании
+      </a>
+      <a href="#" class="mobile-nav__item notification-dot">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Уведомления
+      </a>
+      <a href="#" class="mobile-nav__item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Профиль
+      </a>
+    </div>
+  </nav>
+
+  <script src="js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог задач — Точка входа</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166666'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>Т</text></svg>">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        Точка входа
+      </a>
+
+      <nav class="header__nav">
+        <a href="catalog.html" class="header__nav-link active">Задачи</a>
+        <a href="#" class="header__nav-link">Компании</a>
+        <a href="#" class="header__nav-link">Как это работает</a>
+      </nav>
+
+      <div class="header__actions">
+        <button class="theme-toggle" aria-label="Переключить тему">
+          <svg class="theme-toggle__icon--light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
+        <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+        <button class="header__mobile-toggle" aria-label="Меню">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN ========== -->
+  <main class="section">
+    <div class="container">
+
+      <!-- Page Header -->
+      <div style="margin-bottom: var(--space-8);">
+        <h1 style="font-family: var(--font-display); font-size: var(--text-h1); font-weight: 700; margin-bottom: var(--space-2);">Каталог задач</h1>
+        <p style="color: var(--text-secondary); font-size: 18px;">Найдите задачу, которая подходит именно вам</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="filter-search">
+          <svg class="filter-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="filter-search__input" placeholder="Поиск по названию, технологии...">
+        </div>
+
+        <div class="filter-dropdown">
+          <button class="filter-dropdown__btn">
+            Категория
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="filter-dropdown">
+          <button class="filter-dropdown__btn">
+            Направление
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="filter-dropdown">
+          <button class="filter-dropdown__btn active">
+            Технологии
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="filter-dropdown">
+          <button class="filter-dropdown__btn">
+            Сложность
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="filter-dropdown">
+          <button class="filter-dropdown__btn">
+            Срок
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <button class="btn btn--ghost btn--sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+          Фильтры
+        </button>
+      </div>
+
+      <!-- Sort & Count -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6); padding: var(--space-3) 0;">
+        <span style="font-size: var(--text-small); color: var(--text-secondary);">Найдено <strong style="color: var(--text-primary);">24</strong> задачи</span>
+        <div style="display: flex; align-items: center; gap: var(--space-2);">
+          <span style="font-size: var(--text-small); color: var(--text-muted);">Сортировка:</span>
+          <select class="form-select" style="height: 36px; padding: 0 32px 0 12px; font-size: 13px; min-width: 140px;">
+            <option>Новые</option>
+            <option>Ближайший срок</option>
+            <option>Популярные</option>
+            <option>По навыкам</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tasks Grid -->
+      <div class="tasks-grid">
+
+        <!-- Task 1 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">Verba Tech</span>
+                <span class="task-card__company-meta">Стартап · 12 сотр.</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Telegram-бот для автоматизации заявок</h3>
+          <p class="task-card__description">Разработка бота на Node.js для обработки пользовательских заявок с интеграцией в CRM-систему.</p>
+          <div class="task-card__tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">Telegram Bot API</span>
+            <span class="tag">PostgreSQL</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              14 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              3 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">12 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23FFF3E0'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23E65100' font-family='sans-serif'%3ED%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">DataFlow</span>
+                <span class="task-card__company-meta">Студия · 28 сотр.</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Дизайн UI-компонента дашборда аналитики</h3>
+          <p class="task-card__description">Набор компонентов для дашборда: графики, карточки показателей, фильтры. Результат в Figma.</p>
+          <div class="task-card__tags">
+            <span class="tag">Figma</span>
+            <span class="tag">UI/UX</span>
+            <span class="tag">Дизайн-система</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              10 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Лёгкая
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              2 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">8 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F5E9'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%231B5E20' font-family='sans-serif'%3EM%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">MindBridge</span>
+                <span class="task-card__company-meta">SaaS · 45 сотр.</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">API-интеграция с платёжной системой</h3>
+          <p class="task-card__description">Интеграция REST API платёжного провайдера. Создание платежей, проверка статусов, вебхуки.</p>
+          <div class="task-card__tags">
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">REST API</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              21 день
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              1 место
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">5 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23F3E5F5'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%234A148C' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">PixelForge</span>
+                <span class="task-card__company-meta">Агентство · 18 сотр.</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Автотесты для модуля авторизации</h3>
+          <p class="task-card__description">E2E-тесты для регистрации, входа, восстановления пароля. Playwright или Cypress.</p>
+          <div class="task-card__tags">
+            <span class="tag">TypeScript</span>
+            <span class="tag">Playwright</span>
+            <span class="tag">Тестирование</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              7 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Лёгкая
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              2 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">15 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E3F2FD'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%230D47A1' font-family='sans-serif'%3EC%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">CloudNine</span>
+                <span class="task-card__company-meta">Интегратор · 60 сотр.</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Настройка CI/CD пайплайна для微 frontend</h3>
+          <p class="task-card__description">Настройка GitHub Actions для автоматического развёртывания контейнеров и запуска тестов при пуше.</p>
+          <div class="task-card__tags">
+            <span class="tag">Docker</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">CI/CD</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              10 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              1 место
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">3 заявки</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 6 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23FBE9E7'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23BF360C' font-family='sans-serif'%3ER%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">RocketLab</span>
+                <span class="task-card__company-meta">Стартап · 8 сотр.</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Анализ пользовательского поведения</h3>
+          <p class="task-card__description">SQL-исследование данных использования продукта. Формирование отчёта с рекомендациями по улучшению UX.</p>
+          <div class="task-card__tags">
+            <span class="tag">SQL</span>
+            <span class="tag">Python</span>
+            <span class="tag">Аналитика</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              14 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Лёгкая
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              2 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">7 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="pagination__btn" aria-label="Назад">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="pagination__btn active">1</button>
+        <button class="pagination__btn">2</button>
+        <button class="pagination__btn">3</button>
+        <button class="pagination__btn">4</button>
+        <button class="pagination__btn" aria-label="Вперёд">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="index.html" class="header__logo">
+            <div class="header__logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+            Точка входа
+          </a>
+          <p class="footer__brand-desc">Платформа проектного старта карьеры.</p>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Платформа</h4>
+          <div class="footer__links">
+            <a href="catalog.html" class="footer__link">Каталог задач</a>
+            <a href="#" class="footer__link">Компании</a>
+            <a href="#" class="footer__link">Как это работает</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Участникам</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Создать профиль</a>
+            <a href="#" class="footer__link">FAQ</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Правовая информация</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Пользовательское соглашение</a>
+            <a href="#" class="footer__link">Политика конфиденциальности</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Точка входа</span>
+        <span>Сделано с заботой о начинающих</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+</body>
+</html>

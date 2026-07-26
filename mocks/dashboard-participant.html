@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кабинет участника — Точка входа</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166666'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>Т</text></svg>">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        Точка входа
+      </a>
+      <nav class="header__nav">
+        <a href="catalog.html" class="header__nav-link">Задачи</a>
+        <a href="#" class="header__nav-link">Компании</a>
+      </nav>
+      <div class="header__actions">
+        <button class="theme-toggle" aria-label="Переключить тему" style="width: 36px; height: 36px;">
+          <svg class="theme-toggle__icon--light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon--dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="btn btn--ghost btn--sm notification-dot" style="width: 36px; padding: 0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <div class="avatar" style="cursor: pointer;">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' rx='20' fill='%23E8F4F4'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='16' font-weight='600' fill='%23166666' font-family='sans-serif'%3EA%3C/text%3E%3C/svg%3E" alt="">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== LAYOUT ========== -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar__section">
+        <div class="sidebar__section-title">Основное</div>
+        <a href="#" class="sidebar__link active">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Обзор
+        </a>
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Мой профиль
+        </a>
+        <a href="catalog.html" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Каталог задач
+        </a>
+      </div>
+
+      <div class="sidebar__section">
+        <div class="sidebar__section-title">Мои задачи</div>
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Мои заявки
+          <span class="sidebar__link-badge">3</span>
+        </a>
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Активные задачи
+        </a>
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Завершённые
+        </a>
+      </div>
+
+      <div class="sidebar__section">
+        <div class="sidebar__section-title">Профиль</div>
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Подтверждённый опыт
+        </a>
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Отзывы
+        </a>
+      </div>
+
+      <div class="sidebar__section">
+        <a href="#" class="sidebar__link">
+          <svg class="sidebar__link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Настройки
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Page Header -->
+      <div class="main-content__header">
+        <div>
+          <h1 class="main-content__title">Обзор</h1>
+          <p class="main-content__subtitle">Добро пожаловать, Алексей</p>
+        </div>
+        <a href="catalog.html" class="btn btn--primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Найти задачу
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6); margin-bottom: var(--space-8);">
+        <div class="card card--compact stat-card">
+          <div class="stat-card__value">3</div>
+          <div class="stat-card__label">Активные заявки</div>
+        </div>
+        <div class="card card--compact stat-card">
+          <div class="stat-card__value">1</div>
+          <div class="stat-card__label">В работе</div>
+        </div>
+        <div class="card card--compact stat-card">
+          <div class="stat-card__value">2</div>
+          <div class="stat-card__label">Завершено</div>
+        </div>
+        <div class="card card--compact stat-card">
+          <div class="stat-card__value">4.7</div>
+          <div class="stat-card__label">Рейтинг</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active">
+          Мои заявки
+          <span class="tab__count">3</span>
+        </button>
+        <button class="tab">
+          В работе
+          <span class="tab__count">1</span>
+        </button>
+        <button class="tab">
+          Завершённые
+          <span class="tab__count">2</span>
+        </button>
+      </div>
+
+      <!-- Applications List -->
+      <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+
+        <!-- Application 1 -->
+        <div class="card card--compact card--clickable">
+          <div style="display: flex; align-items: center; gap: var(--space-4);">
+            <div class="avatar avatar--lg avatar-company">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-1);">
+                <h4 style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Telegram-бот для автоматизации заявок</h4>
+                <span class="badge badge--info">На рассмотрении</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-small); color: var(--text-secondary);">
+                <span>Verba Tech</span>
+                <span>·</span>
+                <span>Подана 2 дня назад</span>
+                <span>·</span>
+                <span>14 дней</span>
+              </div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <!-- Application 2 -->
+        <div class="card card--compact card--clickable">
+          <div style="display: flex; align-items: center; gap: var(--space-4);">
+            <div class="avatar avatar--lg avatar-company">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23FFF3E0'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23E65100' font-family='sans-serif'%3ED%3C/text%3E%3C/svg%3E" alt="">
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-1);">
+                <h4 style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Дизайн UI-компонента дашборда</h4>
+                <span class="badge badge--success">Принята</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-small); color: var(--text-secondary);">
+                <span>DataFlow</span>
+                <span>·</span>
+                <span>Подана 5 дней назад</span>
+                <span>·</span>
+                <span>10 дней</span>
+              </div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <!-- Application 3 -->
+        <div class="card card--compact card--clickable">
+          <div style="display: flex; align-items: center; gap: var(--space-4);">
+            <div class="avatar avatar--lg avatar-company">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23F3E5F5'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%234A148C' font-family='sans-serif'%3EP%3C/text%3E%3C/svg%3E" alt="">
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-1);">
+                <h4 style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Автотесты для модуля авторизации</h4>
+                <span class="badge badge--warning">Просмотрена</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-small); color: var(--text-secondary);">
+                <span>PixelForge</span>
+                <span>·</span>
+                <span>Подана 1 неделю назад</span>
+                <span>·</span>
+                <span>7 дней</span>
+              </div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Task Preview -->
+      <div style="margin-top: var(--space-8);">
+        <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">Активная задача</h3>
+        <div class="card card--compact">
+          <div style="display: flex; align-items: center; gap: var(--space-4);">
+            <div class="avatar avatar--lg avatar-company">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F5E9'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%231B5E20' font-family='sans-serif'%3EM%3C/text%3E%3C/svg%3E" alt="">
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-2);">
+                <h4 style="font-weight: 600;">API-интеграция с платёжной системой</h4>
+                <span class="badge badge--accent">В работе</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-small); color: var(--text-secondary); margin-bottom: var(--space-4);">
+                <span>MindBridge</span>
+                <span>·</span>
+                <span>Осталось 12 дней</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <div class="progress-bar" style="flex: 1;">
+                  <div class="progress-bar__fill" style="width: 35%;"></div>
+                </div>
+                <span style="font-size: var(--text-small); font-weight: 500; color: var(--accent);">35%</span>
+              </div>
+            </div>
+            <button class="btn btn--primary btn--sm">Открыть</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified Experience -->
+      <div style="margin-top: var(--space-8);">
+        <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">Подтверждённый опыт</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4);">
+          <div class="card card--compact experience-card">
+            <div class="experience-card__header">
+              <div>
+                <div class="experience-card__title">Лендинг для стартапа</div>
+                <div class="experience-card__company">CloudNine · Ноя 2025</div>
+              </div>
+              <span class="badge badge--success">Завершено</span>
+            </div>
+            <div class="experience-card__skills">
+              <span class="tag tag--accent">React</span>
+              <span class="tag tag--accent">CSS</span>
+            </div>
+            <div class="experience-card__rating">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="rating__value">4.0</span>
+            </div>
+          </div>
+
+          <div class="card card--compact experience-card">
+            <div class="experience-card__header">
+              <div>
+                <div class="experience-card__title">UX-аудит мобильного приложения</div>
+                <div class="experience-card__company">DataFlow · Дек 2025</div>
+              </div>
+              <span class="badge badge--success">Завершено</span>
+            </div>
+            <div class="experience-card__skills">
+              <span class="tag tag--accent">UI/UX</span>
+              <span class="tag tag--accent">Figma</span>
+            </div>
+            <div class="experience-card__rating">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="rating__value">5.0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav__inner">
+      <a href="#" class="mobile-nav__item active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Обзор
+      </a>
+      <a href="catalog.html" class="mobile-nav__item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Задачи
+      </a>
+      <a href="#" class="mobile-nav__item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Заявки
+      </a>
+      <a href="#" class="mobile-nav__item notification-dot">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+        Уведомл.
+      </a>
+      <a href="#" class="mobile-nav__item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Профиль
+      </a>
+    </div>
+  </nav>
+
+  <script src="js/theme.js"></script>
+</body>
+</html>

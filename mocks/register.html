@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация — Точка входа</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166666'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>Т</text></svg>">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        Точка входа
+      </a>
+      <div class="header__actions">
+        <button class="theme-toggle" aria-label="Переключить тему">
+          <svg class="theme-toggle__icon--light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== AUTH LAYOUT ========== -->
+  <div class="auth-layout">
+
+    <!-- Form Panel -->
+    <div class="auth-panel">
+      <div class="auth-form-wrapper">
+        <h1 class="auth-form-wrapper__title">Создайте аккаунт</h1>
+        <p class="auth-form-wrapper__subtitle">Выберите роль и заполните данные для регистрации</p>
+
+        <!-- Role Selector -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+          <div class="card card--compact card--clickable" style="text-align: center; border-color: var(--accent); background: var(--accent-lighter);">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div style="font-weight: 600; font-size: var(--text-small);">Участник</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">Ищу задачи</div>
+          </div>
+
+          <div class="card card--compact card--clickable" style="text-align: center;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--surface-secondary); color: var(--text-muted); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div style="font-weight: 600; font-size: var(--text-small);">Компания</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">Публикую задачи</div>
+          </div>
+        </div>
+
+        <form class="auth-form" onsubmit="return false;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label" for="firstName">Имя</label>
+              <input class="form-input" type="text" id="firstName" placeholder="Иван">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lastName">Фамилия</label>
+              <input class="form-input" type="text" id="lastName" placeholder="Иванов">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" placeholder="you@example.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Пароль</label>
+            <input class="form-input" type="password" id="password" placeholder="Минимум 8 символов">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Повторите пароль</label>
+            <input class="form-input" type="password" id="confirmPassword" placeholder="Повторите пароль">
+          </div>
+
+          <label class="form-checkbox-group">
+            <input type="checkbox" class="form-checkbox">
+            <span style="font-size: var(--text-small); color: var(--text-secondary);">
+              Я согласен с <a href="#" style="color: var(--accent);">пользовательским соглашением</a> и <a href="#" style="color: var(--accent);">политикой конфиденциальности</a>
+            </span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--lg" style="width: 100%;">Создать аккаунт</button>
+        </form>
+
+        <div class="auth-form__divider">
+          <span>или</span>
+        </div>
+
+        <button class="btn btn--secondary btn--lg" style="width: 100%;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Зарегистрироваться через Google
+        </button>
+
+        <div class="auth-form__footer">
+          Уже есть аккаунт? <a href="login.html">Войти</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration Panel -->
+    <div class="auth-illustration">
+      <div class="auth-illustration__content">
+        <div class="auth-illustration__icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </div>
+        <h2 class="auth-illustration__title">Присоединяйтесь</h2>
+        <p class="auth-illustration__text">
+          Более 890 участников уже используют «Точку входа» для карьерного старта в IT.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: var(--space-6); margin-top: var(--space-10);">
+          <div style="display: flex; align-items: flex-start; gap: var(--space-4); text-align: left;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600; margin-bottom: 2px;">Быстрая регистрация</div>
+              <div style="font-size: var(--text-small); color: var(--text-secondary);">Создайте аккаунт за 2 минуты</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: flex-start; gap: var(--space-4); text-align: left;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600; margin-bottom: 2px;">Безопасно</div>
+              <div style="font-size: var(--text-small); color: var(--text-secondary);">Ваши данные защищены</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: flex-start; gap: var(--space-4); text-align: left;">
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600; margin-bottom: 2px;">Бесплатно</div>
+              <div style="font-size: var(--text-small); color: var(--text-secondary);">Платформа бесплатна для участников</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/theme.js"></script>
+</body>
+</html>

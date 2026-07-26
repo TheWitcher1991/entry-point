@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram-бот для автоматизации заявок — Точка входа</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166666'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>Т</text></svg>">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        Точка входа
+      </a>
+      <nav class="header__nav">
+        <a href="catalog.html" class="header__nav-link active">Задачи</a>
+        <a href="#" class="header__nav-link">Компании</a>
+        <a href="#" class="header__nav-link">Как это работает</a>
+      </nav>
+      <div class="header__actions">
+        <button class="theme-toggle" aria-label="Переключить тему">
+          <svg class="theme-toggle__icon--light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
+        <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== BREADCRUMBS ========== -->
+  <div style="border-bottom: 1px solid var(--divider); padding: var(--space-4) 0;">
+    <div class="container">
+      <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+        <a href="index.html" class="footer__link">Главная</a>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <a href="catalog.html" class="footer__link">Задачи</a>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="color: var(--text-primary);">Telegram-бот для автоматизации заявок</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN ========== -->
+  <main class="section" style="padding-top: var(--space-8);">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 380px; gap: var(--space-8); align-items: start;">
+
+        <!-- LEFT: Task Details -->
+        <div>
+          <!-- Company + Status -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6);">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div>
+                <div style="font-weight: 600;">Verba Tech</div>
+                <div style="font-size: 13px; color: var(--text-secondary);">Стартап · 12 сотрудников · Москва</div>
+              </div>
+            </div>
+            <span class="badge badge--success" style="height: 32px; padding: 0 12px;">Набор открыт</span>
+          </div>
+
+          <!-- Title -->
+          <h1 style="font-family: var(--font-display); font-size: var(--text-h1); font-weight: 700; line-height: var(--lh-tight); margin-bottom: var(--space-6);">
+            Telegram-бот для автоматизации заявок
+          </h1>
+
+          <!-- Meta Tags -->
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-8);">
+            <span class="tag tag--accent">Node.js</span>
+            <span class="tag tag--accent">Telegram Bot API</span>
+            <span class="tag tag--accent">PostgreSQL</span>
+            <span class="badge badge--info">Разработка</span>
+            <span class="badge badge--warning">Средняя сложность</span>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab active">
+              Описание
+            </button>
+            <button class="tab">
+              Требования
+            </button>
+            <button class="tab">
+              Результат
+            </button>
+            <button class="tab">
+              Отзывы
+            </button>
+          </div>
+
+          <!-- Description Content -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-8);">
+
+            <!-- About -->
+            <div>
+              <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">О задаче</h3>
+              <div style="color: var(--text-secondary); line-height: var(--lh-relaxed); display: flex; flex-direction: column; gap: var(--space-4);">
+                <p>
+                  Мы ищем разработчика для создания Telegram-бота, который автоматизирует обработку заявок от пользователей. Бот должен принимать сообщения, валидировать данные и отправлять уведомления в нашу внутреннюю CRM-систему через REST API.
+                </p>
+                <p>
+                  Бот будет работать в режиме диалога: пользователь описывает задачу, бот задаёт уточняющие вопросы, собирает необходимые данные и формирует заявку. После этого оператор получает уведомление и может начать обработку.
+                </p>
+              </div>
+            </div>
+
+            <!-- Context -->
+            <div>
+              <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">Контекст</h3>
+              <div style="color: var(--text-secondary); line-height: var(--lh-relaxed);">
+                <p>
+                  Компания разрабатывает SaaS-платформу для автоматизации бизнес-процессов. Telegram является основным каналом коммуникации с клиентами. В настоящее время обработка заявок ведётся вручную, что занимает много времени и приводит к ошибкам.
+                </p>
+              </div>
+            </div>
+
+            <!-- Requirements -->
+            <div>
+              <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">Требования</h3>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <div style="display: flex; align-items: flex-start; gap: var(--space-3);">
+                  <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span style="color: var(--text-secondary); line-height: 1.5;">Node.js (JavaScript или TypeScript)</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: var(--space-3);">
+                  <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span style="color: var(--text-secondary); line-height: 1.5;">Опыт работы с Telegram Bot API</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: var(--space-3);">
+                  <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span style="color: var(--text-secondary); line-height: 1.5;">Знание PostgreSQL или другого SQL</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: var(--space-3);">
+                  <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span style="color: var(--text-secondary); line-height: 1.5;">Понимание REST API</span>
+                </div>
+                <div style="display: flex; align-items: flex-start; gap: var(--space-3);">
+                  <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span style="color: var(--text-secondary); line-height: 1.5;">Базовое понимание Docker (приветствуется)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Result -->
+            <div>
+              <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">Ожидаемый результат</h3>
+              <div style="display: flex; flex-direction: column; gap: var(--space-4); color: var(--text-secondary); line-height: var(--lh-relaxed);">
+                <div style="display: flex; gap: var(--space-3);">
+                  <span style="color: var(--accent); font-weight: 600;">1.</span>
+                  <span>Работающий Telegram-бот с диалоговым интерфейсом</span>
+                </div>
+                <div style="display: flex; gap: var(--space-3);">
+                  <span style="color: var(--accent); font-weight: 600;">2.</span>
+                  <span>Интеграция с REST API нашей CRM-системы (документация предоставлена)</span>
+                </div>
+                <div style="display: flex; gap: var(--space-3);">
+                  <span style="color: var(--accent); font-weight: 600;">3.</span>
+                  <span>Хранение состояния диалога в PostgreSQL</span>
+                </div>
+                <div style="display: flex; gap: var(--space-3);">
+                  <span style="color: var(--accent); font-weight: 600;">4.</span>
+                  <span>Деплой на сервер с помощью Docker</span>
+                </div>
+                <div style="display: flex; gap: var(--space-3);">
+                  <span style="color: var(--accent); font-weight: 600;">5.</span>
+                  <span>Документация по установке и настройке</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Career -->
+            <div class="card card--surface" style="display: flex; flex-direction: column; gap: var(--space-4);">
+              <h3 style="font-size: var(--text-h4); font-weight: 600;">Что получает участник</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Подтверждённый опыт
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Отзыв от компании
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Рекомендация
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Кейс для портфолио
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Возможность собеседования
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Возможность стажировки
+                </div>
+              </div>
+            </div>
+
+            <!-- Portfolio Policy -->
+            <div>
+              <h3 style="font-size: var(--text-h4); font-weight: 600; margin-bottom: var(--space-4);">Политика публикации результата</h3>
+              <div style="color: var(--text-secondary); font-size: var(--text-small); line-height: var(--lh-relaxed);">
+                Результат может быть показан в портфолио без исходного кода. Демонстрация в обезличенном виде допустима.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Sidebar -->
+        <div style="position: sticky; top: calc(var(--header-height) + var(--space-8)); display: flex; flex-direction: column; gap: var(--space-6);">
+
+          <!-- Apply Card -->
+          <div class="card">
+            <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--text-small); color: var(--text-secondary);">Срок выполнения</span>
+                <span style="font-weight: 600;">14 дней</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--text-small); color: var(--text-secondary);">Сложность</span>
+                <span class="badge badge--warning">Средняя</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--text-small); color: var(--text-secondary);">Мест</span>
+                <span style="font-weight: 600;">3</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--text-small); color: var(--text-secondary);">Заявок</span>
+                <span style="font-weight: 600;">12</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--text-small); color: var(--text-secondary);">Формат</span>
+                <span>Удалённый</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--text-small); color: var(--text-secondary);">Опубликовано</span>
+                <span>3 дня назад</span>
+              </div>
+              <div style="border-top: 1px solid var(--divider); padding-top: var(--space-5);">
+                <button class="btn btn--primary" style="width: 100%;">Подать заявку</button>
+              </div>
+              <div style="text-align: center;">
+                <button class="btn btn--ghost btn--sm" style="width: auto;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  Сохранить
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Company Card -->
+          <div class="card">
+            <h4 style="font-size: var(--text-small); font-weight: 600; margin-bottom: var(--space-4);">О компании</h4>
+            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+              <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <div class="avatar avatar--lg avatar-company">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+                </div>
+                <div>
+                  <div style="font-weight: 600;">Verba Tech</div>
+                  <div style="font-size: 13px; color: var(--text-secondary);">Стартап · Москва</div>
+                </div>
+              </div>
+              <p style="font-size: var(--text-small); color: var(--text-secondary); line-height: var(--lh-relaxed);">
+                SaaS-платформа для автоматизации бизнес-процессов. 12 сотрудников, работаем с 2023 года.
+              </p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <span class="tag">SaaS</span>
+                <span class="tag">Автоматизация</span>
+                <span class="tag">B2B</span>
+              </div>
+              <div style="display: flex; gap: var(--space-3);">
+                <div style="text-align: center; flex: 1;">
+                  <div style="font-weight: 700; font-size: var(--text-h4);">3</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">задачи</div>
+                </div>
+                <div style="text-align: center; flex: 1;">
+                  <div style="font-weight: 700; font-size: var(--text-h4);">12</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">участников</div>
+                </div>
+                <div style="text-align: center; flex: 1;">
+                  <div style="font-weight: 700; font-size: var(--text-h4);">4.8</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">рейтинг</div>
+                </div>
+              </div>
+              <a href="#" class="btn btn--secondary btn--sm" style="width: 100%;">Профиль компании</a>
+            </div>
+          </div>
+
+          <!-- Similar Tasks -->
+          <div class="card">
+            <h4 style="font-size: var(--text-small); font-weight: 600; margin-bottom: var(--space-4);">Похожие задачи</h4>
+            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+              <a href="task.html" class="list-item" style="padding: var(--space-3);">
+                <div class="list-item__content">
+                  <div class="list-item__title">Backend API для мобильного приложения</div>
+                  <div class="list-item__subtitle">DataFlow · 21 день</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+              <a href="task.html" class="list-item" style="padding: var(--space-3);">
+                <div class="list-item__content">
+                  <div class="list-item__title">Мини-CRM на React</div>
+                  <div class="list-item__subtitle">PixelForge · 14 дней</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+              <a href="task.html" class="list-item" style="padding: var(--space-3);">
+                <div class="list-item__content">
+                  <div class="list-item__title">Интеграция с внешним API</div>
+                  <div class="list-item__subtitle">CloudNine · 10 дней</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="index.html" class="header__logo">
+            <div class="header__logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+            Точка входа
+          </a>
+          <p class="footer__brand-desc">Платформа проектного старта карьеры.</p>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Платформа</h4>
+          <div class="footer__links">
+            <a href="catalog.html" class="footer__link">Каталог задач</a>
+            <a href="#" class="footer__link">Компании</a>
+            <a href="#" class="footer__link">Как это работает</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Участникам</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Создать профиль</a>
+            <a href="#" class="footer__link">FAQ</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Правовая информация</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Пользовательское соглашение</a>
+            <a href="#" class="footer__link">Политика конфиденциальности</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Точка входа</span>
+        <span>Сделано с заботой о начинающих</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+</body>
+</html>

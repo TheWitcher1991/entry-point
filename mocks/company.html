@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verba Tech — Точка входа</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166666'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='white' font-family='sans-serif' font-weight='bold'>Т</text></svg>">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        Точка входа
+      </a>
+      <nav class="header__nav">
+        <a href="catalog.html" class="header__nav-link">Задачи</a>
+        <a href="#" class="header__nav-link active">Компании</a>
+        <a href="how-it-works.html" class="header__nav-link">Как это работает</a>
+      </nav>
+      <div class="header__actions">
+        <button class="theme-toggle" aria-label="Переключить тему">
+          <svg class="theme-toggle__icon--light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="theme-toggle__icon--dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
+        <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== BREADCRUMBS ========== -->
+  <div style="border-bottom: 1px solid var(--divider); padding: var(--space-4) 0;">
+    <div class="container">
+      <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
+        <a href="index.html" class="footer__link">Главная</a>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <a href="#" class="footer__link">Компании</a>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="color: var(--text-primary);">Verba Tech</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COMPANY HEADER ========== -->
+  <section class="section" style="padding-bottom: 0;">
+    <div class="container">
+      <div class="card card--large">
+        <div style="display: flex; gap: var(--space-8); align-items: flex-start;">
+          <!-- Logo -->
+          <div class="avatar avatar--2xl avatar-company" style="flex-shrink: 0;">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Crect width='96' height='96' rx='20' fill='%23E8F4F4'/%3E%3Ctext x='48' y='62' text-anchor='middle' font-size='42' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+          </div>
+
+          <!-- Info -->
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+              <h1 style="font-family: var(--font-display); font-size: var(--text-h2); font-weight: 700;">Verba Tech</h1>
+              <span class="badge badge--success" style="height: 28px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Верифицирована
+              </span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: var(--space-4); color: var(--text-secondary); font-size: var(--text-small); margin-bottom: var(--space-4);">
+              <span style="display: flex; align-items: center; gap: var(--space-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Москва
+              </span>
+              <span style="display: flex; align-items: center; gap: var(--space-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                12 сотрудников
+              </span>
+              <span style="display: flex; align-items: center; gap: var(--space-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                На платформе с 2024
+              </span>
+            </div>
+
+            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); max-width: 640px; margin-bottom: var(--space-6);">
+              SaaS-платформа для автоматизации бизнес-процессов. Разрабатываем инструменты, которые помогают малому и среднему бизнесу оптимизировать рутинные процессы и сосредоточиться на главном.
+            </p>
+
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-6);">
+              <span class="tag">SaaS</span>
+              <span class="tag">Автоматизация</span>
+              <span class="tag">B2B</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">React</span>
+              <span class="tag">PostgreSQL</span>
+            </div>
+
+            <div style="display: flex; gap: var(--space-4);">
+              <a href="#" class="btn btn--primary btn--sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Сайт компании
+              </a>
+              <a href="catalog.html" class="btn btn--secondary btn--sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Задачи компании
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STATS ========== -->
+  <section style="padding: var(--space-8) 0 0;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6);">
+        <div class="card card--compact stat-card" style="text-align: center;">
+          <div class="stat-card__value">3</div>
+          <div class="stat-card__label">Опубликованных задач</div>
+        </div>
+        <div class="card card--compact stat-card" style="text-align: center;">
+          <div class="stat-card__value">12</div>
+          <div class="stat-card__label">Участников привлечено</div>
+        </div>
+        <div class="card card--compact stat-card" style="text-align: center;">
+          <div class="stat-card__value">10</div>
+          <div class="stat-card__label">Завершено задач</div>
+        </div>
+        <div class="card card--compact stat-card" style="text-align: center;">
+          <div class="stat-card__value">4.8</div>
+          <div class="stat-card__label">Средний рейтинг</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TABS + TASKS ========== -->
+  <section class="section">
+    <div class="container">
+
+      <div class="tabs">
+        <button class="tab active">
+          Задачи
+          <span class="tab__count">3</span>
+        </button>
+        <button class="tab">
+          Отзывы
+          <span class="tab__count">8</span>
+        </button>
+        <button class="tab">
+          О компании
+        </button>
+      </div>
+
+      <!-- Tasks -->
+      <div style="display: flex; flex-direction: column; gap: var(--space-6);">
+
+        <!-- Task 1 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">Verba Tech</span>
+                <span class="task-card__company-meta">Стартап · Москва</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">Telegram-бот для автоматизации заявок</h3>
+          <p class="task-card__description">Разработка бота на Node.js для обработки пользовательских заявок с интеграцией в CRM-систему.</p>
+          <div class="task-card__tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">Telegram Bot API</span>
+            <span class="tag">PostgreSQL</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              14 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              3 места
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">12 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="card card--clickable task-card">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">Verba Tech</span>
+                <span class="task-card__company-meta">Стартап · Москва</span>
+              </div>
+            </div>
+            <span class="badge badge--success">Набор открыт</span>
+          </div>
+          <h3 class="task-card__title">API-интеграция с платёжной системой</h3>
+          <p class="task-card__description">Интеграция REST API платёжного провайдера. Создание платежей, проверка статусов, вебхуки.</p>
+          <div class="task-card__tags">
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">REST API</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              21 день
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Средняя
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              1 место
+            </span>
+          </div>
+          <div class="task-card__footer">
+            <span class="task-card__applicants">5 заявок</span>
+            <a href="task.html" class="btn btn--primary btn--sm">Подробнее</a>
+          </div>
+        </div>
+
+        <!-- Task 3 (completed) -->
+        <div class="card card--clickable task-card" style="opacity: 0.7;">
+          <div class="task-card__header">
+            <div class="task-card__company">
+              <div class="avatar avatar--lg avatar-company">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect width='56' height='56' rx='12' fill='%23E8F4F4'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='22' font-weight='600' fill='%23166666' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div class="task-card__company-info">
+                <span class="task-card__company-name">Verba Tech</span>
+                <span class="task-card__company-meta">Стартап · Москва</span>
+              </div>
+            </div>
+            <span class="badge badge--muted" style="background: var(--surface-secondary); color: var(--text-muted);">Завершена</span>
+          </div>
+          <h3 class="task-card__title">Лендинг для нового продукта</h3>
+          <p class="task-card__description">Вёрстка адаптивного лендинга по готовому макету в Figma с анимациями и интеграцией формы заявки.</p>
+          <div class="task-card__tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+          </div>
+          <div class="task-card__meta">
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              7 дней
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Лёгкая
+            </span>
+            <span class="task-card__meta-item">
+              <svg class="task-card__meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Выполнена
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div style="margin-top: var(--space-12);">
+        <h3 style="font-size: var(--text-h3); font-weight: 700; margin-bottom: var(--space-6);">Отзывы участников</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6);">
+
+          <div class="card card--compact">
+            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+              <div class="avatar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' rx='20' fill='%23E8F4F4'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='16' font-weight='600' fill='%23166666' font-family='sans-serif'%3EA%3C/text%3E%3C/svg%3E" alt="">
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: var(--text-small);">Алексей Петров</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Backend-разработчик</div>
+              </div>
+              <div style="margin-left: auto; display: flex; gap: 2px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+            </div>
+            <p style="font-size: var(--text-small); color: var(--text-secondary); line-height: var(--lh-relaxed);">
+              Отличный опыт. Задача была подробно описана, документация на API предоставлена. Коммуникация на высшем уровне — ответы в течение часа. Получил полезный опыт интеграции с реальным платёжным провайдером.
+            </p>
+            <div style="margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2);">
+              <span class="tag tag--accent" style="height: 24px; font-size: 12px;">Задача: API-интеграция</span>
+              <span class="badge badge--success" style="height: 24px; padding: 0 8px; font-size: 12px;">Рекомендую</span>
+            </div>
+          </div>
+
+          <div class="card card--compact">
+            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+              <div class="avatar" style="background: var(--accent); color: #fff;">
+                МК
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: var(--text-small);">Мария Козлова</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Fullstack-разработчик</div>
+              </div>
+              <div style="margin-left: auto; display: flex; gap: 2px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+            </div>
+            <p style="font-size: var(--text-small); color: var(--text-secondary); line-height: var(--lh-relaxed);">
+              Приятно удивлена подходом компании. Вместо тестового задания — реальная небольшая задача с чёткими требованиями. После выполнения получила подробный отзыв и предложение о стажировке.
+            </p>
+            <div style="margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2);">
+              <span class="tag tag--accent" style="height: 24px; font-size: 12px;">Задача: Telegram-бот</span>
+              <span class="badge badge--success" style="height: 24px; padding: 0 8px; font-size: 12px;">Рекомендую</span>
+            </div>
+          </div>
+
+          <div class="card card--compact">
+            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+              <div class="avatar" style="background: #F3E5F5; color: #4A148C;">
+                ДС
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: var(--text-small);">Дмитрий Сидоров</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Frontend-разработчик</div>
+              </div>
+              <div style="margin-left: auto; display: flex; gap: 2px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+            </div>
+            <p style="font-size: var(--text-small); color: var(--text-secondary); line-height: var(--lh-relaxed);">
+              Хороший опыт для портфолио. Задача чётко структурирована, есть понятные критерии приёмки. Единственное — хотелось бы более оперативной обратной связи в процессе работы.
+            </p>
+            <div style="margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2);">
+              <span class="tag tag--accent" style="height: 24px; font-size: 12px;">Задача: Лендинг</span>
+              <span class="badge badge--success" style="height: 24px; padding: 0 8px; font-size: 12px;">Рекомендую</span>
+            </div>
+          </div>
+
+          <div class="card card--compact">
+            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+              <div class="avatar" style="background: #E3F2FD; color: #0D47A1;">
+                ОВ
+              </div>
+              <div>
+                <div style="font-weight: 600; font-size: var(--text-small);">Ольга Волкова</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Тестировщик</div>
+              </div>
+              <div style="margin-left: auto; display: flex; gap: 2px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--warning)" stroke="var(--warning)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+            </div>
+            <p style="font-size: var(--text-small); color: var(--text-secondary); line-height: var(--lh-relaxed);">
+              Задача по тестированию была интересной и реалистичной. Компания предоставила доступ к тестовому окружению и подробную документацию. Рекомендую для начинающих тестировщиков.
+            </p>
+            <div style="margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2);">
+              <span class="tag tag--accent" style="height: 24px; font-size: 12px;">Задача: Автотесты</span>
+              <span class="badge badge--success" style="height: 24px; padding: 0 8px; font-size: 12px;">Рекомендую</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="index.html" class="header__logo">
+            <div class="header__logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+            Точка входа
+          </a>
+          <p class="footer__brand-desc">Платформа проектного старта карьеры.</p>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Платформа</h4>
+          <div class="footer__links">
+            <a href="catalog.html" class="footer__link">Каталог задач</a>
+            <a href="how-it-works.html" class="footer__link">Как это работает</a>
+            <a href="#" class="footer__link">Для компаний</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Участникам</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Создать профиль</a>
+            <a href="#" class="footer__link">FAQ</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__col-title">Правовая информация</h4>
+          <div class="footer__links">
+            <a href="#" class="footer__link">Пользовательское соглашение</a>
+            <a href="#" class="footer__link">Политика конфиденциальности</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 Точка входа</span>
+        <span>Сделано с заботой о начинающих</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+</body>
+</html>
