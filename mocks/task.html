@@ -20,8 +20,8 @@
       </a>
       <nav class="header__nav">
         <a href="catalog.html" class="header__nav-link active">Задачи</a>
-        <a href="#" class="header__nav-link">Компании</a>
-        <a href="#" class="header__nav-link">Как это работает</a>
+        <a href="company.html" class="header__nav-link">Компании</a>
+        <a href="how-it-works.html" class="header__nav-link">Как это работает</a>
       </nav>
       <div class="header__actions">
         <button class="theme-toggle" aria-label="Переключить тему">
@@ -30,6 +30,7 @@
         </button>
         <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
         <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+        <a href="dashboard-participant.html" class="btn btn--secondary btn--sm" style="display:none;" id="hdrDashboard">Кабинет</a>
       </div>
     </div>
   </header>
@@ -306,29 +307,29 @@
                   <div style="font-size: 12px; color: var(--text-muted);">рейтинг</div>
                 </div>
               </div>
-              <a href="#" class="btn btn--secondary btn--sm" style="width: 100%;">Профиль компании</a>
+              <a href="company.html" class="btn btn--secondary btn--sm" style="width: 100%;">Профиль компании</a>
             </div>
           </div>
 
           <!-- Similar Tasks -->
           <div class="card">
-            <h4 style="font-size: var(--text-small); font-weight: 600; margin-bottom: var(--space-4);">Похожие задачи</h4>
+              <h4 style="font-size: var(--text-small); font-weight: 600; margin-bottom: var(--space-4);">Похожие задачи</h4>
             <div style="display: flex; flex-direction: column; gap: var(--space-4);">
-              <a href="task.html" class="list-item" style="padding: var(--space-3);">
+              <a href="catalog.html" class="list-item" style="padding: var(--space-3);">
                 <div class="list-item__content">
                   <div class="list-item__title">Backend API для мобильного приложения</div>
                   <div class="list-item__subtitle">DataFlow · 21 день</div>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </a>
-              <a href="task.html" class="list-item" style="padding: var(--space-3);">
+              <a href="catalog.html" class="list-item" style="padding: var(--space-3);">
                 <div class="list-item__content">
                   <div class="list-item__title">Мини-CRM на React</div>
                   <div class="list-item__subtitle">PixelForge · 14 дней</div>
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </a>
-              <a href="task.html" class="list-item" style="padding: var(--space-3);">
+              <a href="catalog.html" class="list-item" style="padding: var(--space-3);">
                 <div class="list-item__content">
                   <div class="list-item__title">Интеграция с внешним API</div>
                   <div class="list-item__subtitle">CloudNine · 10 дней</div>
@@ -359,22 +360,22 @@
           <h4 class="footer__col-title">Платформа</h4>
           <div class="footer__links">
             <a href="catalog.html" class="footer__link">Каталог задач</a>
-            <a href="#" class="footer__link">Компании</a>
-            <a href="#" class="footer__link">Как это работает</a>
+            <a href="company.html" class="footer__link">Компании</a>
+            <a href="how-it-works.html" class="footer__link">Как это работает</a>
           </div>
         </div>
         <div>
           <h4 class="footer__col-title">Участникам</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Создать профиль</a>
-            <a href="#" class="footer__link">FAQ</a>
+            <a href="register.html" class="footer__link">Создать профиль</a>
+            <a href="how-it-works.html" class="footer__link">FAQ</a>
           </div>
         </div>
         <div>
           <h4 class="footer__col-title">Правовая информация</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Пользовательское соглашение</a>
-            <a href="#" class="footer__link">Политика конфиденциальности</a>
+            <a href="how-it-works.html" class="footer__link">Пользовательское соглашение</a>
+            <a href="how-it-works.html" class="footer__link">Политика конфиденциальности</a>
           </div>
         </div>
       </div>
@@ -386,5 +387,12 @@
   </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function(){
+      var u=authGetUser();
+      if(u){document.getElementById('hdrDashboard').style.display='inline-flex';}
+    })();
+  </script>
 </body>
 </html>

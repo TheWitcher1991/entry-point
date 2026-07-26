@@ -20,7 +20,7 @@
       </a>
       <nav class="header__nav">
         <a href="catalog.html" class="header__nav-link">Задачи</a>
-        <a href="#" class="header__nav-link">Компании</a>
+        <a href="company.html" class="header__nav-link">Компании</a>
         <a href="how-it-works.html" class="header__nav-link active">Как это работает</a>
       </nav>
       <div class="header__actions">
@@ -30,6 +30,7 @@
         </button>
         <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
         <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+        <a href="dashboard-participant.html" class="btn btn--secondary btn--sm" style="display:none;" id="hdrDashboard">Кабинет</a>
         <button class="header__mobile-toggle" aria-label="Меню">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
@@ -38,7 +39,7 @@
   </header>
 
   <!-- ========== HERO ========== -->
-  <section class="hero" style="padding-bottom: var(--space-12);">
+  <section class="hero" style="padding-bottom: var(--space-16);">
     <div class="container">
       <h1 class="hero__title">Как это работает</h1>
       <p class="hero__subtitle">Пять шагов от регистрации до подтверждённого опыта и карьерного продолжения</p>
@@ -49,9 +50,9 @@
   <section class="section" style="padding-top: 0;">
     <div class="container">
 
-      <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-12);">
-        <div style="width: 48px; height: 48px; border-radius: var(--radius-full); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-14);">
+        <div style="width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         </div>
         <h2 style="font-family: var(--font-display); font-size: var(--text-h2); font-weight: 700;">Для участников</h2>
       </div>
@@ -237,9 +238,9 @@
   <section class="section">
     <div class="container">
 
-      <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-12);">
-        <div style="width: 48px; height: 48px; border-radius: var(--radius-full); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-14);">
+        <div style="width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </div>
         <h2 style="font-family: var(--font-display); font-size: var(--text-h2); font-weight: 700;">Для компаний</h2>
       </div>
@@ -416,21 +417,21 @@
           <div class="footer__links">
             <a href="catalog.html" class="footer__link">Каталог задач</a>
             <a href="how-it-works.html" class="footer__link">Как это работает</a>
-            <a href="#" class="footer__link">Для компаний</a>
+            <a href="company.html" class="footer__link">Для компаний</a>
           </div>
         </div>
         <div>
           <h4 class="footer__col-title">Участникам</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Создать профиль</a>
-            <a href="#" class="footer__link">FAQ</a>
+            <a href="register.html" class="footer__link">Создать профиль</a>
+            <a href="how-it-works.html" class="footer__link">FAQ</a>
           </div>
         </div>
         <div>
           <h4 class="footer__col-title">Правовая информация</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Пользовательское соглашение</a>
-            <a href="#" class="footer__link">Политика конфиденциальности</a>
+            <a href="how-it-works.html" class="footer__link">Пользовательское соглашение</a>
+            <a href="how-it-works.html" class="footer__link">Политика конфиденциальности</a>
           </div>
         </div>
       </div>
@@ -442,5 +443,12 @@
   </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function(){
+      var u=authGetUser();
+      if(u){document.getElementById('hdrDashboard').style.display='inline-flex';}
+    })();
+  </script>
 </body>
 </html>

@@ -20,7 +20,7 @@
       </a>
       <nav class="header__nav">
         <a href="catalog.html" class="header__nav-link">Задачи</a>
-        <a href="#" class="header__nav-link active">Компании</a>
+        <a href="company.html" class="header__nav-link active">Компании</a>
         <a href="how-it-works.html" class="header__nav-link">Как это работает</a>
       </nav>
       <div class="header__actions">
@@ -30,6 +30,7 @@
         </button>
         <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
         <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+        <a href="dashboard-participant.html" class="btn btn--secondary btn--sm" style="display:none;" id="hdrDashboard">Кабинет</a>
       </div>
     </div>
   </header>
@@ -40,7 +41,7 @@
       <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-small); color: var(--text-secondary);">
         <a href="index.html" class="footer__link">Главная</a>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        <a href="#" class="footer__link">Компании</a>
+        <a href="company.html" class="footer__link">Компании</a>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         <span style="color: var(--text-primary);">Verba Tech</span>
       </div>
@@ -60,7 +61,7 @@
           <!-- Info -->
           <div style="flex: 1; min-width: 0;">
             <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
-              <h1 style="font-family: var(--font-display); font-size: var(--text-h2); font-weight: 700;">Verba Tech</h1>
+              <h1 style="font-family: var(--font-display); font-size: var(--text-h1); font-weight: 700;">Verba Tech</h1>
               <span class="badge badge--success" style="height: 28px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Верифицирована
@@ -96,7 +97,7 @@
             </div>
 
             <div style="display: flex; gap: var(--space-4);">
-              <a href="#" class="btn btn--primary btn--sm">
+              <a href="company.html" class="btn btn--primary btn--sm">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Сайт компании
               </a>
@@ -409,21 +410,21 @@
           <div class="footer__links">
             <a href="catalog.html" class="footer__link">Каталог задач</a>
             <a href="how-it-works.html" class="footer__link">Как это работает</a>
-            <a href="#" class="footer__link">Для компаний</a>
+            <a href="company.html" class="footer__link">Для компаний</a>
           </div>
         </div>
         <div>
           <h4 class="footer__col-title">Участникам</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Создать профиль</a>
-            <a href="#" class="footer__link">FAQ</a>
+            <a href="register.html" class="footer__link">Создать профиль</a>
+            <a href="how-it-works.html" class="footer__link">FAQ</a>
           </div>
         </div>
         <div>
           <h4 class="footer__col-title">Правовая информация</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Пользовательское соглашение</a>
-            <a href="#" class="footer__link">Политика конфиденциальности</a>
+            <a href="how-it-works.html" class="footer__link">Пользовательское соглашение</a>
+            <a href="how-it-works.html" class="footer__link">Политика конфиденциальности</a>
           </div>
         </div>
       </div>
@@ -435,5 +436,12 @@
   </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function(){
+      var u=authGetUser();
+      if(u){document.getElementById('hdrDashboard').style.display='inline-flex';}
+    })();
+  </script>
 </body>
 </html>

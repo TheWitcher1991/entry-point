@@ -20,9 +20,9 @@
       </a>
 
       <nav class="header__nav">
-        <a href="catalog.html" class="header__nav-link active">Задачи</a>
-        <a href="#" class="header__nav-link">Компании</a>
-        <a href="#" class="header__nav-link">Как это работает</a>
+        <a href="catalog.html" class="header__nav-link">Задачи</a>
+        <a href="company.html" class="header__nav-link">Компании</a>
+        <a href="how-it-works.html" class="header__nav-link">Как это работает</a>
       </nav>
 
       <div class="header__actions">
@@ -32,6 +32,7 @@
         </button>
         <a href="login.html" class="btn btn--ghost btn--sm">Войти</a>
         <a href="register.html" class="btn btn--primary btn--sm">Регистрация</a>
+        <a href="dashboard-participant.html" class="btn btn--secondary btn--sm" style="display:none;" id="hdrDashboard">Кабинет</a>
         <button class="header__mobile-toggle" aria-label="Меню">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
@@ -50,7 +51,7 @@
       </p>
       <div class="hero__actions">
         <a href="catalog.html" class="btn btn--primary btn--lg">Найти задачу</a>
-        <a href="#" class="btn btn--secondary btn--lg">Опубликовать задачу</a>
+        <a href="register.html" class="btn btn--secondary btn--lg">Опубликовать задачу</a>
       </div>
       <div class="hero__stats">
         <div class="hero__stat">
@@ -370,29 +371,28 @@
           <h4 class="footer__col-title">Платформа</h4>
           <div class="footer__links">
             <a href="catalog.html" class="footer__link">Каталог задач</a>
-            <a href="#" class="footer__link">Компании</a>
-            <a href="#" class="footer__link">Как это работает</a>
-            <a href="#" class="footer__link">Для компаний</a>
+            <a href="company.html" class="footer__link">Компании</a>
+            <a href="how-it-works.html" class="footer__link">Как это работает</a>
+            <a href="register.html" class="footer__link">Для компаний</a>
           </div>
         </div>
 
         <div>
           <h4 class="footer__col-title">Участникам</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Создать профиль</a>
-            <a href="#" class="footer__link">Как найти задачу</a>
-            <a href="#" class="footer__link">Советы по портфолио</a>
-            <a href="#" class="footer__link">FAQ</a>
+            <a href="register.html" class="footer__link">Создать профиль</a>
+            <a href="how-it-works.html" class="footer__link">Как это работает</a>
+            <a href="how-it-works.html#faq" class="footer__link">FAQ</a>
           </div>
         </div>
 
         <div>
           <h4 class="footer__col-title">Правовая информация</h4>
           <div class="footer__links">
-            <a href="#" class="footer__link">Пользовательское соглашение</a>
-            <a href="#" class="footer__link">Политика конфиденциальности</a>
-            <a href="#" class="footer__link">Правила публикации</a>
-            <a href="#" class="footer__link">Контакты</a>
+            <a href="how-it-works.html" class="footer__link">Пользовательское соглашение</a>
+            <a href="how-it-works.html" class="footer__link">Политика конфиденциальности</a>
+            <a href="how-it-works.html" class="footer__link">Правила публикации</a>
+            <a href="how-it-works.html" class="footer__link">Контакты</a>
           </div>
         </div>
       </div>
@@ -431,5 +431,11 @@
   </nav>
 
   <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function(){
+      var u=authGetUser();
+      if(u){document.getElementById('hdrDashboard').style.display='inline-flex';}
+  </script>
 </body>
 </html>
