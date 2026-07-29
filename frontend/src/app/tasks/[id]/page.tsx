@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { getTask, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
+import { getTask, getTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
 import { getCompanyById } from "@entities/company";
 import { getSkills } from "@entities/skill";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
-import { ChevronRight, Bookmark, ExternalLink } from "@shared/ui/Icons";
+import { ChevronRight, Bookmark, ExternalLink, Check, Layers } from "@shared/ui/Icons";
 
 type Tab = "description" | "requirements" | "result" | "company";
 
@@ -35,6 +35,18 @@ export default function TaskDetailPage() {
     queryKey: ["skills"],
     queryFn: getSkills,
     staleTime: 300_000,
+  });
+
+  const { data: similarTasks = [] } = useQuery({
+    queryKey: ["tasks", "similar", task?.category_id],
+    queryFn: () =>
+      getTasks({
+        category_id: task?.category_id ?? undefined,
+        status: "open",
+        limit: 3,
+      }),
+    enabled: !!task?.category_id && !!task?.id,
+    staleTime: 60_000,
   });
 
   const skillMap = new Map(skills.map((s) => [s.id, s.name]));
@@ -176,7 +188,7 @@ export default function TaskDetailPage() {
                   </span>
                 ))}
                 {task.category_id && (
-                  <span className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[13px] font-medium">
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 text-[13px] font-medium">
                     Категория {task.category_id}
                   </span>
                 )}
@@ -262,22 +274,36 @@ export default function TaskDetailPage() {
 
                 {activeTab === "requirements" && (
                   <>
-                    {/* Requirements */}
+                    {/* Requirements as checkmark list */}
                     {task.requirements && (
                       <div>
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Обязательные требования</h3>
-                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                          {task.requirements}
+                        <div className="flex flex-col gap-3">
+                          {task.requirements.split("\n").filter(Boolean).map((req, i) => (
+                            <div key={i} className="flex items-start gap-3">
+                              <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+                                <Check size={12} strokeWidth={3} />
+                              </div>
+                              <span className="text-[15px] text-muted-foreground leading-relaxed">{req}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Advantages */}
+                    {/* Advantages as checkmark list */}
                     {task.advantages && (
                       <div>
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Дополнительные преимущества</h3>
-                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                          {task.advantages}
+                        <div className="flex flex-col gap-3">
+                          {task.advantages.split("\n").filter(Boolean).map((adv, i) => (
+                            <div key={i} className="flex items-start gap-3">
+                              <div className="w-5 h-5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <Check size={12} strokeWidth={3} />
+                              </div>
+                              <span className="text-[15px] text-muted-foreground leading-relaxed">{adv}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
@@ -331,10 +357,15 @@ export default function TaskDetailPage() {
 
                     {/* Career Opportunities */}
                     {task.career_opportunities && (
-                      <div className="p-6 rounded-[24px] bg-card border border-border">
+                      <div className="p-6 rounded-3xl bg-card border border-border">
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Что получает участник</h3>
-                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                          {task.career_opportunities}
+                        <div className="grid grid-cols-2 gap-3">
+                          {task.career_opportunities.split("\n").filter(Boolean).map((item, i) => (
+                            <div key={i} className="flex items-center gap-2.5 text-[14px] text-muted-foreground">
+                              <Check size={14} strokeWidth={2.5} className="text-primary shrink-0" />
+                              {item}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
@@ -406,7 +437,7 @@ export default function TaskDetailPage() {
             {/* RIGHT: Sidebar */}
             <div className="lg:sticky lg:top-[calc(64px+32px)] flex flex-col gap-6">
               {/* Apply Card */}
-              <div className="p-6 rounded-[24px] bg-card border border-border">
+              <div className="p-6 rounded-3xl bg-card border border-border">
                 <div className="flex flex-col gap-5">
                   {deadlineText && (
                     <div className="flex justify-between items-center">
@@ -445,14 +476,14 @@ export default function TaskDetailPage() {
 
                   {task.status === "open" && (
                     <div className="border-t border-border pt-5">
-                      <button className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer">
+                      <button className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer">
                         Подать заявку
                       </button>
                     </div>
                   )}
 
                   <div className="text-center">
-                    <button className="inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors bg-transparent cursor-pointer">
+                    <button className="inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors bg-transparent cursor-pointer active:scale-[0.96]">
                       <Bookmark size={16} />
                       Сохранить
                     </button>
@@ -462,7 +493,7 @@ export default function TaskDetailPage() {
 
               {/* Company Card (sidebar) */}
               {company && (
-                <div className="p-6 rounded-[24px] bg-card border border-border">
+                <div className="p-6 rounded-3xl bg-card border border-border">
                   <h4 className="text-[14px] font-semibold text-foreground mb-4">О компании</h4>
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-3">
@@ -495,6 +526,37 @@ export default function TaskDetailPage() {
                       <ExternalLink size={14} />
                       Профиль компании
                     </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Similar Tasks */}
+              {similarTasks.length > 0 && (
+                <div className="p-6 rounded-3xl bg-card border border-border">
+                  <h4 className="text-[14px] font-semibold text-foreground mb-4">Похожие задачи</h4>
+                  <div className="flex flex-col gap-2">
+                    {similarTasks
+                      .filter((t) => t.id !== task.id)
+                      .slice(0, 3)
+                      .map((st) => (
+                        <Link
+                          key={st.id}
+                          href={`/tasks/${st.id}`}
+                          className="flex items-center justify-between gap-3 p-3 rounded-xl hover:bg-muted transition-colors no-underline group"
+                        >
+                          <div className="min-w-0">
+                            <div className="text-[13px] font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                              {st.title}
+                            </div>
+                            <div className="text-[12px] text-muted-foreground mt-0.5">
+                              <Layers size={10} className="inline mr-1" />
+                              {st.difficulty ? TASK_DIFFICULTY_LABELS[st.difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || st.difficulty : "—"}
+                              {st.deadline && <> · до {new Date(st.deadline).toLocaleDateString("ru-RU")}</>}
+                            </div>
+                          </div>
+                          <ChevronRight size={14} className="text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </Link>
+                      ))}
                   </div>
                 </div>
               )}

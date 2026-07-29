@@ -72,7 +72,7 @@ export default function CompanyTasksPage() {
           ].map((stat) => {
             const Icon = stat.icon;
             return (
-              <div key={stat.label} className="p-5 rounded-[20px] bg-card border border-border text-center">
+              <div key={stat.label} className="p-5 rounded-3xl bg-card border border-border text-center">
                 <Icon size={20} className={`${stat.color} mx-auto mb-2`} strokeWidth={1.5} />
                 {isLoading ? (
                   <div className="h-7 w-12 bg-muted/70 rounded-[8px] mx-auto mb-2 animate-pulse" />
@@ -89,7 +89,7 @@ export default function CompanyTasksPage() {
         {isLoading ? (
           <div className="flex flex-col gap-4 animate-pulse">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="p-5 rounded-[20px] bg-card border border-border">
+              <div key={i} className="p-5 rounded-3xl bg-card border border-border">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -132,7 +132,7 @@ export default function CompanyTasksPage() {
               return (
                 <div
                   key={task.id}
-                  className="p-5 rounded-[20px] bg-card border border-border hover:border-muted-foreground/20 transition-colors"
+                  className="p-5 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">

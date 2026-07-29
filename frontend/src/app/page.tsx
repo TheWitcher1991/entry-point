@@ -91,7 +91,7 @@ export default function LandingPage() {
             </div>
 
             {/* Stats */}
-            <div className="flex items-center justify-center gap-8 md:gap-12 mt-16 pt-12 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)]">
+            <div className="flex items-center justify-center gap-8 md:gap-12 mt-16 pt-12 border-t border-border">
               {[
                 { value: "120+", label: "задач", icon: Briefcase },
                 { value: "45", label: "компаний", icon: TrendingUp },
@@ -168,7 +168,7 @@ export default function LandingPage() {
                       <span>{task.spots}</span>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)]">
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
                       <span className="text-xs text-muted-foreground">{task.applicants} заявок</span>
                       <a
                         href="/catalog"

@@ -10,7 +10,7 @@ const benefits = [
 
 export default function LoginPage() {
   return (
-    <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] overflow-hidden min-h-[600px]">
+    <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] bg-card border border-border overflow-hidden min-h-[600px]">
       {/* Form Panel */}
       <div className="p-8 md:p-10 flex items-center">
         <div className="w-full max-w-[380px] mx-auto">

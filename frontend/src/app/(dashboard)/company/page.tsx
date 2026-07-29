@@ -69,7 +69,7 @@ export default function CompanyDashboardPage() {
           ].map((stat) => {
             const Icon = stat.icon;
             return (
-              <div key={stat.label} className="p-5 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] text-center">
+              <div key={stat.label} className="p-5 rounded-3xl bg-card border border-border text-center">
                 <Icon size={20} className="text-primary mx-auto mb-2" strokeWidth={1.5} />
                 <div className="text-[28px] font-bold font-display text-primary">{stat.value}</div>
                 <div className="text-[13px] text-muted-foreground mt-1">{stat.label}</div>
@@ -79,7 +79,7 @@ export default function CompanyDashboardPage() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex gap-1 mb-6 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)_inset]">
+        <div className="flex gap-1 mb-6 border-b border-border">
           <Link
             href="/company/tasks"
             className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary -mb-px flex items-center gap-2 bg-transparent no-underline"
@@ -98,7 +98,7 @@ export default function CompanyDashboardPage() {
             <div className="flex flex-col gap-3">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="p-4 rounded-3xl bg-card border border-border animate-pulse">
-                  <div className="h-5 w-2/3 bg-muted/70 rounded-[8px] mb-3" />
+                  <div className="h-5 w-2/3 bg-muted/70 rounded-[10px] mb-3" />
                   <div className="flex gap-3">
                     <div className="h-4 w-16 bg-muted/50 rounded-[6px]" />
                     <div className="h-4 w-20 bg-muted/50 rounded-[6px]" />
@@ -107,7 +107,7 @@ export default function CompanyDashboardPage() {
               ))}
             </div>
           ) : tasks.length === 0 ? (
-            <div className="p-8 text-center rounded-3xl bg-card border border-border">
+            <div className="p-10 text-center rounded-3xl bg-card border border-border">
               <p className="text-muted-foreground mb-4">У вас пока нет задач</p>
               <Link
                 href="/company/tasks/new"
@@ -127,8 +127,8 @@ export default function CompanyDashboardPage() {
                 return (
                   <Link
                     key={task.id}
-                    href={`/company/tasks`}
-                    className="p-4 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] hover:shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.08),0px_1px_2px_-1px_oklch(0_0_0_/_0.08),0px_2px_4px_0px_oklch(0_0_0_/_0.06)] transition-[box-shadow] no-underline block"
+                    href={`/tasks/${task.id}`}
+                    className="p-4 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-[border-color] no-underline block active:scale-[0.98]"
                   >
                     <div className="flex items-center justify-between gap-4 mb-1">
                       <h4 className="font-semibold text-[15px] text-foreground">{task.title}</h4>
@@ -138,8 +138,8 @@ export default function CompanyDashboardPage() {
                     </div>
                     <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
                       {task.difficulty && <span>{TASK_DIFFICULTY_LABELS[task.difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || task.difficulty}</span>}
-                      {deadlineText && <><span>·</span><span>{deadlineText}</span></>}
-                      <span>·</span>
+                      {deadlineText && <><span className="text-muted-foreground/40">·</span><span>{deadlineText}</span></>}
+                      <span className="text-muted-foreground/40">·</span>
                       <span>{task.participant_count}/{task.participant_limit}</span>
                     </div>
                   </Link>

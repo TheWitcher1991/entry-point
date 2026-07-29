@@ -158,7 +158,7 @@ export default function CompaniesPage() {
                 <Link
                   key={company.id}
                   href={`/companies/${company.id}`}
-                  className="group p-6 rounded-[24px] bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] hover:shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.08),0px_1px_2px_-1px_oklch(0_0_0_/_0.08),0px_2px_4px_0px_oklch(0_0_0_/_0.06)] transition-[scale,box-shadow] no-underline block active:scale-[0.96]"
+                  className="group p-6 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-[scale,border-color] no-underline block active:scale-[0.96]"
                 >
                   {/* Top row: Logo + Name + Verified */}
                   <div className="flex items-start gap-4 mb-4">
@@ -213,7 +213,7 @@ export default function CompaniesPage() {
                   </div>
 
                   {/* Stats row */}
-                  <div className="flex items-center gap-4 pt-4 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)]">
+                  <div className="flex items-center gap-4 pt-4 border-t border-border">
                     <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
                       <Briefcase size={14} strokeWidth={1.5} />
                       <span className="font-medium text-foreground">{company.stats.tasks}</span>
