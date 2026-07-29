@@ -7,7 +7,7 @@ import { $user } from "@features/auth";
 import { getMyCompanyTasks } from "@entities/task";
 import { TASK_STATUS_LABELS } from "@entities/task";
 import { Header } from "@widgets/header";
-import { Plus, Clock, Layers, UserPlus, Edit, Eye, Trash, FileText } from "@shared/ui/Icons";
+import { Plus, Clock, Layers, UserPlus, Edit, Eye, FileText } from "@shared/ui/Icons";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "text-muted-foreground bg-muted",
@@ -44,7 +44,7 @@ export default function CompanyTasksPage() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-8">
         {/* Page Header */}
@@ -74,7 +74,11 @@ export default function CompanyTasksPage() {
             return (
               <div key={stat.label} className="p-5 rounded-[20px] bg-card border border-border text-center">
                 <Icon size={20} className={`${stat.color} mx-auto mb-2`} strokeWidth={1.5} />
-                <div className="text-[28px] font-bold font-display text-foreground">{stat.value}</div>
+                {isLoading ? (
+                  <div className="h-7 w-12 bg-muted/70 rounded-[8px] mx-auto mb-2 animate-pulse" />
+                ) : (
+                  <div className="text-[28px] font-bold font-display text-foreground">{stat.value}</div>
+                )}
                 <div className="text-[13px] text-muted-foreground mt-1">{stat.label}</div>
               </div>
             );
@@ -83,8 +87,28 @@ export default function CompanyTasksPage() {
 
         {/* Loading */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-[15px] text-muted-foreground">Загрузка задач...</div>
+          <div className="flex flex-col gap-4 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="p-5 rounded-[20px] bg-card border border-border">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="h-5 w-48 bg-muted/70 rounded-[8px]" />
+                      <div className="h-5 w-20 bg-muted/50 rounded-full" />
+                    </div>
+                    <div className="h-4 w-full bg-muted/50 rounded-[8px] mb-3" />
+                    <div className="flex gap-4">
+                      <div className="h-4 w-16 bg-muted/50 rounded-[6px]" />
+                      <div className="h-4 w-20 bg-muted/50 rounded-[6px]" />
+                      <div className="h-4 w-24 bg-muted/50 rounded-[6px]" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="h-8 w-24 bg-muted/50 rounded-[10px]" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : tasks.length === 0 ? (
           /* Empty state */

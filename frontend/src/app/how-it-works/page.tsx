@@ -1,6 +1,7 @@
+import type { FC } from "react";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
-import { Check, Shield, Target, Users, Clock, DollarSign, FileText } from "@shared/ui/Icons";
+import { Check, Shield, Target, Users, Clock, DollarSign, FileText, User, Settings, Star, TrendingUp, CheckVerified, Briefcase } from "@shared/ui/Icons";
 
 const participantSteps = [
   {
@@ -8,9 +9,9 @@ const participantSteps = [
     title: "Создайте профиль",
     desc: "Зарегистрируйтесь и заполните профиль. Укажите навыки, технологии, город и желаемую роль. Подключите GitHub и добавьте портфолио — это поможет компаниям оценить ваш уровень.",
     cards: [
-      { icon: "👤", title: "Личные данные", desc: "Имя, город, фото" },
-      { icon: "🛠", title: "Навыки", desc: "Технологии и уровень" },
-      { icon: "💼", title: "Портфолио", desc: "GitHub, проекты" },
+      { icon: User, title: "Личные данные", desc: "Имя, город, фото" },
+      { icon: Settings, title: "Навыки", desc: "Технологии и уровень" },
+      { icon: Briefcase, title: "Портфолио", desc: "GitHub, проекты" },
     ],
   },
   {
@@ -50,9 +51,9 @@ const participantSteps = [
     title: "Получите результат",
     desc: "После приёмки работы компания подтверждает навыки, оставляет отзыв и рекомендацию. В профиле автоматически создаётся карточка подтверждённого опыта.",
     cards: [
-      { icon: "✅", title: "Подтверждённый опыт", desc: "Запись в профиле" },
-      { icon: "⭐", title: "Отзыв компании", desc: "Оценка и комментарий" },
-      { icon: "🚀", title: "Карьерный рост", desc: "Стажировка или оффер" },
+      { icon: CheckVerified, title: "Подтверждённый опыт", desc: "Запись в профиле" },
+      { icon: Star, title: "Отзыв компании", desc: "Оценка и комментарий" },
+      { icon: TrendingUp, title: "Карьерный рост", desc: "Стажировка или оффер" },
     ],
     accent: true,
   },
@@ -109,23 +110,28 @@ function StepChecks({ checks }: { checks: string[] }) {
   );
 }
 
-function StepCardGrid({ cards }: { cards: { icon: string; title: string; desc: string }[] }) {
+function StepCardGrid({ cards }: { cards: { icon: FC<{ size?: number }>; title: string; desc: string }[] }) {
   return (
     <div className="grid grid-cols-3 gap-4">
-      {cards.map((c) => (
-        <div key={c.title} className="p-4 rounded-[16px] bg-muted text-center">
-          <div className="text-[28px] mb-2">{c.icon}</div>
-          <div className="text-[14px] font-semibold text-foreground">{c.title}</div>
-          <div className="text-[12px] text-muted-foreground">{c.desc}</div>
-        </div>
-      ))}
+      {cards.map((c) => {
+        const Icon = c.icon;
+        return (
+          <div key={c.title} className="p-4 rounded-[16px] bg-card border border-border text-center">
+            <div className="w-10 h-10 rounded-[12px] bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+              <Icon size={20} />
+            </div>
+            <div className="text-[14px] font-semibold text-foreground">{c.title}</div>
+            <div className="text-[12px] text-muted-foreground mt-1">{c.desc}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
       {/* Hero */}

@@ -159,6 +159,7 @@ async def change_task_status(
         )
 
     if is_company and not is_admin:
+        assert company is not None  # narrowed by is_company check
         task = await get_task_by_id(db, task_id)
         if task is None or task.company_id != company.id:
             raise HTTPException(

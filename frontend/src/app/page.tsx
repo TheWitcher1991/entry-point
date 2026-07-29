@@ -57,7 +57,7 @@ const popularTasks = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
       <main>
@@ -76,14 +76,14 @@ export default function LandingPage() {
             <div className="flex items-center justify-center gap-4">
               <a
                 href="/register"
-                className="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
+                className="inline-flex items-center justify-center h-12 px-8 rounded-2xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
               >
                 Начать бесплатно
                 <ArrowRight size={16} strokeWidth={2} />
               </a>
               <a
                 href="/catalog"
-                className="inline-flex items-center justify-center h-11 px-6 rounded-xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color,border-color] duration-150 ease-out active:scale-[0.96] gap-2"
+                className="inline-flex items-center justify-center h-12 px-8 rounded-2xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color,border-color] duration-150 ease-out active:scale-[0.96] gap-2"
               >
                 <LogIn size={16} strokeWidth={2} />
                 Смотреть задачи
@@ -91,7 +91,7 @@ export default function LandingPage() {
             </div>
 
             {/* Stats */}
-            <div className="flex items-center justify-center gap-8 md:gap-12 mt-16 pt-12 border-t border-border">
+            <div className="flex items-center justify-center gap-8 md:gap-12 mt-16 pt-12 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)]">
               {[
                 { value: "120+", label: "задач", icon: Briefcase },
                 { value: "45", label: "компаний", icon: TrendingUp },
@@ -121,7 +121,7 @@ export default function LandingPage() {
               </div>
               <a
                 href="/catalog"
-                className="inline-flex items-center justify-center h-8 px-3 rounded-xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5"
+                className="inline-flex items-center justify-center h-9 px-4 rounded-2xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5"
               >
                 Все задачи
                 <ArrowRight size={14} strokeWidth={2} />
@@ -168,11 +168,11 @@ export default function LandingPage() {
                       <span>{task.spots}</span>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                    <div className="flex items-center justify-between pt-4 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)]">
                       <span className="text-xs text-muted-foreground">{task.applicants} заявок</span>
                       <a
                         href="/catalog"
-                        className="inline-flex items-center justify-center h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
+                        className="inline-flex items-center justify-center h-9 px-4 rounded-2xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
                       >
                         Подробнее
                       </a>
@@ -270,7 +270,7 @@ export default function LandingPage() {
                     <p className="text-sm text-muted-foreground leading-relaxed mb-6">{item.desc}</p>
                     <a
                       href={item.href}
-                      className="inline-flex items-center justify-center h-8 px-3 rounded-lg border border-border bg-background text-xs font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5"
+                      className="inline-flex items-center justify-center h-9 px-4 rounded-2xl border border-border bg-background text-xs font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5"
                     >
                       <ArrowRight size={12} strokeWidth={2.5} />
                       {item.action}
@@ -293,14 +293,14 @@ export default function LandingPage() {
               <div className="flex items-center justify-center gap-4">
                 <a
                   href="/register"
-                  className="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-primary-foreground text-primary text-sm font-medium hover:bg-primary-foreground/90 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
+                  className="inline-flex items-center justify-center h-12 px-8 rounded-2xl bg-primary-foreground text-primary text-sm font-medium hover:bg-primary-foreground/90 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
                 >
                   <ArrowRight size={16} strokeWidth={2} />
                   Зарегистрироваться
                 </a>
                 <a
                   href="/catalog"
-                  className="inline-flex items-center justify-center h-11 px-6 rounded-xl border-2 border-primary-foreground/30 text-primary-foreground text-sm font-medium hover:bg-primary-foreground/10 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
+                  className="inline-flex items-center justify-center h-12 px-8 rounded-2xl border-2 border-primary-foreground/30 text-primary-foreground text-sm font-medium hover:bg-primary-foreground/10 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
                 >
                   Смотреть задачи
                 </a>

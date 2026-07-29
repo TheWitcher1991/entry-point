@@ -19,11 +19,15 @@ export function TaskCard({ task }: TaskCardProps) {
         {task.summary}
       </p>
       <div style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14 }}>
-        <span>{task.company_name}</span>
-        <span>•</span>
         <span>{task.difficulty}</span>
         <span>•</span>
         <span>до {task.deadline}</span>
+        {task.participant_count !== undefined && (
+          <>
+            <span>•</span>
+            <span>{task.participant_count}/{task.participant_limit}</span>
+          </>
+        )}
       </div>
     </article>
   );

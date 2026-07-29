@@ -30,6 +30,7 @@ function createIcon(children: React.ReactNode): React.FC<IconProps> {
 export const ChevronRight = createIcon(<polyline points="9 18 15 12 9 6" />);
 export const ChevronLeft = createIcon(<polyline points="15 18 9 12 15 6" />);
 export const ChevronDown = createIcon(<polyline points="6 9 12 15 18 9" />);
+export const ArrowLeft = createIcon(<><path d="M19 12H5" /><polyline points="12 19 5 12 12 5" /></>);
 export const ArrowRight = createIcon(<><path d="M5 12h14" /><polyline points="12 5 19 12 12 19" /></>);
 export const ExternalLink = createIcon(<><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></>);
 export const LogIn = createIcon(<><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></>);
@@ -73,6 +74,7 @@ export const Clock = createIcon(<><circle cx="12" cy="12" r="10" /><polyline poi
 export const Layers = createIcon(<><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></>);
 export const Document = createIcon(<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></>);
 export const Activity = createIcon(<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />);
+export const Eye = createIcon(<><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>);
 export const Award = createIcon(<><circle cx="12" cy="8" r="7" /><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" /></>);
 export const Bookmark = createIcon(<><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></>);
 export const TrendingUp = createIcon(<><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></>);

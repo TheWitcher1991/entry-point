@@ -4,64 +4,31 @@ import { useUnit } from "effector-react";
 import Link from "next/link";
 import { $user } from "@features/auth";
 import { useQuery } from "@tanstack/react-query";
-import { getMyCompanyTasks } from "@entities/task";
+import { getMyCompanyTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { Header } from "@widgets/header";
 import { Plus, Layers, UserPlus, Clock, Award } from "@shared/ui/Icons";
 
-const applications = [
-  {
-    name: "Алексей Петров",
-    initials: "АП",
-    level: "Junior",
-    task: "Telegram-бот для автоматизации заявок",
-    time: "2 часа назад",
-    tags: ["Node.js", "PostgreSQL", "Telegram Bot API"],
-    avatarBg: "bg-primary/10 text-primary",
-  },
-  {
-    name: "Мария Козлова",
-    initials: "МК",
-    level: "Middle",
-    task: "Telegram-бот для автоматизации заявок",
-    time: "5 часов назад",
-    tags: ["Node.js", "TypeScript", "Docker"],
-    avatarBg: "bg-primary text-white",
-  },
-  {
-    name: "Дмитрий Сидоров",
-    initials: "ДС",
-    level: "Junior",
-    task: "Автотесты для модуля авторизации",
-    time: "1 день назад",
-    tags: ["TypeScript", "Playwright", "Cypress"],
-    avatarBg: "bg-[#F3E5F5] text-[#4A148C]",
-  },
-];
-
-const activeTasks = [
-  {
-    title: "Telegram-бот для автоматизации заявок",
-    assignee: "Мария Козлова",
-    timeLeft: "Осталось 10 дней",
-    progress: 60,
-    status: "В работе",
-    statusClass: "text-primary bg-primary/10",
-  },
-  {
-    title: "API-интеграция с платёжной системой",
-    assignee: "Алексей Петров",
-    timeLeft: "Результат отправлен",
-    progress: 90,
-    status: "На проверке",
-    statusClass: "text-amber-600 bg-amber-50 dark:bg-amber-900/30 dark:text-amber-400",
-  },
-];
+const STATUS_COLORS: Record<string, string> = {
+  draft: "text-muted-foreground bg-muted",
+  moderation: "text-amber-600 bg-amber-50 dark:bg-amber-900/30 dark:text-amber-400",
+  revision: "text-orange-600 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400",
+  published: "text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400",
+  open: "text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400",
+  selected: "text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400",
+  in_progress: "text-primary bg-primary/10",
+  review: "text-amber-600 bg-amber-50 dark:bg-amber-900/30 dark:text-amber-400",
+  rework: "text-orange-600 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400",
+  completed: "text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400",
+  cancelled: "text-muted-foreground bg-muted",
+  archived: "text-muted-foreground bg-muted",
+  blocked: "text-destructive bg-destructive/10",
+};
 
 export default function CompanyDashboardPage() {
   const user = useUnit($user);
   const companyName = user?.company_name || "Компания";
 
-  const { data: tasks = [] } = useQuery({
+  const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["company-tasks"],
     queryFn: getMyCompanyTasks,
     staleTime: 10_000,
@@ -70,11 +37,11 @@ export default function CompanyDashboardPage() {
   const publishedTasks = tasks.filter(
     (t) => !["draft", "completed", "cancelled", "archived", "blocked"].includes(t.status),
   );
-  const activeTasks = tasks.filter((t) => ["selected", "in_progress", "review", "rework"].includes(t.status));
+  const inProgressTasks = tasks.filter((t) => ["selected", "in_progress", "review", "rework"].includes(t.status));
   const completedCount = tasks.filter((t) => t.status === "completed").length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-8">
         {/* Page Header */}
@@ -97,12 +64,12 @@ export default function CompanyDashboardPage() {
           {[
             { value: publishedTasks.length, label: "Активных задач", icon: Layers },
             { value: tasks.reduce((s, t) => s + (t.status === "open" ? t.participant_count : 0), 0), label: "Новых заявок", icon: UserPlus },
-            { value: activeTasks.length, label: "В работе", icon: Clock },
+            { value: inProgressTasks.length, label: "В работе", icon: Clock },
             { value: completedCount, label: "Завершено", icon: Award },
           ].map((stat) => {
             const Icon = stat.icon;
             return (
-              <div key={stat.label} className="p-5 rounded-[20px] bg-card border border-border text-center">
+              <div key={stat.label} className="p-5 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] text-center">
                 <Icon size={20} className="text-primary mx-auto mb-2" strokeWidth={1.5} />
                 <div className="text-[28px] font-bold font-display text-primary">{stat.value}</div>
                 <div className="text-[13px] text-muted-foreground mt-1">{stat.label}</div>
@@ -112,7 +79,7 @@ export default function CompanyDashboardPage() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex gap-1 mb-6 border-b border-border">
+        <div className="flex gap-1 mb-6 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)_inset]">
           <Link
             href="/company/tasks"
             className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary -mb-px flex items-center gap-2 bg-transparent no-underline"
@@ -124,87 +91,62 @@ export default function CompanyDashboardPage() {
           </Link>
         </div>
 
-        {/* New Applications */}
-        <div className="flex flex-col gap-3 mb-10">
-          {applications.map((app) => (
-            <div
-              key={app.name}
-              className="p-4 rounded-[20px] bg-card border border-border hover:border-muted-foreground/20 transition-colors"
-            >
-              <div className="flex items-center gap-4">
-                <div className={`w-11 h-11 rounded-full flex items-center justify-center text-[14px] font-bold shrink-0 ${app.avatarBg}`}>
-                  {app.initials}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1">
-                    <h4 className="font-semibold text-[14px] text-foreground">{app.name}</h4>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 text-[11px] font-medium">
-                      {app.level}
-                    </span>
-                  </div>
-                  <div className="text-[13px] text-muted-foreground mb-2">
-                    Подал заявку на «{app.task}» · {app.time}
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {app.tags.map((tag) => (
-                      <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-muted text-muted-foreground text-[11px] font-medium">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  <button className="px-4 py-2 text-[13px] font-medium text-white bg-primary hover:opacity-90 rounded-[12px] transition-opacity cursor-pointer">
-                    Посмотреть
-                  </button>
-                  <button className="px-4 py-2 text-[13px] font-medium text-muted-foreground bg-transparent border border-border hover:bg-muted rounded-[12px] transition-colors cursor-pointer">
-                    Отклонить
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Active Tasks */}
+        {/* Recent Tasks */}
         <div>
-          <h3 className="text-[18px] font-bold font-display text-foreground mb-4">Активные задачи</h3>
-          <div className="flex flex-col gap-3">
-            {activeTasks.map((task) => (
-              <div
-                key={task.title}
-                className="p-4 rounded-[20px] bg-card border border-border hover:border-muted-foreground/20 transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-[12px] bg-[#E8F4F4] text-primary flex items-center justify-center text-[18px] font-bold shrink-0">
-                    V
+          <h3 className="text-[18px] font-bold font-display text-foreground mb-4">Последние задачи</h3>
+          {isLoading ? (
+            <div className="flex flex-col gap-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-4 rounded-3xl bg-card border border-border animate-pulse">
+                  <div className="h-5 w-2/3 bg-muted/70 rounded-[8px] mb-3" />
+                  <div className="flex gap-3">
+                    <div className="h-4 w-16 bg-muted/50 rounded-[6px]" />
+                    <div className="h-4 w-20 bg-muted/50 rounded-[6px]" />
                   </div>
-                  <div className="flex-1">
+                </div>
+              ))}
+            </div>
+          ) : tasks.length === 0 ? (
+            <div className="p-8 text-center rounded-3xl bg-card border border-border">
+              <p className="text-muted-foreground mb-4">У вас пока нет задач</p>
+              <Link
+                href="/company/tasks/new"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] no-underline"
+              >
+                <Plus size={16} />
+                Создать первую задачу
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {tasks.slice(0, 5).map((task) => {
+                const statusClass = STATUS_COLORS[task.status] || "text-muted-foreground bg-muted";
+                const deadlineText = task.deadline
+                  ? `до ${new Date(task.deadline).toLocaleDateString("ru-RU")}`
+                  : null;
+                return (
+                  <Link
+                    key={task.id}
+                    href={`/company/tasks`}
+                    className="p-4 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] hover:shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.08),0px_1px_2px_-1px_oklch(0_0_0_/_0.08),0px_2px_4px_0px_oklch(0_0_0_/_0.06)] transition-[box-shadow] no-underline block"
+                  >
                     <div className="flex items-center justify-between gap-4 mb-1">
                       <h4 className="font-semibold text-[15px] text-foreground">{task.title}</h4>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium shrink-0 ${task.statusClass}`}>
-                        {task.status}
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium shrink-0 ${statusClass}`}>
+                        {TASK_STATUS_LABELS[task.status] || task.status}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 text-[13px] text-muted-foreground mb-3">
-                      <span>Исполнитель: {task.assignee}</span>
+                    <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
+                      {task.difficulty && <span>{TASK_DIFFICULTY_LABELS[task.difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || task.difficulty}</span>}
+                      {deadlineText && <><span>·</span><span>{deadlineText}</span></>}
                       <span>·</span>
-                      <span>{task.timeLeft}</span>
+                      <span>{task.participant_count}/{task.participant_limit}</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-primary"
-                          style={{ width: `${task.progress}%` }}
-                        />
-                      </div>
-                      <span className="text-[13px] font-medium text-primary">{task.progress}%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

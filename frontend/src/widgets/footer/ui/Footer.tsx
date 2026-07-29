@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -8,13 +9,13 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 no-underline mb-4">
-              <div className="w-8 h-8 rounded-[10px] bg-primary flex items-center justify-center text-white shrink-0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                  <polyline points="10 17 15 12 10 7" />
-                  <line x1="15" y1="12" x2="3" y2="12" />
-                </svg>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Точка входа"
+                width={32}
+                height={32}
+                className="shrink-0"
+              />
               <span className="text-[20px] font-bold text-primary font-display">Точка входа</span>
             </Link>
             <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[240px]">

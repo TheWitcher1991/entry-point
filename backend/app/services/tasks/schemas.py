@@ -120,4 +120,7 @@ class TaskListItem(BaseModel):
 
 
 class TaskStatusUpdate(BaseModel):
-    status: str = Field(pattern=r"^(draft|moderation|revision|published|open|selected|in_progress|review|rework|completed|cancelled|archived|blocked)$")
+    status: str = Field(
+        pattern=r"^(draft|moderation|revision|published|open|selected|"
+        r"in_progress|review|rework|completed|cancelled|archived|blocked)$"
+    )

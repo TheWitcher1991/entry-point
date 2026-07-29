@@ -3,14 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createTask, getMyCompanyTasks } from "@entities/task";
+import { createTask, updateTaskStatus } from "@entities/task";
 import type { TaskCreatePayload } from "@entities/task";
 import { getSkills } from "@entities/skill";
-import type { Skill } from "@entities/skill";
 import { getCategories } from "@entities/category";
-import type { Category } from "@entities/category";
 import { Header } from "@widgets/header";
-import { ArrowLeft, Plus, X, Check } from "@shared/ui/Icons";
+import { ArrowLeft, X, Check } from "@shared/ui/Icons";
 
 export default function NewTaskPage() {
   const router = useRouter();
@@ -54,7 +52,13 @@ export default function NewTaskPage() {
 
   // Create mutation
   const createMutation = useMutation({
-    mutationFn: (payload: TaskCreatePayload) => createTask(payload),
+    mutationFn: async ({ payload, sendToModeration }: { payload: TaskCreatePayload; sendToModeration: boolean }) => {
+      const task = await createTask(payload);
+      if (sendToModeration) {
+        await updateTaskStatus(task.id, "moderation");
+      }
+      return task;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-tasks"] });
       queryClient.invalidateQueries({ queryKey: ["tasks", "catalog"] });
@@ -62,7 +66,7 @@ export default function NewTaskPage() {
     },
   });
 
-  const handleSubmit = async (status: "draft" | "moderation") => {
+  const handleSubmit = async (_status: "draft" | "moderation") => {
     if (!title.trim()) return;
 
     const payload: TaskCreatePayload = {
@@ -90,7 +94,7 @@ export default function NewTaskPage() {
       })),
     };
 
-    createMutation.mutate(payload);
+    createMutation.mutate({ payload, sendToModeration: _status === "moderation" });
   };
 
   const toggleSkill = (skillId: number) => {
@@ -115,7 +119,7 @@ export default function NewTaskPage() {
   const localSkills = skills.filter((s) => !s.category_id);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[900px] w-full mx-auto px-6 py-8">
         {/* Back link */}

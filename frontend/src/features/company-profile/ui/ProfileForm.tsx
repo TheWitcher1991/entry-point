@@ -9,6 +9,7 @@ import { getCompany, updateCompany } from "@entities/company";
 import type { Company } from "@entities/company";
 import { Button } from "@shared/ui/Button";
 import { Input } from "@shared/ui/Input";
+import { Check } from "@shared/ui/Icons";
 
 const profileSchema = z.object({
   name: z.string().optional(),
@@ -204,7 +205,7 @@ export function CompanyProfileForm() {
         </Button>
 
         {saved && (
-          <span className="text-sm text-primary font-medium">✓ Сохранено</span>
+          <span className="text-sm text-primary font-medium"><Check size={14} className="inline mr-1" /> Сохранено</span>
         )}
 
         {mutation.isError && (

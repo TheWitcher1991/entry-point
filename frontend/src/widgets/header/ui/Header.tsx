@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useUnit } from "effector-react";
 import { $user, $isAuthenticated, $isHydrated, logout } from "@features/auth";
 import { ThemeToggle } from "@shared/ui/ThemeToggle";
@@ -25,17 +26,17 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-      <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between h-[72px]">
+    <header className="sticky top-4 z-50 w-full max-w-[1200px] mx-auto rounded-2xl backdrop-blur-lg shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] header-glass">
+      <div className="flex items-center justify-between h-[72px] px-4 sm:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 no-underline">
-          <div className="w-8 h-8 rounded-[10px] bg-primary flex items-center justify-center text-white shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-              <polyline points="10 17 15 12 10 7" />
-              <line x1="15" y1="12" x2="3" y2="12" />
-            </svg>
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Точка входа"
+            width={32}
+            height={32}
+            className="shrink-0"
+          />
           <span className="text-[20px] font-bold text-primary font-display hidden sm:inline">
             Точка входа
           </span>
@@ -109,7 +110,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-card px-6 py-4 flex flex-col gap-1 animate-fadeIn">
+        <div className="md:hidden border-t border-border bg-card px-4 sm:px-6 py-4 flex flex-col gap-1 animate-fadeIn rounded-b-2xl">
           {navLinks.map((link) => (
             <Link
               key={link.href}

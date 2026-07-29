@@ -127,7 +127,7 @@ export default function PublicCompanyPage() {
   const [activeTab, setActiveTab] = useState<"tasks" | "reviews" | "about">("tasks");
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
       {/* Breadcrumbs */}

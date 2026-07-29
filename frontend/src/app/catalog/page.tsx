@@ -14,10 +14,9 @@ import {
   UserPlus,
   ChevronLeft,
   ChevronRight,
-  Filter,
   Search,
   Briefcase,
-  MapPin,
+  X,
 } from "@shared/ui/Icons";
 
 const DIFFICULTY_OPTIONS = [
@@ -150,7 +149,7 @@ export default function CatalogPage() {
   const handleSearch = () => setSearch(searchInput.trim());
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
         <div className="max-w-[1200px] mx-auto px-6 py-10">
@@ -184,7 +183,7 @@ export default function CatalogPage() {
                   }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground bg-transparent cursor-pointer"
                 >
-                  ✕
+                  <X size={16} strokeWidth={1.5} />
                 </button>
               )}
             </div>
@@ -235,8 +234,21 @@ export default function CatalogPage() {
 
           {/* Tasks Grid */}
           {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-[15px] text-muted-foreground">Загрузка задач...</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-surface rounded-3xl p-8 border border-border animate-pulse">
+                  <div className="h-5 w-3/4 bg-muted/70 rounded-[8px] mb-3" />
+                  <div className="h-4 w-full bg-muted/50 rounded-[8px] mb-2" />
+                  <div className="h-4 w-2/3 bg-muted/50 rounded-[8px] mb-5" />
+                  <div className="flex gap-3">
+                    <div className="h-3 w-20 bg-muted/50 rounded-[6px]" />
+                    <div className="h-3 w-3 bg-muted/30 rounded-[6px]" />
+                    <div className="h-3 w-16 bg-muted/50 rounded-[6px]" />
+                    <div className="h-3 w-3 bg-muted/30 rounded-[6px]" />
+                    <div className="h-3 w-24 bg-muted/50 rounded-[6px]" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : tasks.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20">

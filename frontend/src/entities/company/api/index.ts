@@ -6,6 +6,11 @@ export async function getCompany(): Promise<Company> {
   return data;
 }
 
+export async function getCompanyById(id: number): Promise<Company> {
+  const { data } = await api.get<Company>(`/companies/${id}`);
+  return data;
+}
+
 export async function updateCompany(
   payload: CompanyUpdate,
 ): Promise<Company> {

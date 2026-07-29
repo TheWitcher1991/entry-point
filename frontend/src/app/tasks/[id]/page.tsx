@@ -1,21 +1,129 @@
+"use client";
+
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { getTask, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
+import { getCompanyById } from "@entities/company";
+import { getSkills } from "@entities/skill";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
-import { ChevronRight, Bookmark, Check, ExternalLink } from "@shared/ui/Icons";
+import { ChevronRight, Bookmark, ExternalLink } from "@shared/ui/Icons";
+
+type Tab = "description" | "requirements" | "result" | "company";
 
 export default function TaskDetailPage() {
+  const params = useParams();
+  const taskId = Number(params.id);
+
+  const [activeTab, setActiveTab] = useState<Tab>("description");
+
+  const { data: task, isLoading, isError } = useQuery({
+    queryKey: ["task", taskId],
+    queryFn: () => getTask(taskId),
+    enabled: !Number.isNaN(taskId),
+  });
+
+  const { data: company } = useQuery({
+    queryKey: ["company", task?.company_id],
+    queryFn: () => getCompanyById(task!.company_id),
+    enabled: !!task?.company_id,
+  });
+
+  const { data: skills = [] } = useQuery({
+    queryKey: ["skills"],
+    queryFn: getSkills,
+    staleTime: 300_000,
+  });
+
+  const skillMap = new Map(skills.map((s) => [s.id, s.name]));
+
+  if (Number.isNaN(taskId)) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
+            <Link href="/catalog" className="text-primary hover:underline">Вернуться в каталог</Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 max-w-[1200px] mx-auto px-6 py-8 w-full">
+          {/* Breadcrumbs skeleton */}
+          <div className="h-4 w-48 bg-muted/70 rounded-[8px] mb-6 animate-pulse" />
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+            <div className="flex flex-col gap-6">
+              <div className="h-8 w-3/4 bg-muted/70 rounded-[10px] animate-pulse" />
+              <div className="h-4 w-full bg-muted/50 rounded-[8px] animate-pulse" />
+              <div className="h-4 w-2/3 bg-muted/50 rounded-[8px] animate-pulse" />
+              <div className="h-40 w-full bg-muted/30 rounded-[16px] animate-pulse" />
+            </div>
+            <div className="h-80 w-full bg-muted/30 rounded-[24px] animate-pulse" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (isError || !task) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
+            <p className="text-muted-foreground mb-4">Возможно, задача была удалена или у вас нет доступа</p>
+            <Link href="/catalog" className="text-primary hover:underline">Вернуться в каталог</Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "description", label: "Описание" },
+    { key: "requirements", label: "Требования" },
+    { key: "result", label: "Результат" },
+    { key: "company", label: "О компании" },
+  ];
+
+  const deadlineText = task.deadline
+    ? new Date(task.deadline).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" })
+    : null;
+
+  const difficultyLabel = task.difficulty
+    ? (TASK_DIFFICULTY_LABELS[task.difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || task.difficulty)
+    : null;
+
+  const formatLabel = task.format
+    ? (TASK_FORMAT_LABELS[task.format as keyof typeof TASK_FORMAT_LABELS] || task.format)
+    : null;
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
       {/* Breadcrumbs */}
       <div className="border-b border-border">
         <div className="max-w-[1200px] mx-auto px-6 py-3">
           <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-            <a href="/" className="hover:text-primary transition-colors no-underline">Главная</a>
-            <ChevronRight size={14} className="text-muted-foreground" />
-            <a href="/catalog" className="hover:text-primary transition-colors no-underline">Задачи</a>
-            <ChevronRight size={14} className="text-muted-foreground" />
-            <span className="text-foreground">Telegram-бот для автоматизации заявок</span>
+            <Link href="/" className="hover:text-primary transition-colors no-underline">Главная</Link>
+            <ChevronRight size={14} className="text-muted-foreground shrink-0" />
+            <Link href="/catalog" className="hover:text-primary transition-colors no-underline">Задачи</Link>
+            <ChevronRight size={14} className="text-muted-foreground shrink-0" />
+            <span className="text-foreground truncate">{task.title}</span>
           </div>
         </div>
       </div>
@@ -30,152 +138,268 @@ export default function TaskDetailPage() {
               {/* Company + Status */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-[14px] bg-[#E8F4F4] text-primary flex items-center justify-center text-[22px] font-bold shrink-0">
-                    V
+                  <div className="w-14 h-14 rounded-[14px] bg-primary/10 text-primary flex items-center justify-center text-[22px] font-bold shrink-0">
+                    {company?.name ? company.name[0].toUpperCase() : "?"}
                   </div>
                   <div>
-                    <div className="font-semibold text-[15px] text-foreground">Verba Tech</div>
-                    <div className="text-[13px] text-muted-foreground">Стартап · 12 сотрудников · Москва</div>
+                    <div className="font-semibold text-[15px] text-foreground">
+                      {company?.name || "Загрузка..."}
+                    </div>
+                    {company && (
+                      <div className="text-[13px] text-muted-foreground">
+                        {[company.industry, company.company_size ? `${company.company_size} сотр.` : "", company.city].filter(Boolean).join(" · ") || "Компания"}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <span className="inline-flex items-center h-8 px-3 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[13px] font-medium">
-                  Набор открыт
+                <span className={`inline-flex items-center h-8 px-3 rounded-full text-[13px] font-medium ${
+                  task.status === "open"
+                    ? "bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                    : task.status === "completed" || task.status === "cancelled"
+                    ? "bg-muted text-muted-foreground"
+                    : "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
+                }`}>
+                  {TASK_STATUS_LABELS[task.status] || task.status}
                 </span>
               </div>
 
               {/* Title */}
               <h1 className="text-[32px] font-bold font-display text-foreground leading-tight mb-6">
-                Telegram-бот для автоматизации заявок
+                {task.title}
               </h1>
 
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-8">
-                {["Node.js", "Telegram Bot API", "PostgreSQL"].map((tag) => (
-                  <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-primary/10 text-primary text-[13px] font-medium">
-                    {tag}
+                {task.skills.map((s) => (
+                  <span key={s.id} className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-primary/10 text-primary text-[13px] font-medium">
+                    {skillMap.get(s.skill_id) || `Навык #${s.skill_id}`}
                   </span>
                 ))}
-                <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[13px] font-medium">
-                  Разработка
-                </span>
-                <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[13px] font-medium">
-                  Средняя сложность
-                </span>
+                {task.category_id && (
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[13px] font-medium">
+                    Категория {task.category_id}
+                  </span>
+                )}
+                {difficultyLabel && (
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[13px] font-medium">
+                    {difficultyLabel}
+                  </span>
+                )}
               </div>
 
               {/* Tabs */}
               <div className="flex gap-1 border-b border-border mb-8">
-                {["Описание", "Требования", "Результат", "Отзывы"].map((tab, i) => (
+                {tabs.map((tab) => (
                   <button
-                    key={tab}
-                    className={`px-4 py-3 text-[14px] font-medium -mb-px border-b-2 bg-transparent cursor-pointer ${
-                      i === 0
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`px-4 py-3 text-[14px] font-medium -mb-px border-b-2 bg-transparent cursor-pointer transition-colors ${
+                      activeTab === tab.key
                         ? "border-primary text-foreground"
                         : "border-transparent text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {tab}
-                    {tab === "Отзывы" && (
-                      <span className="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-muted text-muted-foreground text-[11px] font-semibold">
-                        8
-                      </span>
-                    )}
+                    {tab.label}
                   </button>
                 ))}
               </div>
 
-              {/* Description content */}
+              {/* Tab Content */}
               <div className="flex flex-col gap-8">
-                {/* About */}
-                <div>
-                  <h3 className="text-[20px] font-bold font-display text-foreground mb-4">О задаче</h3>
-                  <div className="text-muted-foreground leading-relaxed flex flex-col gap-4">
-                    <p>
-                      Мы ищем разработчика для создания Telegram-бота, который автоматизирует обработку заявок от пользователей. Бот должен принимать сообщения, валидировать данные и отправлять уведомления в нашу внутреннюю CRM-систему через REST API.
-                    </p>
-                    <p>
-                      Бот будет работать в режиме диалога: пользователь описывает задачу, бот задаёт уточняющие вопросы, собирает необходимые данные и формирует заявку. После этого оператор получает уведомление и может начать обработку.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Context */}
-                <div>
-                  <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Контекст</h3>
-                  <div className="text-muted-foreground leading-relaxed">
-                    <p>
-                      Компания разрабатывает SaaS-платформу для автоматизации бизнес-процессов. Telegram является основным каналом коммуникации с клиентами. В настоящее время обработка заявок ведётся вручную, что занимает много времени и приводит к ошибкам.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Requirements */}
-                <div>
-                  <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Требования</h3>
-                  <div className="flex flex-col gap-3">
-                    {[
-                      "Node.js (JavaScript или TypeScript)",
-                      "Опыт работы с Telegram Bot API",
-                      "Знание PostgreSQL или другого SQL",
-                      "Понимание REST API",
-                      "Базовое понимание Docker (приветствуется)",
-                    ].map((req) => (
-                      <div key={req} className="flex items-start gap-3">
-                        <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-                          <Check size={12} strokeWidth={3} />
+                {activeTab === "description" && (
+                  <>
+                    {/* About */}
+                    {task.description && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">О задаче</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.description}
                         </div>
-                        <span className="text-muted-foreground">{req}</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    )}
 
-                {/* Result */}
-                <div>
-                  <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Ожидаемый результат</h3>
-                  <div className="flex flex-col gap-4 text-muted-foreground">
-                    {[
-                      "Работающий Telegram-бот с диалоговым интерфейсом",
-                      "Интеграция с REST API нашей CRM-системы (документация предоставлена)",
-                      "Хранение состояния диалога в PostgreSQL",
-                      "Деплой на сервер с помощью Docker",
-                      "Документация по установке и настройке",
-                    ].map((item, i) => (
-                      <div key={item} className="flex gap-3">
-                        <span className="text-primary font-semibold shrink-0">{i + 1}.</span>
-                        <span>{item}</span>
+                    {/* Summary */}
+                    {task.summary && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Кратко</h3>
+                        <div className="text-muted-foreground leading-relaxed">
+                          {task.summary}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    )}
 
-                {/* Career Benefits */}
-                <div className="p-6 rounded-[24px] bg-card border border-border">
-                  <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Что получает участник</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      "Подтверждённый опыт",
-                      "Отзыв от компании",
-                      "Рекомендация",
-                      "Кейс для портфолио",
-                      "Возможность собеседования",
-                      "Возможность стажировки",
-                    ].map((benefit) => (
-                      <div key={benefit} className="flex items-center gap-2 text-[14px] text-muted-foreground">
-                        <Check size={16} className="text-primary shrink-0" />
-                        {benefit}
+                    {/* Materials */}
+                    {task.materials_links && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Ссылки и материалы</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.materials_links}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    )}
 
-                {/* Portfolio Policy */}
-                <div>
-                  <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Политика публикации результата</h3>
-                  <div className="text-[14px] text-muted-foreground leading-relaxed">
-                    Результат может быть показан в портфолио без исходного кода. Демонстрация в обезличенном виде допустима.
+                    {/* Restrictions */}
+                    {task.restrictions && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Ограничения</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.restrictions}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Allowed Tools */}
+                    {task.allowed_tools && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Допустимые инструменты</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.allowed_tools}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {activeTab === "requirements" && (
+                  <>
+                    {/* Requirements */}
+                    {task.requirements && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Обязательные требования</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.requirements}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Advantages */}
+                    {task.advantages && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Дополнительные преимущества</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.advantages}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Skills */}
+                    {task.skills.length > 0 && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Навыки</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {task.skills.map((s) => (
+                            <span
+                              key={s.id}
+                              className={`inline-flex items-center px-3 py-1.5 rounded-[10px] text-[13px] font-medium ${
+                                s.is_required
+                                  ? "bg-primary/10 text-primary"
+                                  : "bg-muted text-muted-foreground"
+                              }`}
+                            >
+                              {skillMap.get(s.skill_id) || `Навык #${s.skill_id}`}
+                              {s.level && ` · ${s.level}`}
+                              {!s.is_required && " (желательно)"}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {activeTab === "result" && (
+                  <>
+                    {/* Expected Result */}
+                    {task.expected_result && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Ожидаемый результат</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.expected_result}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Acceptance Criteria */}
+                    {task.acceptance_criteria && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Критерии приёмки</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.acceptance_criteria}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Career Opportunities */}
+                    {task.career_opportunities && (
+                      <div className="p-6 rounded-[24px] bg-card border border-border">
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Что получает участник</h3>
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {task.career_opportunities}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Portfolio Policy */}
+                    {task.portfolio_policy && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Политика публикации результата</h3>
+                        <div className="text-[14px] text-muted-foreground leading-relaxed">
+                          {task.portfolio_policy}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* IP Policy */}
+                    {task.ip_policy && (
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Интеллектуальные права</h3>
+                        <div className="text-[14px] text-muted-foreground leading-relaxed">
+                          {task.ip_policy}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {activeTab === "company" && company && (
+                  <div>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-16 h-16 rounded-[16px] bg-primary/10 text-primary flex items-center justify-center text-[26px] font-bold shrink-0">
+                        {company.name ? company.name[0].toUpperCase() : "?"}
+                      </div>
+                      <div>
+                        <h3 className="text-[20px] font-bold font-display text-foreground">{company.name}</h3>
+                        <div className="text-[14px] text-muted-foreground">
+                          {[company.industry, company.company_size ? `${company.company_size} сотрудников` : "", company.city].filter(Boolean).join(" · ") || "Компания"}
+                        </div>
+                      </div>
+                    </div>
+
+                    {company.description && (
+                      <p className="text-muted-foreground leading-relaxed mb-6">{company.description}</p>
+                    )}
+
+                    {company.website && (
+                      <a
+                        href={company.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-[14px] font-medium text-primary hover:underline mb-6"
+                      >
+                        <ExternalLink size={14} />
+                        {company.website}
+                      </a>
+                    )}
+
+                    <Link
+                      href={`/companies/${company.id}`}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors no-underline"
+                    >
+                      <ExternalLink size={14} />
+                      Профиль компании
+                    </Link>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 
@@ -184,30 +408,49 @@ export default function TaskDetailPage() {
               {/* Apply Card */}
               <div className="p-6 rounded-[24px] bg-card border border-border">
                 <div className="flex flex-col gap-5">
-                  {[
-                    { label: "Срок выполнения", value: "14 дней" },
-                    { label: "Сложность", value: "Средняя", badge: true },
-                    { label: "Мест", value: "3" },
-                    { label: "Заявок", value: "12" },
-                    { label: "Формат", value: "Удалённый" },
-                    { label: "Опубликовано", value: "3 дня назад" },
-                  ].map((row) => (
-                    <div key={row.label} className="flex justify-between items-center">
-                      <span className="text-[14px] text-muted-foreground">{row.label}</span>
-                      {row.badge ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[12px] font-medium">
-                          {row.value}
-                        </span>
-                      ) : (
-                        <span className="text-[14px] font-semibold text-foreground">{row.value}</span>
-                      )}
+                  {deadlineText && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[14px] text-muted-foreground">Срок выполнения</span>
+                      <span className="text-[14px] font-semibold text-foreground">{deadlineText}</span>
                     </div>
-                  ))}
-                  <div className="border-t border-border pt-5">
-                    <button className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-opacity cursor-pointer">
-                      Подать заявку
-                    </button>
+                  )}
+                  {difficultyLabel && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[14px] text-muted-foreground">Сложность</span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[12px] font-medium">
+                        {difficultyLabel}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-[14px] text-muted-foreground">Мест</span>
+                    <span className="text-[14px] font-semibold text-foreground">{task.participant_limit}</span>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[14px] text-muted-foreground">Заявок</span>
+                    <span className="text-[14px] font-semibold text-foreground">{task.participant_count}</span>
+                  </div>
+                  {formatLabel && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[14px] text-muted-foreground">Формат</span>
+                      <span className="text-[14px] font-semibold text-foreground">{formatLabel}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-[14px] text-muted-foreground">Опубликовано</span>
+                    <span className="text-[14px] font-semibold text-foreground">
+                      {new Date(task.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "long" })}
+                    </span>
+                  </div>
+
+                  {task.status === "open" && (
+                    <div className="border-t border-border pt-5">
+                      <button className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer">
+                        Подать заявку
+                      </button>
+                    </div>
+                  )}
+
                   <div className="text-center">
                     <button className="inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors bg-transparent cursor-pointer">
                       <Bookmark size={16} />
@@ -217,74 +460,44 @@ export default function TaskDetailPage() {
                 </div>
               </div>
 
-              {/* Company Card */}
-              <div className="p-6 rounded-[24px] bg-card border border-border">
-                <h4 className="text-[14px] font-semibold text-foreground mb-4">О компании</h4>
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-[12px] bg-[#E8F4F4] text-primary flex items-center justify-center text-[18px] font-bold shrink-0">
-                      V
-                    </div>
-                    <div>
-                      <div className="font-semibold text-[14px] text-foreground">Verba Tech</div>
-                      <div className="text-[13px] text-muted-foreground">Стартап · Москва</div>
-                    </div>
-                  </div>
-                  <p className="text-[14px] text-muted-foreground leading-relaxed">
-                    SaaS-платформа для автоматизации бизнес-процессов. 12 сотрудников, работаем с 2023 года.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {["SaaS", "Автоматизация", "B2B"].map((t) => (
-                      <span key={t} className="inline-flex items-center px-2.5 py-1 rounded-[8px] bg-muted text-muted-foreground text-[12px] font-medium">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    {[
-                      { value: "3", label: "задачи" },
-                      { value: "12", label: "участников" },
-                      { value: "4.8", label: "рейтинг" },
-                    ].map((s) => (
-                      <div key={s.label} className="text-center flex-1">
-                        <div className="text-[22px] font-bold font-display text-foreground">{s.value}</div>
-                        <div className="text-[12px] text-muted-foreground">{s.label}</div>
+              {/* Company Card (sidebar) */}
+              {company && (
+                <div className="p-6 rounded-[24px] bg-card border border-border">
+                  <h4 className="text-[14px] font-semibold text-foreground mb-4">О компании</h4>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-[12px] bg-primary/10 text-primary flex items-center justify-center text-[18px] font-bold shrink-0">
+                        {company.name ? company.name[0].toUpperCase() : "?"}
                       </div>
-                    ))}
-                  </div>
-                  <a
-                    href="/companies/verba-tech"
-                    className="w-full h-[40px] inline-flex items-center justify-center gap-2 text-[13px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[12px] transition-colors no-underline"
-                  >
-                    <ExternalLink size={14} />
-                    Профиль компании
-                  </a>
-                </div>
-              </div>
-
-              {/* Similar Tasks */}
-              <div className="p-6 rounded-[24px] bg-card border border-border">
-                <h4 className="text-[14px] font-semibold text-foreground mb-4">Похожие задачи</h4>
-                <div className="flex flex-col gap-3">
-                  {[
-                    { title: "Backend API для мобильного приложения", meta: "DataFlow · 21 день" },
-                    { title: "Мини-CRM на React", meta: "PixelForge · 14 дней" },
-                    { title: "Интеграция с внешним API", meta: "CloudNine · 10 дней" },
-                  ].map((item) => (
-                    <a
-                      key={item.title}
-                      href="/catalog"
-                      className="flex items-center justify-between p-3 rounded-[12px] hover:bg-muted transition-colors no-underline group"
-                    >
                       <div>
-                        <div className="text-[14px] font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</div>
-                        <div className="text-[12px] text-muted-foreground">{item.meta}</div>
+                        <div className="font-semibold text-[14px] text-foreground">{company.name}</div>
+                        {company.city && <div className="text-[13px] text-muted-foreground">{company.city}</div>}
                       </div>
-                      <ChevronRight size={16} className="text-muted-foreground shrink-0" />
-                    </a>
-                  ))}
+                    </div>
+                    {company.description && (
+                      <p className="text-[14px] text-muted-foreground leading-relaxed line-clamp-3">
+                        {company.description}
+                      </p>
+                    )}
+                    {company.stack && (
+                      <div className="flex flex-wrap gap-2">
+                        {company.stack.split(",").map((t: string) => (
+                          <span key={t.trim()} className="inline-flex items-center px-2.5 py-1 rounded-[8px] bg-muted text-muted-foreground text-[12px] font-medium">
+                            {t.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <Link
+                      href={`/companies/${company.id}`}
+                      className="w-full h-[40px] inline-flex items-center justify-center gap-2 text-[13px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[12px] transition-colors no-underline"
+                    >
+                      <ExternalLink size={14} />
+                      Профиль компании
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
           </div>

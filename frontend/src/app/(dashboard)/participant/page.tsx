@@ -61,7 +61,7 @@ export default function ParticipantDashboardPage() {
   const userName = user?.first_name || "Участник";
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-8">
         {/* Page Header */}
@@ -91,7 +91,7 @@ export default function ParticipantDashboardPage() {
           ].map((stat) => {
             const Icon = stat.icon;
             return (
-              <div key={stat.label} className="p-5 rounded-[20px] bg-card border border-border text-center">
+              <div key={stat.label} className="p-5 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] text-center">
                 <Icon size={20} className="text-primary mx-auto mb-2" strokeWidth={1.5} />
                 <div className="text-[28px] font-bold font-display text-primary">{stat.value}</div>
                 <div className="text-[13px] text-muted-foreground mt-1">{stat.label}</div>
@@ -101,7 +101,7 @@ export default function ParticipantDashboardPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 border-b border-border">
+        <div className="flex gap-1 mb-6 shadow-[0_-1px_0px_0px_oklch(0_0_0_/_0.06)_inset]">
           {[
             { label: "Мои заявки", count: 3 },
             { label: "В работе", count: 1 },
@@ -124,7 +124,7 @@ export default function ParticipantDashboardPage() {
           {applications.map((app) => (
             <div
               key={app.title}
-              className="p-4 rounded-[20px] bg-card border border-border hover:border-muted-foreground/20 transition-colors cursor-pointer"
+              className="p-4 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] hover:shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.08),0px_1px_2px_-1px_oklch(0_0_0_/_0.08),0px_2px_4px_0px_oklch(0_0_0_/_0.06)] transition-[scale,box-shadow] cursor-pointer active:scale-[0.96]"
             >
               <div className="flex items-center gap-4">
                 <div className={`w-11 h-11 rounded-[12px] flex items-center justify-center text-[18px] font-bold shrink-0 ${app.bgColor}`}>
@@ -160,7 +160,7 @@ export default function ParticipantDashboardPage() {
         {/* Active Task */}
         <div className="mb-10">
           <h3 className="text-[18px] font-bold font-display text-foreground mb-4">Активная задача</h3>
-          <div className="p-5 rounded-[20px] bg-card border border-border">
+          <div className="p-5 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)]">
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-[12px] bg-[#E8F5E9] text-[#1B5E20] flex items-center justify-center text-[18px] font-bold shrink-0">
                 M
@@ -196,7 +196,7 @@ export default function ParticipantDashboardPage() {
           <h3 className="text-[18px] font-bold font-display text-foreground mb-4">Подтверждённый опыт</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {experiences.map((exp) => (
-              <div key={exp.title} className="p-5 rounded-[20px] bg-card border border-border">
+              <div key={exp.title} className="p-5 rounded-3xl bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)]">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="font-semibold text-[15px] text-foreground">{exp.title}</div>
@@ -208,7 +208,7 @@ export default function ParticipantDashboardPage() {
                 </div>
                 <div className="flex gap-2 mb-3">
                   {exp.skills.map((skill) => (
-                    <span key={skill} className="inline-flex items-center px-2.5 py-1 rounded-[8px] bg-primary/10 text-primary text-[12px] font-medium">
+                    <span key={skill} className="inline-flex items-center px-2.5 py-1 rounded-xl bg-primary/10 text-primary text-[12px] font-medium">
                       {skill}
                     </span>
                   ))}

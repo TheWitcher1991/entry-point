@@ -33,4 +33,4 @@ class Company(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    owner = relationship("User", backref="company", uselist=False)
+    owner = relationship("User", back_populates="company", uselist=False)

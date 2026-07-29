@@ -36,4 +36,4 @@ class ParticipantProfile(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    user = relationship("User", backref="participant_profile", uselist=False)
+    user = relationship("User", back_populates="participant_profile", uselist=False)

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { RegisterForm } from "@features/auth";
-import { UserPlus } from "@shared/ui/Icons";
+import { UserPlus, Clock, Shield, Star } from "@shared/ui/Icons";
 
 export default function RegisterPage() {
   return (
-    <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] bg-card border border-border overflow-hidden min-h-[600px]">
+    <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] bg-card shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] overflow-hidden min-h-[600px]">
       {/* Form Panel */}
       <div className="p-8 md:p-10 flex items-center">
         <div className="w-full max-w-[380px] mx-auto">
@@ -41,33 +41,23 @@ export default function RegisterPage() {
 
           <div className="flex flex-col gap-5">
             {[
-              { icon: (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-              ), title: "Быстрая регистрация", desc: "Создайте аккаунт за 2 минуты" },
-              { icon: (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              ), title: "Безопасно", desc: "Ваши данные защищены" },
-              { icon: (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-              ), title: "Бесплатно", desc: "Платформа бесплатна для участников" },
-            ].map((item) => (
-              <div key={item.title} className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-[12px] bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  {item.icon}
+              { icon: Clock, title: "Быстрая регистрация", desc: "Создайте аккаунт за 2 минуты" },
+              { icon: Shield, title: "Безопасно", desc: "Ваши данные защищены" },
+              { icon: Star, title: "Бесплатно", desc: "Платформа бесплатна для участников" },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Icon size={18} />
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-semibold text-foreground">{item.title}</div>
+                    <div className="text-[13px] text-muted-foreground">{item.desc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-[14px] font-semibold text-foreground">{item.title}</div>
-                  <div className="text-[13px] text-muted-foreground">{item.desc}</div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

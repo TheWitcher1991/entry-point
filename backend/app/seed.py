@@ -13,7 +13,6 @@ import logging
 from sqlalchemy import select
 
 from app.core.database import async_session_factory, engine
-from app.core.config import settings
 from app.services.directories.models import Category, Skill
 
 logging.basicConfig(level=logging.INFO)
@@ -103,20 +102,20 @@ async def seed() -> None:
         # Create categories
         category_map: dict[str, Category] = {}
         for cat_data in CATEGORIES:
-            cat = Category(name=cat_data["name"], direction=cat_data.get("direction"))
-            session.add(cat)
-            category_map[cat.name] = cat
+            category = Category(name=cat_data["name"], direction=cat_data.get("direction"))
+            session.add(category)
+            category_map[category.name] = category
         await session.flush()
 
-        for cat in category_map.values():
-            await session.refresh(cat)
+        for category in category_map.values():
+            await session.refresh(category)
 
         # Create skills
         for skill_data in SKILLS:
-            cat = category_map.get(skill_data["category_name"])
+            skill_cat: Category | None = category_map.get(skill_data["category_name"])
             skill = Skill(
                 name=skill_data["name"],
-                category_id=cat.id if cat else None,
+                category_id=skill_cat.id if skill_cat else None,
             )
             session.add(skill)
 
