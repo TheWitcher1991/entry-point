@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "no-any": "error",
+    "no-ts-ignore": "error",
+    "no-console": "warn",
+    "no-debugger": "error"
+  }
+}

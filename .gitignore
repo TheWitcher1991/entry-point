@@ -1,0 +1,56 @@
+# Python
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/.venv/
+backend/venv/
+backend/*.egg-info/
+backend/dist/
+backend/build/
+backend/.coverage
+backend/coverage/
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.ruff_cache/
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/coverage/
+frontend/.oxlint_cache/
+frontend/.turbo/
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+frontend/storybook-static/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+# .env.example intentionally NOT ignored
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+docker-compose.override.yml
+
+# BMAD / OpenCode
+.opencode/node_modules/

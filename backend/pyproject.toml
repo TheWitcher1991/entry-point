@@ -1,0 +1,43 @@
+[project]
+name = "entry-point-backend"
+version = "0.1.0"
+description = "Точка входа — Backend API"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115",
+    "uvicorn",
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg",
+    "alembic",
+    "redis[hiredis]",
+    "pydantic-settings",
+    "python-jose[cryptography]",
+    "bcrypt",
+    "python-multipart",
+    "httpx",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio",
+    "httpx",
+    "ruff",
+    "mypy",
+    "aiosqlite",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+ignore_missing_imports = true

@@ -1,0 +1,11 @@
+.git/
+.gitignore
+.gitattributes
+AGENTS.md
+DESIGN.md
+_bmad/
+docs/
+node_modules/
+.opencode/
+*.md
+.DS_Store
