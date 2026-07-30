@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useUnit } from "effector-react";
+import { $user } from "@features/auth";
 import { getParticipants } from "@entities/participant";
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,6 +12,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Search, MapPin, Briefcase, GraduationCap, User, ExternalLink } from "@shared/ui/Icons";
 
 export default function CompanyParticipantsPage() {
+  const user = useUnit($user);
+  const companyName = user?.company_name || "Компания";
   const [search, setSearch] = useState("");
 
   const { data: participants = [], isLoading } = useQuery({
@@ -22,9 +26,10 @@ export default function CompanyParticipantsPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 pt-10 pb-8">
-        <h1 className="text-[28px] font-bold font-display text-foreground mb-8">
-          Участники
-        </h1>
+        <div className="mb-8">
+          <h1 className="text-[28px] font-bold font-display text-foreground">Участники</h1>
+          <p className="text-[15px] text-muted-foreground mt-1">{companyName}</p>
+        </div>
 
         {/* Navigation Tabs */}
         <div className="flex gap-1 mb-8 border-b border-border">

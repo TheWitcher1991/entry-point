@@ -86,7 +86,7 @@ export function Header() {
           {isHydrated && isAuthenticated && user ? (
             <>
               <Link
-                href={user.role === "company" ? "/company" : "/participant"}
+                href={user.role === "company" ? "/company/tasks" : "/participant"}
                 className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-[14px] font-medium text-foreground bg-muted hover:bg-muted rounded-[12px] transition-colors no-underline"
               >
                 <User size={16} />
@@ -153,7 +153,7 @@ export function Header() {
           {isHydrated && isAuthenticated && user ? (
             <>
               <Link
-                href={user.role === "company" ? "/company" : "/participant"}
+                href={user.role === "company" ? "/company/tasks" : "/participant"}
                 onClick={() => setMobileOpen(false)}
                 className="px-4 py-3 text-[15px] text-foreground font-medium hover:bg-muted rounded-[12px] transition-colors no-underline"
               >
