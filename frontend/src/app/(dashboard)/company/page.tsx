@@ -102,10 +102,10 @@ export default function CompanyDashboardPage() {
             Результаты
           </Link>
           <Link
-            href="/saved"
+            href="/catalog"
             className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
-            Сохранённые
+            Каталог задач
           </Link>
         </div>
 
