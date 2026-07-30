@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createApplication } from "@entities/application";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { createApplication, getMyApplications } from "@entities/application";
 import { useUnit } from "effector-react";
 import { $user } from "@features/auth";
 import {
@@ -24,6 +24,15 @@ export function ApplyButton({ taskId }: ApplyButtonProps) {
   const [coverLetter, setCoverLetter] = useState("");
   const queryClient = useQueryClient();
 
+  // Check if user already has an application for this task
+  const { data: myApplications = [] } = useQuery({
+    queryKey: ["my-applications"],
+    queryFn: getMyApplications,
+    enabled: !!user,
+  });
+
+  const existingApplication = myApplications.find((a) => a.task_id === taskId);
+
   const mutation = useMutation({
     mutationFn: () =>
       createApplication({
@@ -41,14 +50,18 @@ export function ApplyButton({ taskId }: ApplyButtonProps) {
   // Company users don't see the button at all
   if (user?.role === "company") return null;
 
-  const handleClick = () => {
-    if (!user) {
-      setShowLoginModal(true);
-    } else {
-      setShowForm(true);
-    }
-  };
+  // Already applied — show status
+  if (existingApplication) {
+    return (
+      <div className="border-t border-border pt-5">
+        <div className="p-3 rounded-[12px] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-[14px] text-emerald-700 dark:text-emerald-300 text-center">
+          Заявка отправлена
+        </div>
+      </div>
+    );
+  }
 
+  // Just submitted (optimistic fallback)
   if (mutation.isSuccess) {
     return (
       <div className="border-t border-border pt-5">
@@ -148,4 +161,12 @@ export function ApplyButton({ taskId }: ApplyButtonProps) {
       </Dialog>
     </>
   );
+
+  function handleClick() {
+    if (!user) {
+      setShowLoginModal(true);
+    } else {
+      setShowForm(true);
+    }
+  }
 }
