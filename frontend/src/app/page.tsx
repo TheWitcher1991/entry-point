@@ -131,9 +131,9 @@ export default function LandingPage() {
               </a>
               <a
                 href="/catalog"
-                className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl border border-border bg-background text-[14px] md:text-[15px] font-medium text-foreground hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
+                className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl border border-border bg-background text-[14px] md:text-[15px] font-medium text-foreground hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-3"
               >
-                <Layers size={16} strokeWidth={1.5} />
+                <Layers size={16} strokeWidth={2} />
                 Смотреть задачи
               </a>
             </div>
@@ -493,9 +493,9 @@ export default function LandingPage() {
                   </a>
                   <a
                     href="/catalog"
-                    className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl border-2 border-primary-foreground/20 text-primary-foreground text-[14px] md:text-[15px] font-medium hover:bg-primary-foreground/10 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
+                    className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl border-2 border-primary-foreground/20 text-primary-foreground text-[14px] md:text-[15px] font-medium hover:bg-primary-foreground/10 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-3"
                   >
-                    <Layers size={16} strokeWidth={1.5} />
+                    <Layers size={16} strokeWidth={2} />
                     Смотреть задачи
                   </a>
                 </div>
