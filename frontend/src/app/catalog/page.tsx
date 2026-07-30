@@ -3,12 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { useUnit } from "effector-react";
-import { $user } from "@features/auth";
 import { getTasks } from "@entities/task";
 import type { TaskListItem } from "@entities/task";
 import { TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
-import { getMyApplications, APPLICATION_STATUS_LABELS, type Application } from "@entities/application";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import {
@@ -20,7 +17,6 @@ import {
   Search,
   Briefcase,
   X,
-  Check,
 } from "@shared/ui/Icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -38,7 +34,7 @@ const FORMAT_OPTIONS = [
   { value: "onsite", label: "В офисе" },
 ];
 
-function TaskCard({ task, applicationStatus }: { task: TaskListItem; applicationStatus?: string }) {
+function TaskCard({ task }: { task: TaskListItem }) {
   const difficultyLabel = task.difficulty
     ? TASK_DIFFICULTY_LABELS[task.difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || task.difficulty
     : null;
@@ -47,9 +43,6 @@ function TaskCard({ task, applicationStatus }: { task: TaskListItem; application
     : null;
   const statusLabel = TASK_STATUS_LABELS[task.status] || task.status;
   const companyInitial = task.company_name?.[0] || "?";
-  const appStatusLabel = applicationStatus
-    ? (APPLICATION_STATUS_LABELS[applicationStatus as keyof typeof APPLICATION_STATUS_LABELS] || applicationStatus)
-    : null;
 
   return (
     <Link
@@ -69,12 +62,6 @@ function TaskCard({ task, applicationStatus }: { task: TaskListItem; application
         <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[12px] font-medium">
           {statusLabel}
         </span>
-        {appStatusLabel && (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 text-[12px] font-medium">
-            <Check size={11} />
-            {appStatusLabel}
-          </span>
-        )}
       </div>
 
       <h3 className="text-[17px] font-semibold text-foreground mb-2 line-clamp-2 leading-snug">
@@ -158,21 +145,6 @@ export default function CatalogPage() {
       }),
     staleTime: 30_000,
   });
-
-  const user = useUnit($user);
-
-  const { data: myApplications = [] } = useQuery({
-    queryKey: ["my-applications"],
-    queryFn: getMyApplications,
-    enabled: !!user,
-  });
-
-  const applicationByTaskId = new Map<string, string>();
-  for (const app of myApplications as Application[]) {
-    if (!applicationByTaskId.has(String(app.task_id))) {
-      applicationByTaskId.set(String(app.task_id), app.status);
-    }
-  }
 
   // If page returns no results, go back to page 0
   useEffect(() => {
@@ -296,26 +268,21 @@ export default function CatalogPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {tasks.map((task) => (
-                <TaskCard key={task.id} task={task} applicationStatus={applicationByTaskId.get(String(task.id))} />
+                <TaskCard key={task.id} task={task} />
               ))}
             </div>
           )}
 
           {/* Pagination */}
           {(tasks.length > 0 || page > 0) && (() => {
-            // If current page is empty, show it as a disabled page so user can navigate back
             const currentPageHasData = tasks.length > 0;
             const hasMore = currentPageHasData && tasks.length >= pageSize;
-            // Build visible page numbers around current page
             const startPage = Math.max(0, page - 2);
             const endPage = hasMore ? page + 2 : page;
             const pages: number[] = [];
             for (let i = startPage; i <= endPage; i++) {
               pages.push(i);
             }
-
-            // Determine which buttons are active (have data)
-            const isActive = (p: number) => currentPageHasData && p === page;
 
             return (
               <div className="flex items-center justify-center gap-2">
@@ -344,7 +311,7 @@ export default function CatalogPage() {
                     key={p}
                     onClick={() => currentPageHasData || p < page ? setPage(p) : undefined}
                     className={`w-10 h-10 rounded-[12px] text-[14px] font-medium transition-colors cursor-pointer ${
-                      isActive(p)
+                      p === page && currentPageHasData
                         ? "bg-primary text-white"
                         : "border border-border bg-card text-muted-foreground hover:bg-muted"
                     }`}

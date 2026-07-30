@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createApplication, getMyApplications } from "@entities/application";
+import { createApplication, getMyApplications, APPLICATION_STATUS_LABELS } from "@entities/application";
 import { useUnit } from "effector-react";
 import { $user } from "@features/auth";
 import {
@@ -52,10 +52,18 @@ export function ApplyButton({ taskId }: ApplyButtonProps) {
 
   // Already applied — show status
   if (existingApplication) {
+    const appStatusLabel = APPLICATION_STATUS_LABELS[existingApplication.status as keyof typeof APPLICATION_STATUS_LABELS] || existingApplication.status;
+    const isPending = existingApplication.status === "pending" || existingApplication.status === "review";
     return (
       <div className="border-t border-border pt-5">
-        <div className="p-3 rounded-[12px] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-[14px] text-emerald-700 dark:text-emerald-300 text-center">
-          Заявка отправлена
+        <div className={`p-3 rounded-[12px] border text-[14px] text-center ${
+          isPending
+            ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300"
+            : existingApplication.status === "approved"
+            ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"
+            : "bg-muted border-border text-muted-foreground"
+        }`}>
+          {appStatusLabel}
         </div>
       </div>
     );
