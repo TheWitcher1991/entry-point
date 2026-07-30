@@ -1,10 +1,25 @@
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
-from app.services.admin.schemas import AdminTaskResponse, AdminUserResponse, UpdateUserStatusRequest
-from app.services.admin.service import get_all_tasks, list_users, update_user_status
+from app.services.admin.schemas import (
+    AdminCompanyResponse,
+    AdminTaskResponse,
+    AdminUserResponse,
+    UpdateCompanyVerificationRequest,
+    UpdateUserStatusRequest,
+)
+from app.services.admin.service import (
+    get_admin_stats,
+    get_all_companies,
+    get_all_tasks,
+    list_users,
+    update_company_verification,
+    update_user_status,
+)
 from app.services.auth.models import User, UserRole
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -16,6 +31,16 @@ def require_admin(current_user: User) -> None:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required",
         )
+
+
+@router.get("/stats")
+async def admin_stats(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, Any]:
+    """Get detailed platform statistics."""
+    require_admin(current_user)
+    return await get_admin_stats(db)
 
 
 @router.get("/users", response_model=list[AdminUserResponse])
@@ -64,3 +89,63 @@ async def admin_get_tasks(
     require_admin(current_user)
     tasks = await get_all_tasks(db, status=status, skip=skip, limit=limit)
     return [AdminTaskResponse.model_validate(t) for t in tasks]
+
+
+@router.get("/companies", response_model=list[AdminCompanyResponse])
+async def admin_get_companies(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[AdminCompanyResponse]:
+    """List all companies for admin management."""
+    require_admin(current_user)
+    companies = await get_all_companies(db)
+    result = []
+    for c in companies:
+        result.append(
+            AdminCompanyResponse(
+                id=c.id,
+                owner_id=c.owner_id,
+                name=c.name,
+                description=c.description,
+                website=c.website,
+                city=c.city,
+                industry=c.industry,
+                company_size=c.company_size,
+                verification_status=c.verification_status,
+                created_at=c.created_at,
+                updated_at=c.updated_at,
+                owner_email=c.owner.email if c.owner else None,
+            )
+        )
+    return result
+
+
+@router.patch("/companies/{company_id}/verification", response_model=AdminCompanyResponse)
+async def change_company_verification(
+    company_id: int,
+    body: UpdateCompanyVerificationRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> AdminCompanyResponse:
+    """Update company verification status."""
+    require_admin(current_user)
+    company = await update_company_verification(db, company_id, body.verification_status)
+    if company is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Company not found",
+        )
+    return AdminCompanyResponse(
+        id=company.id,
+        owner_id=company.owner_id,
+        name=company.name,
+        description=company.description,
+        website=company.website,
+        city=company.city,
+        industry=company.industry,
+        company_size=company.company_size,
+        verification_status=company.verification_status,
+        created_at=company.created_at,
+        updated_at=company.updated_at,
+        owner_email=company.owner.email if company.owner else None,
+    )

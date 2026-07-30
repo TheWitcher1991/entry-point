@@ -1,2 +1,8 @@
-export { getAdminTasks, updateTaskStatus } from "./api";
-export type { AdminTask } from "./api";
+export {
+  getAdminTasks,
+  updateTaskStatus,
+  getAdminStats,
+  getAdminCompanies,
+  updateCompanyVerification,
+} from "./api";
+export type { AdminTask, AdminCompany, AdminStats } from "./api";

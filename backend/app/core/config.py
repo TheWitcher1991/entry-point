@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     SMTP_FROM_EMAIL: str = "noreply@talentpot.ru"
     SMTP_USE_TLS: bool = False
 
+    LOG_LEVEL: str = "INFO"
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

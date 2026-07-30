@@ -3,8 +3,11 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core.logging_config import get_logger
 from app.services.applications.models import Application
 from app.services.tasks.models import ProjectTask
+
+logger = get_logger("applications")
 
 
 async def create_application(
@@ -27,6 +30,11 @@ async def create_application(
     db.add(app)
     await db.flush()
 
+    logger.info(
+        "Application created: id=%d task_id=%d participant_id=%d",
+        app.id, task_id, participant_profile_id,
+    )
+
     # Re-query with eager loading to avoid lazy load issues with aiosqlite
     result = await db.execute(
         select(Application)
@@ -34,6 +42,7 @@ async def create_application(
         .options(selectinload(Application.task))
     )
     return result.scalar_one_or_none()
+
 
 
 async def get_application_by_id(
@@ -78,11 +87,17 @@ async def update_application_status(
 ) -> Application | None:
     app = await get_application_by_id(db, application_id)
     if app is None:
+        logger.warning("Status update failed: application_id=%d not found", application_id)
         return None
 
     old_status = app.status
     app.status = status
     await db.flush()
+
+    logger.info(
+        "Application status changed: id=%d %s -> %s",
+        application_id, old_status, status,
+    )
 
     # ── Side effects on approval ──
     if status == "approved" and old_status != "approved":

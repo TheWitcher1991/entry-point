@@ -77,9 +77,11 @@ async def get_my_reviews(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> list[ReviewResponse]:
+    from app.services.participants.service import get_or_create_profile as gcp
     from app.services.reviews.service import get_participant_reviews
 
-    reviews = await get_participant_reviews(db, current_user.id)
+    profile = await gcp(db, current_user.id)
+    reviews = await get_participant_reviews(db, profile.id)
     result = []
     for r in reviews:
         company_name = r.company.name if r.company else None

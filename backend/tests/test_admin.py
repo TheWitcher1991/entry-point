@@ -174,3 +174,184 @@ async def test_admin_cannot_block_self(
     )
     assert response.status_code == 400
     assert "Cannot change your own status" in response.text
+
+
+@pytest.mark.asyncio
+async def test_admin_stats(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    """Admin can get detailed platform statistics."""
+    from app.core.security import hash_password
+
+    admin = User(
+        email="adminstats@test.com",
+        password_hash=hash_password("Admin123!"),
+        role=UserRole.ADMIN,
+        status=UserStatus.ACTIVE,
+    )
+    db_session.add(admin)
+    await db_session.flush()
+
+    response = await client.post(
+        "/api/v1/auth/login",
+        json={"email": "adminstats@test.com", "password": "Admin123!"},
+    )
+    token = response.json()["access_token"]
+
+    resp = await client.get(
+        "/api/v1/admin/stats",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "total_users" in data
+    assert "participants" in data
+    assert "companies" in data
+    assert "total_tasks" in data
+    assert "tasks_draft" in data
+    assert "tasks_moderation" in data
+    assert "tasks_completed" in data
+
+
+@pytest.mark.asyncio
+async def test_admin_stats_requires_admin(
+    client: AsyncClient
+) -> None:
+    """Non-admin users cannot access admin stats."""
+    token, _ = await _register_participant(client, "statsuser@test.com")
+    resp = await client.get(
+        "/api/v1/admin/stats",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_admin_list_companies(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    """Admin can list all companies."""
+    from app.core.security import hash_password
+
+    admin = User(
+        email="admincomp@test.com",
+        password_hash=hash_password("Admin123!"),
+        role=UserRole.ADMIN,
+        status=UserStatus.ACTIVE,
+    )
+    db_session.add(admin)
+    await db_session.flush()
+
+    # Create a company via registration + patch profile
+    comp_resp = await client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "testcomp@test.com",
+            "password": "password123",
+            "role": "company",
+        },
+    )
+    comp_token = comp_resp.json()["access_token"]
+    await client.patch(
+        "/api/v1/companies/me",
+        json={"name": "Test Corp"},
+        headers={"Authorization": f"Bearer {comp_token}"},
+    )
+
+    response = await client.post(
+        "/api/v1/auth/login",
+        json={"email": "admincomp@test.com", "password": "Admin123!"},
+    )
+    token = response.json()["access_token"]
+
+    resp = await client.get(
+        "/api/v1/admin/companies",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) >= 1
+
+
+@pytest.mark.asyncio
+async def test_admin_update_company_verification(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    """Admin can change company verification status."""
+    from app.core.security import hash_password
+
+    admin = User(
+        email="adminverif@test.com",
+        password_hash=hash_password("Admin123!"),
+        role=UserRole.ADMIN,
+        status=UserStatus.ACTIVE,
+    )
+    db_session.add(admin)
+    await db_session.flush()
+
+    # Register a company
+    comp_resp = await client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "verifcomp@test.com",
+            "password": "password123",
+            "role": "company",
+        },
+    )
+    comp_token = comp_resp.json()["access_token"]
+    await client.patch(
+        "/api/v1/companies/me",
+        json={"name": "Verif Corp"},
+        headers={"Authorization": f"Bearer {comp_token}"},
+    )
+
+    # Get company list to find ID
+    response = await client.post(
+        "/api/v1/auth/login",
+        json={"email": "adminverif@test.com", "password": "Admin123!"},
+    )
+    token = response.json()["access_token"]
+
+    companies_resp = await client.get(
+        "/api/v1/admin/companies",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    companies = companies_resp.json()
+    comp_id = companies[0]["id"]
+
+    # Verify
+    resp = await client.patch(
+        f"/api/v1/admin/companies/{comp_id}/verification",
+        json={"verification_status": "verified"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["verification_status"] == "verified"
+
+    # Reject
+    resp = await client.patch(
+        f"/api/v1/admin/companies/{comp_id}/verification",
+        json={"verification_status": "rejected"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["verification_status"] == "rejected"
+
+    # Unverify
+    resp = await client.patch(
+        f"/api/v1/admin/companies/{comp_id}/verification",
+        json={"verification_status": "unverified"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["verification_status"] == "unverified"
+
+
+async def _register_participant(client, email: str) -> tuple[str, int]:
+    """Helper: register a participant and return (token, user_id)."""
+    data = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "password123", "role": "participant"},
+    )
+    assert data.status_code == 201
+    return data.json()["access_token"], data.json().get("user_id", 0)

@@ -15,13 +15,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import async_session_factory, engine
 from app.core.security import hash_password
+from app.services.applications.models import Application
 from app.services.auth.models import User, UserRole, UserStatus
 from app.services.companies.models import Company
-from app.services.participants.models import ParticipantProfile
 from app.services.directories.models import Category, Skill
-from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission
-from app.services.applications.models import Application
+from app.services.participants.models import ParticipantProfile
 from app.services.reviews.models import Review
+from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("seed")
@@ -479,8 +479,8 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
             app = Application(
                 task_id=task_ids[task_idx],
                 participant_id=participant_profile_ids[part_idx],
-                cover_letter=f"Привет! Хочу поработать над этой задачей. "
-                             f"У меня есть релевантный опыт.",
+                cover_letter="Привет! Хочу поработать над этой задачей. "
+                             "У меня есть релевантный опыт.",
                 status=status,
             )
             session.add(app)

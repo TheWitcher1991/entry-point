@@ -392,11 +392,11 @@ class TestSubmissions:
     async def _setup_task_in_progress(
         self, client: AsyncClient
     ) -> tuple[str, str, int]:
-        """Create company + task set to in_progress, return (company_token, part_token, task_id)."""
+        """Create company + task + participant with active participation."""
         ct, _ = await register_company(client, "subcomp@test.com")
         create = await client.post(
             "/api/v1/tasks",
-            json={"title": "Sub Task", "status": "in_progress", "participant_limit": 1},
+            json={"title": "Sub Task", "status": "open", "participant_limit": 1},
             headers={"Authorization": f"Bearer {ct}"},
         )
         task_id = create.json()["id"]
@@ -411,6 +411,26 @@ class TestSubmissions:
             "/api/v1/participants/me",
             json={"first_name": "Test", "last_name": "Submitter"},
             headers={"Authorization": f"Bearer {pt}"},
+        )
+
+        # Apply and approve to create participation record
+        app_resp = await client.post(
+            "/api/v1/applications",
+            json={"task_id": task_id},
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        app_id = app_resp.json()["id"]
+        await client.patch(
+            f"/api/v1/applications/{app_id}/status",
+            json={"status": "approved"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+
+        # Set task to in_progress for submission
+        await client.patch(
+            f"/api/v1/tasks/{task_id}/status",
+            json={"status": "in_progress"},
+            headers={"Authorization": f"Bearer {ct}"},
         )
         return ct, pt, task_id
 

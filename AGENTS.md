@@ -38,7 +38,7 @@
 - `docs/mocks/` — 9 HTML/CSS/JS мокапов (визуал, тёмная тема, демо-авторизация)
 - `docs/PRODUCT.md` — полная спецификация продукта
 - `docs/MVP.md` — сфокусированный MVP-скоуп
-- `DESIGN.md` — дизайн-система
+- `docs/technical/design.md` — дизайн-система
 
 ## Архитектура
 
@@ -94,7 +94,7 @@ docker-compose.yml       # postgres:16 + redis:7 + backend + frontend (dev)
 
 Подробная документация для разработчиков — в [README.md](./README.md).
 
-- [DESIGN.md](./DESIGN.md) — дизайн-система
+- [docs/technical/design.md](./docs/technical/design.md) — дизайн-система
 - [docs/PRODUCT.md](./docs/PRODUCT.md) — спецификация продукта
 - [docs/MVP.md](./docs/MVP.md) — MVP-скоуп
 - [frontend/AGENTS.md](./frontend/AGENTS.md) — FSD, shadcn, Tailwind v4
@@ -134,7 +134,7 @@ docker compose up postgres redis -d                   # только БД (дл�
 - **Effector + React Query**: React Query для server state, effector для client state. Не дублировать.
 - **Модульный монолит на бэкенде**: каждый сервис — самодостаточная папка. Core — только инфраструктура.
 - **JWT auth**: токен в localStorage, прокидывается через axios interceptor. На бэке — `Depends(get_current_user)`.
-- **Дизайн по DESIGN.md**: крупные карточки (24px radius), `#166666` accent (light) / `#2EC4B6` (dark), стекло-морфизм только для header/popups, Inter/Manrope, 8pt сетка.
+- **Дизайн по docs/technical/design.md**: крупные карточки (24px radius), `#166666` accent (light) / `#2EC4B6` (dark), стекло-морфизм только для header/popups, Inter/Manrope, 8pt сетка.
 - **make-interfaces-feel-better**: `active:scale-[0.96]` на всех кнопках, `transition` без `all`, `text-wrap: balance` на h1-h4, `text-wrap: pretty` на p/li, концентрические радиусы, тени вместо бордеров, `tabular-nums`.
 - **Единая цветовая палитра**: shadcn-семантика (`bg-background`, `text-foreground`, `bg-primary`, `bg-card`). Никаких `text-text-primary`, `bg-surface-secondary`, `bg-hover`, `text-accent`.
 - **Статусы — строки**: все статусы (task, application, participation, submission) — plain strings, не enum. Валидация через regex в Pydantic-схемах.

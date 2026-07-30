@@ -6,6 +6,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.services.auth.models import User
 from app.services.companies.models import Company
+from app.services.experiences.service import create_experience_from_review
 from app.services.reviews.schemas import ReviewCreate, ReviewResponse
 from app.services.reviews.service import (
     create_review,
@@ -86,6 +87,20 @@ async def create_submission_review(
         task_id=task_id,
         rating=body.rating,
         text=body.text,
+        skills_confirmed=body.skills_confirmed,
+    )
+
+    # Create verified experience entry
+    await create_experience_from_review(
+        db=db,
+        participant_id=submission.participant_id,
+        task_id=task_id,
+        company_id=company.id,
+        review_id=review.id,
+        task_title=task.title if task else "Unknown Task",
+        company_name=company.name or "Unknown Company",
+        rating=body.rating,
+        review_text=body.text,
         skills_confirmed=body.skills_confirmed,
     )
 

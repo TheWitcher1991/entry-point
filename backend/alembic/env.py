@@ -13,11 +13,17 @@ from app.services.applications.models import Application  # noqa: F401
 from app.services.auth.models import User  # noqa: F401
 from app.services.companies.models import Company  # noqa: F401
 from app.services.directories.models import Category, Skill  # noqa: F401
+from app.services.experiences.models import VerifiedExperience, VerifiedSkill  # noqa: F401
 from app.services.notifications.models import Notification  # noqa: F401
 from app.services.participants.models import ParticipantProfile  # noqa: F401
 from app.services.participations.models import Participation  # noqa: F401
 from app.services.reviews.models import Review  # noqa: F401
-from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission, SavedTask  # noqa: F401
+from app.services.tasks.models import (  # noqa: F401
+    ProjectTask,
+    SavedTask,
+    TaskSkill,
+    TaskSubmission,
+)
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)

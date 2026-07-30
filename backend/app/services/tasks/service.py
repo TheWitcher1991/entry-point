@@ -4,7 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core.logging_config import get_logger
 from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission
+
+logger = get_logger("tasks")
 
 
 async def create_task(
@@ -21,6 +24,11 @@ async def create_task(
         db.add(ts)
 
     await db.flush()
+
+    logger.info(
+        "Task created: id=%d company_id=%d title=%s status=%s",
+        task.id, company_id, task.title, task.status,
+    )
 
     # Re-query with eager loading for serialization
     result = await db.execute(
@@ -69,6 +77,10 @@ async def update_task(
 ) -> ProjectTask | None:
     task = await get_task_by_id(db, task_id)
     if task is None or task.company_id != company_id:
+        logger.warning(
+            "Update task blocked: task_id=%d company_id=%d (not found or not owner)",
+            task_id, company_id,
+        )
         return None
 
     skills_data = data.pop("skills", None)
@@ -91,6 +103,8 @@ async def update_task(
 
     await db.flush()
 
+    logger.info("Task updated: id=%d by company=%d", task_id, company_id)
+
     # Re-query with eager loading
     return await get_task_by_id(db, task_id)
 
@@ -100,9 +114,16 @@ async def update_task_status(
 ) -> ProjectTask | None:
     task = await get_task_by_id(db, task_id)
     if task is None:
+        logger.warning("Status update failed: task_id=%d not found", task_id)
         return None
+    old_status = task.status
     task.status = status
     await db.flush()
+
+    logger.info(
+        "Task status changed: id=%d %s -> %s",
+        task_id, old_status, status,
+    )
 
     # Re-query with eager loading
     return await get_task_by_id(db, task_id)
@@ -219,6 +240,11 @@ async def create_submission(
     db.add(sub)
     await db.flush()
 
+    logger.info(
+        "Submission created: id=%d task_id=%d participant_id=%d",
+        sub.id, task_id, participant_id,
+    )
+
     # Notify company about new submission
     from app.services.auth.models import User
     from app.services.notifications.email_service import send_email
@@ -293,6 +319,7 @@ async def review_submission(
 
     sub = await get_submission_by_id(db, submission_id)
     if sub is None:
+        logger.warning("Review failed: submission_id=%d not found", submission_id)
         return None
 
     sub.status = status
@@ -307,8 +334,16 @@ async def review_submission(
             part = await get_participation(db, task.id, sub.participant_id)
             if part is not None:
                 await update_participation_status(db, part.id, "completed")
+            logger.info(
+                "Submission approved: id=%d task_id=%d participant_id=%d",
+                submission_id, sub.task_id, sub.participant_id,
+            )
         elif status == "rejected":
             task.status = "rework"
+            logger.info(
+                "Submission rejected: id=%d task_id=%d participant_id=%d",
+                submission_id, sub.task_id, sub.participant_id,
+            )
 
     await db.flush()
 

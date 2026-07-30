@@ -76,7 +76,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 
 ## Дизайн-система
 
-Дизайн-система описана в `DESIGN.md` (корень проекта). Реализована через CSS-переменные в `globals.css`:
+Дизайн-система описана в `docs/technical/design.md`. Реализована через CSS-переменные в `globals.css`:
 
 ### Цвета (shadcn-семантика)
 

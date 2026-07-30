@@ -4,16 +4,16 @@ Revision ID: c1bb6566cc48
 Revises: 8f6b2069ea61
 Create Date: 2026-07-30 11:24:35.510862
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
 
 revision: str = 'c1bb6566cc48'
-down_revision: Union[str, None] = '8f6b2069ea61'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = '8f6b2069ea61'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

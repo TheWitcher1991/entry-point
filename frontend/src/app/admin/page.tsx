@@ -17,12 +17,19 @@ import {
   Activity,
   Shield,
   TrendingUp,
+  Award,
+  Building,
+  FileText,
+  Star,
 } from "@shared/ui/Icons";
 
 const STAT_CARDS = [
-  { key: "active_tasks" as const, label: "Активных задач", icon: Layers, color: "text-emerald-600 dark:text-emerald-400" },
   { key: "participants" as const, label: "Участников", icon: Users, color: "text-blue-600 dark:text-blue-400" },
   { key: "companies" as const, label: "Компаний", icon: Briefcase, color: "text-violet-600 dark:text-violet-400" },
+  { key: "open_tasks" as const, label: "Открытых задач", icon: Layers, color: "text-emerald-600 dark:text-emerald-400" },
+  { key: "completed_tasks" as const, label: "Выполнено задач", icon: Award, color: "text-green-600 dark:text-green-400" },
+  { key: "active_tasks" as const, label: "В работе", icon: Activity, color: "text-amber-600 dark:text-amber-400" },
+  { key: "total_reviews" as const, label: "Отзывов", icon: Star, color: "text-yellow-600 dark:text-yellow-400" },
 ];
 
 export default function AdminDashboardPage() {
@@ -91,7 +98,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
             {STAT_CARDS.map((stat) => {
               const Icon = stat.icon;
               const value = stats ? stats[stat.key] : "—";
@@ -124,9 +131,9 @@ export default function AdminDashboardPage() {
           <div className="mb-8">
             <h2 className="text-[20px] font-bold font-display text-foreground mb-5 flex items-center gap-2">
               <Activity size={20} className="text-primary" strokeWidth={1.5} />
-              Модерация
+              Управление
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 href="/admin/tasks"
                 className="p-6 rounded-3xl bg-card border border-border hover:border-primary/30 transition-[border-color] no-underline block active:scale-[0.98]"
@@ -146,7 +153,53 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="flex items-center gap-2 text-[13px] font-medium text-primary">
                   <TrendingUp size={14} strokeWidth={1.5} />
-                  Перейти к модерации
+                  Перейти
+                </div>
+              </Link>
+
+              <Link
+                href="/admin/companies"
+                className="p-6 rounded-3xl bg-card border border-border hover:border-primary/30 transition-[border-color] no-underline block active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Building size={22} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-[17px] font-semibold text-foreground">
+                      Компании
+                    </h3>
+                    <p className="text-[13px] text-muted-foreground mt-0.5">
+                      Верификация и управление профилями
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-[13px] font-medium text-primary">
+                  <TrendingUp size={14} strokeWidth={1.5} />
+                  Перейти
+                </div>
+              </Link>
+
+              <Link
+                href="/admin/directories"
+                className="p-6 rounded-3xl bg-card border border-border hover:border-primary/30 transition-[border-color] no-underline block active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <FileText size={22} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-[17px] font-semibold text-foreground">
+                      Справочники
+                    </h3>
+                    <p className="text-[13px] text-muted-foreground mt-0.5">
+                      Категории и навыки
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-[13px] font-medium text-primary">
+                  <TrendingUp size={14} strokeWidth={1.5} />
+                  Перейти
                 </div>
               </Link>
             </div>
