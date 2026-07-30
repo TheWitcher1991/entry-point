@@ -1,1 +1,1 @@
-export type { ParticipantProfile, ParticipantProfileUpdate } from "./types";
+export type { ParticipantProfile, ParticipantProfileUpdate, CompletedTask } from "./types";

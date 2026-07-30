@@ -1,5 +1,5 @@
 import { api } from "@shared/api/axios";
-import type { ParticipantProfile, ParticipantProfileUpdate } from "../model";
+import type { CompletedTask, ParticipantProfile, ParticipantProfileUpdate } from "../model";
 
 export async function getProfile(): Promise<ParticipantProfile> {
   const { data } = await api.get<ParticipantProfile>("/participants/me");
@@ -13,5 +13,10 @@ export async function updateProfile(
     "/participants/me",
     payload,
   );
+  return data;
+}
+
+export async function getCompletedTasks(): Promise<CompletedTask[]> {
+  const { data } = await api.get<CompletedTask[]>("/participants/me/completed");
   return data;
 }

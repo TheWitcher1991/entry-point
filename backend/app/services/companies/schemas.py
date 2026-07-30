@@ -23,6 +23,22 @@ class CompanyResponse(BaseModel):
     updated_at: datetime
 
 
+class CompanyListItem(BaseModel):
+    """Публичная краткая информация о компании для каталога."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str | None = None
+    description: str | None = None
+    city: str | None = None
+    industry: str | None = None
+    stack: str | None = None
+    company_size: str | None = None
+    verification_status: str
+    logo_url: str | None = None
+    created_at: datetime
+
+
 class CompanyUpdate(BaseModel):
     name: str | None = None
     logo_url: str | None = None

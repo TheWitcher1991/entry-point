@@ -28,6 +28,27 @@ async def get_or_create_company(db: AsyncSession, owner_id: int) -> Company:
     return comp
 
 
+async def list_companies(
+    db: AsyncSession,
+    search: str | None = None,
+    offset: int = 0,
+    limit: int = 20,
+) -> list[Company]:
+    query = select(Company).order_by(Company.created_at.desc())
+
+    if search:
+        query = query.where(
+            Company.name.ilike(f"%{search}%")
+            | Company.city.ilike(f"%{search}%")
+            | Company.stack.ilike(f"%{search}%")
+            | Company.description.ilike(f"%{search}%")
+        )
+
+    query = query.offset(offset).limit(limit)
+    result = await db.execute(query)
+    return list(result.scalars().all())
+
+
 async def update_company(
     db: AsyncSession, owner_id: int, data: dict[str, Any]
 ) -> Company:

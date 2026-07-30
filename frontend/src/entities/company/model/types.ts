@@ -1,3 +1,16 @@
+export interface CompanyListItem {
+  id: number;
+  name: string | null;
+  description: string | null;
+  city: string | null;
+  industry: string | null;
+  stack: string | null;
+  company_size: string | null;
+  verification_status: string;
+  logo_url: string | null;
+  created_at: string;
+}
+
 export interface Company {
   id: number;
   owner_id: number;

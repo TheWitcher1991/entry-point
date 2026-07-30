@@ -1,2 +1,2 @@
-export { getProfile, updateProfile } from "./api";
-export type { ParticipantProfile, ParticipantProfileUpdate } from "./model";
+export { getProfile, updateProfile, getCompletedTasks } from "./api";
+export type { ParticipantProfile, ParticipantProfileUpdate, CompletedTask } from "./model";

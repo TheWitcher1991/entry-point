@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.services.admin import admin_router
+from app.services.applications import applications_router
 from app.services.auth import auth_router
 from app.services.companies import companies_router
 from app.services.directories import directories_router
@@ -29,6 +30,7 @@ app.include_router(users_router, prefix="/api/v1")
 app.include_router(participants_router, prefix="/api/v1")
 app.include_router(companies_router, prefix="/api/v1")
 app.include_router(directories_router, prefix="/api/v1")
+app.include_router(applications_router, prefix="/api/v1")
 app.include_router(tasks_router, prefix="/api/v1")
 
 

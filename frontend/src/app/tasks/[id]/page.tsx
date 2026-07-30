@@ -3,12 +3,18 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUnit } from "effector-react";
 import { getTask, getTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
+import { updateTaskStatus } from "@entities/task";
 import { getCompanyById } from "@entities/company";
 import { getSkills } from "@entities/skill";
+import { $user } from "@features/auth";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
+import { ApplyButton } from "@features/application-apply";
+import { SubmitForm } from "@features/task-submit";
+import { ReviewSection } from "@features/task-review";
 import { ChevronRight, Bookmark, ExternalLink, Check, Layers } from "@shared/ui/Icons";
 
 type Tab = "description" | "requirements" | "result" | "company";
@@ -16,6 +22,8 @@ type Tab = "description" | "requirements" | "result" | "company";
 export default function TaskDetailPage() {
   const params = useParams();
   const taskId = Number(params.id);
+  const user = useUnit($user);
+  const queryClient = useQueryClient();
 
   const [activeTab, setActiveTab] = useState<Tab>("description");
 
@@ -474,10 +482,54 @@ export default function TaskDetailPage() {
                     </span>
                   </div>
 
-                  {task.status === "open" && (
+                  {task.status === "open" && <ApplyButton taskId={task.id} />}
+
+                  {task.status === "in_progress" && user?.role === "participant" && (
+                    <SubmitForm taskId={task.id} />
+                  )}
+
+                  {/* Company: Review submissions */}
+                  <ReviewSection taskId={task.id} />
+
+                  {/* Company: Status management */}
+                  {user?.role === "company" && task.status === "open" && (
                     <div className="border-t border-border pt-5">
-                      <button className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer">
-                        Подать заявку
+                      <button
+                        onClick={async () => {
+                          await updateTaskStatus(task.id, "in_progress");
+                          queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+                        }}
+                        className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer"
+                      >
+                        Начать работу
+                      </button>
+                    </div>
+                  )}
+
+                  {user?.role === "company" && task.status === "rework" && (
+                    <div className="border-t border-border pt-5">
+                      <button
+                        onClick={async () => {
+                          await updateTaskStatus(task.id, "in_progress");
+                          queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+                        }}
+                        className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer"
+                      >
+                        Вернуть в работу
+                      </button>
+                    </div>
+                  )}
+
+                  {user?.role === "company" && (task.status === "completed" || task.status === "cancelled") && (
+                    <div className="border-t border-border pt-5">
+                      <button
+                        onClick={async () => {
+                          await updateTaskStatus(task.id, "archived");
+                          queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+                        }}
+                        className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-muted-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors cursor-pointer"
+                      >
+                        Архивировать
                       </button>
                     </div>
                   )}

@@ -4,6 +4,7 @@ import type { Task, TaskCreatePayload, TaskListItem, TaskUpdatePayload } from ".
 export async function getTasks(params?: {
   status?: string;
   category_id?: number;
+  company_id?: number;
   difficulty?: string;
   format?: string;
   search?: string;

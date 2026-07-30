@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.services.tasks.models import ProjectTask, TaskSkill
+from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission
 
 
 async def create_task(
@@ -15,15 +15,23 @@ async def create_task(
     task = ProjectTask(company_id=company_id, **data)
     db.add(task)
     await db.flush()
-    await db.refresh(task)
 
     for skill_data in skills_data:
         ts = TaskSkill(task_id=task.id, **skill_data)
         db.add(ts)
 
     await db.flush()
-    await db.refresh(task)
-    return task
+
+    # Re-query with eager loading for serialization
+    result = await db.execute(
+        select(ProjectTask)
+        .where(ProjectTask.id == task.id)
+        .options(
+            selectinload(ProjectTask.skills).selectinload(TaskSkill.skill),
+            selectinload(ProjectTask.company),
+        )
+    )
+    return result.scalar_one()
 
 
 async def get_task_by_id(
@@ -32,7 +40,11 @@ async def get_task_by_id(
     result = await db.execute(
         select(ProjectTask)
         .where(ProjectTask.id == task_id)
-        .options(selectinload(ProjectTask.skills))
+        .options(
+            selectinload(ProjectTask.skills).selectinload(TaskSkill.skill),
+            selectinload(ProjectTask.company),
+        )
+        .execution_options(populate_existing=True)
     )
     return result.scalar_one_or_none()
 
@@ -43,7 +55,10 @@ async def get_company_tasks(
     result = await db.execute(
         select(ProjectTask)
         .where(ProjectTask.company_id == company_id)
-        .options(selectinload(ProjectTask.skills))
+        .options(
+            selectinload(ProjectTask.skills).selectinload(TaskSkill.skill),
+            selectinload(ProjectTask.company),
+        )
         .order_by(ProjectTask.created_at.desc())
     )
     return list(result.scalars().all())
@@ -75,8 +90,9 @@ async def update_task(
             db.add(ts)
 
     await db.flush()
-    await db.refresh(task)
-    return task
+
+    # Re-query with eager loading
+    return await get_task_by_id(db, task_id)
 
 
 async def update_task_status(
@@ -87,14 +103,16 @@ async def update_task_status(
         return None
     task.status = status
     await db.flush()
-    await db.refresh(task)
-    return task
+
+    # Re-query with eager loading
+    return await get_task_by_id(db, task_id)
 
 
 async def list_tasks(
     db: AsyncSession,
     status: str | None = None,
     category_id: int | None = None,
+    company_id: int | None = None,
     difficulty: str | None = None,
     format: str | None = None,
     skill_ids: list[int] | None = None,
@@ -105,13 +123,18 @@ async def list_tasks(
 ) -> list[ProjectTask]:
     query = (
         select(ProjectTask)
-        .options(selectinload(ProjectTask.skills))
+        .options(
+            selectinload(ProjectTask.skills).selectinload(TaskSkill.skill),
+            selectinload(ProjectTask.company),
+        )
     )
 
     if status:
         query = query.where(ProjectTask.status == status)
     if category_id:
         query = query.where(ProjectTask.category_id == category_id)
+    if company_id:
+        query = query.where(ProjectTask.company_id == company_id)
     if difficulty:
         query = query.where(ProjectTask.difficulty == difficulty)
     if format:
@@ -132,3 +155,82 @@ async def list_tasks(
     query = query.offset(offset).limit(limit)
     result = await db.execute(query)
     return list(result.scalars().all())
+
+
+# ── Submissions ──
+
+
+async def create_submission(
+    db: AsyncSession,
+    task_id: int,
+    participant_id: int,
+    description: str | None,
+    result_links: str | None,
+) -> TaskSubmission | None:
+    """Create a submission. Task must be in 'in_progress' status."""
+    task = await get_task_by_id(db, task_id)
+    if task is None or task.status != "in_progress":
+        return None
+
+    sub = TaskSubmission(
+        task_id=task_id,
+        participant_id=participant_id,
+        description=description,
+        result_links=result_links,
+        status="pending",
+    )
+    db.add(sub)
+    await db.flush()
+
+    # Re-query with eager loading
+    result = await db.execute(
+        select(TaskSubmission)
+        .where(TaskSubmission.id == sub.id)
+        .options(selectinload(TaskSubmission.participant_profile))
+    )
+    return result.scalar_one()
+
+
+async def get_task_submissions(
+    db: AsyncSession, task_id: int
+) -> list[TaskSubmission]:
+    result = await db.execute(
+        select(TaskSubmission)
+        .where(TaskSubmission.task_id == task_id)
+        .options(selectinload(TaskSubmission.participant_profile))
+        .order_by(TaskSubmission.created_at.desc())
+    )
+    return list(result.scalars().all())
+
+
+async def review_submission(
+    db: AsyncSession,
+    submission_id: int,
+    status: str,
+    review_comment: str | None,
+) -> TaskSubmission | None:
+    sub = await db.get(TaskSubmission, submission_id)
+    if sub is None:
+        return None
+
+    sub.status = status
+    sub.review_comment = review_comment
+
+    # Update task status based on review
+    task = await db.get(ProjectTask, sub.task_id)
+    if task is not None:
+        if status == "approved":
+            task.status = "completed"
+            task.participant_count = (task.participant_count or 0) + 1
+        elif status == "rejected":
+            task.status = "rework"
+
+    await db.flush()
+
+    # Re-query with eager loading
+    result = await db.execute(
+        select(TaskSubmission)
+        .where(TaskSubmission.id == sub.id)
+        .options(selectinload(TaskSubmission.participant_profile))
+    )
+    return result.scalar_one()

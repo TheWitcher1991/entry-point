@@ -1,1 +1,1 @@
-export type { Company, CompanyUpdate } from "./types";
+export type { Company, CompanyListItem, CompanyUpdate } from "./types";

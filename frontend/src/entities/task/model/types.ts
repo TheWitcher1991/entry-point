@@ -2,6 +2,7 @@ export interface TaskSkill {
   id: number;
   task_id: number;
   skill_id: number;
+  skill_name: string | null;
   level: string | null;
   is_required: boolean;
 }
@@ -15,6 +16,7 @@ export interface TaskSkillCreate {
 export interface Task {
   id: number;
   company_id: number;
+  company_name: string | null;
   title: string;
   summary: string | null;
   description: string | null;
@@ -117,6 +119,7 @@ export interface TaskUpdatePayload extends Partial<TaskCreatePayload> {}
 export interface TaskListItem {
   id: number;
   company_id: number;
+  company_name: string | null;
   title: string;
   summary: string | null;
   category_id: number | null;

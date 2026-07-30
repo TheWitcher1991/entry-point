@@ -13,6 +13,9 @@ backend/.pytest_cache/
 backend/htmlcov/
 backend/.ruff_cache/
 
+__pycache__/
+**/__pycache__/
+
 # Node
 frontend/node_modules/
 frontend/.next/

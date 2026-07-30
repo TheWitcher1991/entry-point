@@ -7,13 +7,14 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from app.core.config import settings
 from app.core.database import Base
+from app.services.applications.models import Application  # noqa: F401
 
 # Import all models so they register on Base.metadata
 from app.services.auth.models import User  # noqa: F401
 from app.services.companies.models import Company  # noqa: F401
 from app.services.directories.models import Category, Skill  # noqa: F401
 from app.services.participants.models import ParticipantProfile  # noqa: F401
-from app.services.tasks.models import ProjectTask, TaskSkill  # noqa: F401
+from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)

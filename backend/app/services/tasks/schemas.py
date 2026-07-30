@@ -9,6 +9,7 @@ class TaskSkillResponse(BaseModel):
     id: int
     task_id: int
     skill_id: int
+    skill_name: str | None = None
     level: str | None = None
     is_required: bool = True
 
@@ -24,6 +25,7 @@ class TaskResponse(BaseModel):
 
     id: int
     company_id: int
+    company_name: str | None = None
     title: str
     summary: str | None = None
     description: str | None = None
@@ -58,6 +60,7 @@ class TaskCreate(BaseModel):
     category_id: int | None = None
     difficulty: str | None = None
     format: str | None = None
+    status: str = Field(default="draft")
     start_date: datetime | None = None
     deadline: datetime | None = None
     participant_limit: int = Field(default=1, ge=1, le=3)
@@ -105,6 +108,7 @@ class TaskListItem(BaseModel):
 
     id: int
     company_id: int
+    company_name: str | None = None
     title: str
     summary: str | None = None
     category_id: int | None = None
@@ -124,3 +128,32 @@ class TaskStatusUpdate(BaseModel):
         pattern=r"^(draft|moderation|revision|published|open|selected|"
         r"in_progress|review|rework|completed|cancelled|archived|blocked)$"
     )
+
+
+# ── Submissions ──
+
+
+class SubmissionCreate(BaseModel):
+    description: str | None = Field(None, max_length=5000)
+    result_links: str | None = Field(None, max_length=2000)
+
+
+class SubmissionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    task_id: int
+    participant_id: int
+    description: str | None = None
+    result_links: str | None = None
+    status: str = "pending"
+    review_comment: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    participant_first_name: str | None = None
+    participant_last_name: str | None = None
+
+
+class SubmissionReview(BaseModel):
+    status: str = Field(pattern=r"^(approved|rejected)$")
+    review_comment: str | None = Field(None, max_length=2000)

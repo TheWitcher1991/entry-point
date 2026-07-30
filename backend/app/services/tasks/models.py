@@ -53,6 +53,10 @@ class ProjectTask(Base):
     company = relationship("Company", backref="tasks", uselist=False)
     skills = relationship("TaskSkill", back_populates="task", cascade="all, delete-orphan")
 
+    @property
+    def company_name(self) -> str | None:
+        return self.company.name if self.company else None
+
 
 class TaskSkill(Base):
     __tablename__ = "task_skills"
@@ -69,3 +73,34 @@ class TaskSkill(Base):
 
     task = relationship("ProjectTask", back_populates="skills")
     skill = relationship("Skill", backref="task_skills", uselist=False)
+
+    @property
+    def skill_name(self) -> str | None:
+        return self.skill.name if self.skill else None
+
+
+class TaskSubmission(Base):
+    __tablename__ = "task_submissions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    task_id: Mapped[int] = mapped_column(
+        ForeignKey("project_tasks.id"), nullable=False, index=True
+    )
+    participant_id: Mapped[int] = mapped_column(
+        ForeignKey("participant_profiles.id"), nullable=False
+    )
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    result_links: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(50), default="pending")
+    review_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    task = relationship("ProjectTask", backref="submissions", uselist=False)
+    participant_profile = relationship(
+        "ParticipantProfile", backref="submissions", uselist=False
+    )

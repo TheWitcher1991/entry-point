@@ -26,6 +26,23 @@ class ParticipantProfileResponse(BaseModel):
     updated_at: datetime
 
 
+class CompletedTaskResponse(BaseModel):
+    """Approved submission with task details for participant's experience."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    submission_id: int
+    task_id: int
+    task_title: str
+    task_summary: str | None = None
+    task_difficulty: str | None = None
+    company_name: str | None = None
+    description: str | None = None
+    result_links: str | None = None
+    review_comment: str | None = None
+    completed_at: datetime
+
+
 class ParticipantProfileUpdate(BaseModel):
     first_name: str | None = None
     last_name: str | None = None

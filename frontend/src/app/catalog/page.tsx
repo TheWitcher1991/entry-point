@@ -41,6 +41,7 @@ function TaskCard({ task }: { task: TaskListItem }) {
     ? TASK_FORMAT_LABELS[task.format as keyof typeof TASK_FORMAT_LABELS] || task.format
     : null;
   const statusLabel = TASK_STATUS_LABELS[task.status] || task.status;
+  const companyInitial = task.company_name?.[0] || "?";
 
   return (
     <Link
@@ -50,11 +51,11 @@ function TaskCard({ task }: { task: TaskListItem }) {
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-[12px] bg-primary/10 text-primary flex items-center justify-center text-[18px] font-bold shrink-0">
-            {task.company_id}
+          <div className="w-11 h-11 rounded-[12px] bg-primary/10 text-primary flex items-center justify-center text-[18px] font-bold shrink-0 uppercase">
+            {companyInitial}
           </div>
           <div>
-            <div className="text-[14px] font-semibold text-foreground">Компания #{task.company_id}</div>
+            <div className="text-[14px] font-semibold text-foreground">{task.company_name || "Неизвестная компания"}</div>
           </div>
         </div>
         <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[12px] font-medium">
@@ -77,7 +78,7 @@ function TaskCard({ task }: { task: TaskListItem }) {
             key={skill.id}
             className="inline-flex items-center px-2.5 py-1 rounded-[8px] bg-muted text-muted-foreground text-[12px] font-medium"
           >
-            skill #{skill.skill_id}
+            {skill.skill_name || `#${skill.skill_id}`}
           </span>
         ))}
         {(task.skills?.length ?? 0) > 4 && (
