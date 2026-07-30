@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Header } from "@widgets/header";
 import { ApplicationReviewList } from "@features/application-review";
 import { ArrowLeft } from "@shared/ui/Icons";
@@ -21,8 +22,27 @@ export default function CompanyApplicationsPage() {
         </button>
 
         <h1 className="text-[28px] font-bold font-display text-foreground mb-8">
-          Заявки на задачи
+          Заявки
         </h1>
+
+        {/* Navigation Tabs */}
+        <div className="flex gap-1 mb-8 border-b border-border">
+          <Link
+            href="/company/tasks"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Мои задачи
+          </Link>
+          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
+            Заявки
+          </span>
+          <Link
+            href="/company/submissions"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Результаты
+          </Link>
+        </div>
 
         <ApplicationReviewList />
       </div>

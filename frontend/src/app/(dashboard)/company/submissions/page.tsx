@@ -99,7 +99,7 @@ export default function CompanySubmissionsPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-[28px] font-bold font-display text-foreground">
-              Результаты участников
+              Результаты
             </h1>
             <p className="text-[15px] text-muted-foreground mt-1">
               {totalPending > 0
@@ -109,6 +109,25 @@ export default function CompanySubmissionsPage() {
                   : "Результаты появятся, когда участники отправят работу"}
             </p>
           </div>
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="flex gap-1 mb-8 border-b border-border">
+          <Link
+            href="/company/tasks"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Мои задачи
+          </Link>
+          <Link
+            href="/company/applications"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Заявки
+          </Link>
+          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
+            Результаты
+          </span>
         </div>
 
         {isLoading ? (

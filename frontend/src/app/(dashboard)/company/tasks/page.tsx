@@ -83,6 +83,28 @@ export default function CompanyTasksPage() {
           </Link>
         </div>
 
+        {/* Navigation Tabs */}
+        <div className="flex gap-1 mb-8 border-b border-border">
+          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
+            Мои задачи
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
+              {tasks.length}
+            </span>
+          </span>
+          <Link
+            href="/company/applications"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Заявки
+          </Link>
+          <Link
+            href="/company/submissions"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Результаты
+          </Link>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           {[
