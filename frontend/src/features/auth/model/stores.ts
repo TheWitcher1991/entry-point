@@ -53,12 +53,13 @@ export const getMeFx = createEffect(async () => {
   return data;
 });
 
-// On getMe failure after login/register — clear token
+// On getMe failure after login/register — clear token + stale role cookie
 sample({
   clock: getMeFx.fail,
   fn: () => {
     localStorage.removeItem("access_token");
     removeCookie("access_token");
+    removeCookie("user_role");
     return null;
   },
   target: [$token, $user, $authError] as any,

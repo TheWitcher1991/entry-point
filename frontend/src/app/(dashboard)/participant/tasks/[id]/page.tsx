@@ -12,7 +12,8 @@ import { getMySubmission, type Submission } from "@entities/submission";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import { SubmitForm } from "@features/task-submit";
-import { ChevronRight, Check, Clock, Layers, ExternalLink, Briefcase, Search } from "@shared/ui/Icons";
+import { ChevronRight, Check, Clock, Layers, ExternalLink, Briefcase, MessageSquare, Search } from "@shared/ui/Icons";
+import { openChatDrawer } from "@widgets/chat/model/stores";
 
 /* ── Helpers ── */
 
@@ -618,14 +619,34 @@ export default function ParticipantTaskWorkspacePage() {
                 </div>
               </div>
 
-              {/* Link to full task page */}
-              <Link
-                href={`/tasks/${task.id}`}
-                className="inline-flex items-center justify-center gap-2 h-[44px] text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors no-underline"
-              >
-                <ExternalLink size={16} />
-                Открыть страницу задачи
-              </Link>
+              {/* Chat card */}
+              <div className="p-6 rounded-3xl bg-card border border-border">
+                <h4 className="text-[14px] font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <MessageSquare size={16} strokeWidth={1.5} />
+                  Чат с компанией
+                </h4>
+                <p className="text-[13px] text-muted-foreground mb-4 leading-relaxed">
+                  Обсуждайте детали задачи, задавайте вопросы и получайте обратную связь
+                </p>
+                <button
+                  onClick={() => openChatDrawer({ taskId: task.id })}
+                  className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer"
+                >
+                  <MessageSquare size={16} />
+                  Открыть чат
+                </button>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col gap-3">
+                <Link
+                  href={`/tasks/${task.id}`}
+                  className="inline-flex items-center justify-center gap-2 h-[44px] text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors no-underline"
+                >
+                  <ExternalLink size={16} />
+                  Открыть страницу задачи
+                </Link>
+              </div>
             </div>
           </div>
         </div>

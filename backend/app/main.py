@@ -16,6 +16,7 @@ from app.services.auth import auth_router
 from app.services.companies import companies_router
 from app.services.directories import directories_router
 from app.services.experiences import experiences_router
+from app.services.messages import messages_router
 from app.services.notifications import notifications_router
 from app.services.participants import participants_router
 from app.services.participations import participations_router
@@ -117,6 +118,7 @@ def create_app() -> FastAPI:
     app.include_router(tasks_router, prefix="/api/v1")
     app.include_router(reviews_router, prefix="/api/v1")
     app.include_router(participations_router, prefix="/api/v1")
+    app.include_router(messages_router, prefix="/api/v1")
     app.include_router(notifications_router, prefix="/api/v1")
 
     return app

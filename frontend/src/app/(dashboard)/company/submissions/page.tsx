@@ -210,10 +210,10 @@ export default function CompanySubmissionsPage() {
                         })
                       }
                       disabled={reviewMutation.isPending}
-                      className="flex-1 h-[36px] inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-red-600 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-[10px] transition-colors cursor-pointer disabled:opacity-50"
+                      className="min-w-0 flex-1 h-[36px] inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-red-600 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-[10px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50 whitespace-nowrap"
                     >
                       <XIcon size={14} />
-                      Отправить на доработку
+                      На доработку
                     </button>
                   </div>
                 </div>

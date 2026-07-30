@@ -10,6 +10,7 @@ import {
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Footer } from "@widgets/footer";
+import { ChatDrawer } from "@widgets/chat";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const user = useUnit($user);
@@ -84,6 +85,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
+      <ChatDrawer />
       <Footer />
     </>
   );

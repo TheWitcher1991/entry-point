@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useUnit } from "effector-react";
@@ -9,8 +8,7 @@ import { getProfile, getCompletedTasks, type CompletedTask } from "@entities/par
 import { getMyReviews, type Review } from "@entities/review";
 import { TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { Header } from "@widgets/header";
-import { ParticipantProfileForm } from "@features/participant-profile";
-import { Award, Star, ChevronRight, MapPin, Briefcase, User, Clock, Layers, CheckVerified, Settings, ExternalLink } from "@shared/ui/Icons";
+import { Award, Star, MapPin, Briefcase, Clock, Layers, CheckVerified, Settings } from "@shared/ui/Icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const availabilityLabels: Record<string, string> = {
@@ -21,7 +19,6 @@ const availabilityLabels: Record<string, string> = {
 
 export default function ParticipantProfilePage() {
   const user = useUnit($user);
-  const [showEdit, setShowEdit] = useState(false);
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["participant-profile"],
@@ -111,13 +108,13 @@ export default function ParticipantProfilePage() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setShowEdit(!showEdit)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-foreground bg-muted hover:bg-muted/80 rounded-[14px] transition-[scale,background-color] active:scale-[0.96] cursor-pointer shrink-0"
+            <Link
+              href="/participant/profile/edit"
+              className="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-foreground bg-muted hover:bg-muted/80 rounded-[14px] transition-[scale,background-color] active:scale-[0.96] no-underline shrink-0"
             >
               <Settings size={15} />
-              {showEdit ? "Свернуть" : "Редактировать"}
-            </button>
+              Редактировать
+            </Link>
           </div>
         )}
 
@@ -139,6 +136,24 @@ export default function ParticipantProfilePage() {
             );
           })}
         </div>
+
+        {/* ── Confirmed Skills ── */}
+        {allConfirmedSkills.size > 0 && (
+          <div className="mb-10">
+            <h2 className="text-[20px] font-bold font-display text-foreground mb-5">Подтверждённые навыки</h2>
+            <div className="flex flex-wrap gap-2">
+              {Array.from(allConfirmedSkills).sort().map((skill) => (
+                <span
+                  key={skill}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-[13px] font-medium"
+                >
+                  <CheckVerified size={13} />
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Achievements: Completed Tasks with Reviews ── */}
         {completedTasks.length > 0 && (
@@ -239,13 +254,7 @@ export default function ParticipantProfilePage() {
           </div>
         )}
 
-        {/* ── Edit Form (collapsible) ── */}
-        {showEdit && (
-          <div className="rounded-[24px] bg-card border border-border p-6 sm:p-8 mb-8">
-            <h2 className="text-[18px] font-bold font-display text-foreground mb-6">Редактировать профиль</h2>
-            <ParticipantProfileForm />
-          </div>
-        )}
+
       </div>
     </div>
   );

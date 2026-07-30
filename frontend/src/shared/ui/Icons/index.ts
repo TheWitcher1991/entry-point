@@ -55,4 +55,5 @@ export {
   Ban,
   Lock,
   Phone,
+  Send,
 } from "./Icons";

@@ -8,7 +8,8 @@ import { getTaskApplications, updateApplicationStatus, APPLICATION_STATUS_LABELS
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon, Search } from "@shared/ui/Icons";
+import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon, MessageSquare, Search } from "@shared/ui/Icons";
+import { openChatDrawer } from "@widgets/chat/model/stores";
 import type { ApplicationStatus } from "@entities/application";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -407,6 +408,7 @@ export default function CompanyTaskDetailPage() {
                 </div>
               )}
             </div>
+
           </div>
 
           {/* RIGHT: Sidebar */}
@@ -415,26 +417,111 @@ export default function CompanyTaskDetailPage() {
             <div className="p-6 rounded-3xl bg-card border border-border shadow-sm">
               <h3 className="text-[14px] font-semibold text-foreground mb-4">Управление задачей</h3>
               <div className="flex flex-col gap-3">
+                {/* draft → moderation */}
+                {task.status === "draft" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("moderation")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                  >
+                    <ArrowRight size={14} />
+                    Отправить на модерацию
+                  </button>
+                )}
+
+                {/* moderation → info only */}
+                {task.status === "moderation" && (
+                  <div className="flex items-center gap-3 p-3 rounded-[12px] bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-[13px]">
+                    <Clock size={16} strokeWidth={1.5} />
+                    Задача на модерации
+                  </div>
+                )}
+
+                {/* revision → moderation */}
+                {task.status === "revision" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("moderation")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                  >
+                    <ArrowRight size={14} />
+                    Отправить на модерацию
+                  </button>
+                )}
+
+                {/* published → open */}
+                {task.status === "published" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("open")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                  >
+                    <ArrowRight size={14} />
+                    Открыть набор
+                  </button>
+                )}
+
+                {/* open → in_progress */}
                 {task.status === "open" && (
                   <button
                     onClick={() => taskStatusMutation.mutate("in_progress")}
                     disabled={taskStatusMutation.isPending}
-                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer disabled:opacity-50"
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
                   >
                     <ArrowRight size={14} />
                     Начать работу
                   </button>
                 )}
+
+                {/* selected → in_progress */}
+                {task.status === "selected" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("in_progress")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                  >
+                    <ArrowRight size={14} />
+                    Начать работу
+                  </button>
+                )}
+
+                {/* in_progress → completed */}
+                {task.status === "in_progress" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("completed")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                  >
+                    <Check size={14} />
+                    Завершить задачу
+                  </button>
+                )}
+
+                {/* review → completed */}
+                {task.status === "review" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("completed")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                  >
+                    <Check size={14} />
+                    Завершить задачу
+                  </button>
+                )}
+
+                {/* rework → in_progress */}
                 {task.status === "rework" && (
                   <button
                     onClick={() => taskStatusMutation.mutate("in_progress")}
                     disabled={taskStatusMutation.isPending}
-                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer disabled:opacity-50"
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
                   >
                     <ArrowRight size={14} />
                     Вернуть в работу
                   </button>
                 )}
+
+                {/* completed/cancelled → archived */}
                 {(task.status === "completed" || task.status === "cancelled") && (
                   <button
                     onClick={() => taskStatusMutation.mutate("archived")}
@@ -444,7 +531,47 @@ export default function CompanyTaskDetailPage() {
                     Архивировать
                   </button>
                 )}
+
+                {/* archived → draft (restore) */}
+                {task.status === "archived" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("draft")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    Восстановить
+                  </button>
+                )}
+
+                {/* blocked → draft */}
+                {task.status === "blocked" && (
+                  <button
+                    onClick={() => taskStatusMutation.mutate("draft")}
+                    disabled={taskStatusMutation.isPending}
+                    className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    Разблокировать
+                  </button>
+                )}
               </div>
+            </div>
+
+            {/* Chat card */}
+            <div className="p-6 rounded-3xl bg-card border border-border shadow-sm">
+              <h4 className="text-[14px] font-semibold text-foreground mb-4 flex items-center gap-2">
+                <MessageSquare size={16} strokeWidth={1.5} />
+                Чат с участниками
+              </h4>
+              <p className="text-[13px] text-muted-foreground mb-4 leading-relaxed">
+                Общайтесь с участниками по этой задаче
+              </p>
+              <button
+                onClick={() => openChatDrawer({ taskId: task.id })}
+                className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer"
+              >
+                <MessageSquare size={16} />
+                Открыть чат
+              </button>
             </div>
 
             {/* Quick Info */}

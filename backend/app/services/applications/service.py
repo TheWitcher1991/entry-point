@@ -150,7 +150,14 @@ async def update_application_status(
                     ),
                 )
 
-    await db.refresh(app)
+    # Re-query with eager loading instead of refresh to avoid relationship expiry
+    await db.flush()
+    result = await db.execute(
+        select(Application)
+        .where(Application.id == application_id)
+        .options(selectinload(Application.task), selectinload(Application.participant_profile))
+    )
+    app = result.scalar_one_or_none()
     return app
 
 

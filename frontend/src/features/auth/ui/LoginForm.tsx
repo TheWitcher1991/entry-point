@@ -27,7 +27,7 @@ export function LoginForm() {
   // Redirect on successful auth
   useEffect(() => {
     if (submittedRef.current && user) {
-      router.push(user.role === "company" ? "/company" : "/participant");
+      router.push(user.role === "company" ? "/company/tasks" : "/participant");
     }
   }, [user, router]);
 
