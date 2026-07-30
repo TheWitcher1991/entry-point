@@ -78,34 +78,6 @@ export default function CompanyDashboardPage() {
           })}
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex gap-1 mb-8 border-b border-border">
-          <Link
-            href="/company/tasks"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Задачи
-          </Link>
-          <Link
-            href="/company/applications"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Заявки
-          </Link>
-          <Link
-            href="/company/submissions"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Результаты
-          </Link>
-          <Link
-            href="/company/participants"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Участники
-          </Link>
-        </div>
-
         {/* Recent Tasks */}
         <div>
           <h3 className="text-[18px] font-bold font-display text-foreground mb-4">Последние задачи</h3>
@@ -155,10 +127,10 @@ export default function CompanyDashboardPage() {
                         {["draft", "moderation", "revision", "published", "open"].includes(task.status) && (
                           <Link
                             href={`/company/tasks/${task.id}/edit`}
-                            className="inline-flex items-center px-2 py-1.5 text-[11px] font-medium text-primary bg-primary/5 border border-primary/20 hover:bg-primary/10 rounded-[8px] transition-colors no-underline"
-                            title="Редактировать"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[12px] font-medium text-primary bg-primary/5 border border-primary/20 hover:bg-primary/10 rounded-[8px] transition-colors no-underline"
                           >
                             <Edit size={11} />
+                            <span className="hidden sm:inline">Ред.</span>
                           </Link>
                         )}
                       </div>

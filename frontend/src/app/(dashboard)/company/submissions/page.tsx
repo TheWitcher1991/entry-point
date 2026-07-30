@@ -101,31 +101,6 @@ export default function CompanySubmissionsPage() {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex gap-1 mb-8 border-b border-border">
-          <Link
-            href="/company/tasks"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Задачи
-          </Link>
-          <Link
-            href="/company/applications"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Заявки
-          </Link>
-          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary -mb-px flex items-center gap-2">
-            Результаты
-          </span>
-          <Link
-            href="/company/participants"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Участники
-          </Link>
-        </div>
-
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (

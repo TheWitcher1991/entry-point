@@ -31,31 +31,6 @@ export default function CompanyParticipantsPage() {
           <p className="text-[15px] text-muted-foreground mt-1">{companyName}</p>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex gap-1 mb-8 border-b border-border">
-          <Link
-            href="/company/tasks"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Задачи
-          </Link>
-          <Link
-            href="/company/applications"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Заявки
-          </Link>
-          <Link
-            href="/company/submissions"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
-          >
-            Результаты
-          </Link>
-          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary -mb-px flex items-center gap-2">
-            Участники
-          </span>
-        </div>
-
         {/* Search */}
         <div className="relative mb-8">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />

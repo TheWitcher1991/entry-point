@@ -6,20 +6,20 @@ import Image from "next/image";
 import { useUnit } from "effector-react";
 import { $user, $isAuthenticated, $isHydrated, logout } from "@features/auth";
 import { ThemeToggle } from "@shared/ui/ThemeToggle";
-import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon, Bookmark } from "@shared/ui/Icons";
+import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon, Bookmark, Layers, UserPlus, FileText, Users, Building } from "@shared/ui/Icons";
 import { NotificationBell } from "@widgets/notification-bell";
 
 const publicLinks = [
-  { href: "/catalog", label: "Задачи" },
-  { href: "/companies", label: "Компании" },
-  { href: "/how-it-works", label: "Как это работает" },
+  { href: "/catalog" as const, label: "Задачи", icon: Layers },
+  { href: "/companies" as const, label: "Компании", icon: Building },
+  { href: "/how-it-works" as const, label: "Как это работает", icon: undefined },
 ];
 
 const companyLinks = [
-  { href: "/company/tasks", label: "Задачи" },
-  { href: "/company/applications", label: "Заявки" },
-  { href: "/company/submissions", label: "Результаты" },
-  { href: "/company/participants", label: "Участники" },
+  { href: "/company/tasks" as const, label: "Задачи", icon: Layers },
+  { href: "/company/applications" as const, label: "Заявки", icon: UserPlus },
+  { href: "/company/submissions" as const, label: "Результаты", icon: FileText },
+  { href: "/company/participants" as const, label: "Участники", icon: Users },
 ];
 
 export function Header() {
@@ -57,15 +57,19 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-4 py-2 text-[15px] text-muted-foreground hover:text-foreground hover:bg-muted rounded-[12px] transition-colors no-underline"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-4 py-2 text-[15px] text-muted-foreground hover:text-foreground hover:bg-muted rounded-[12px] transition-colors no-underline flex items-center gap-2"
+              >
+                {Icon && <Icon size={16} strokeWidth={1.5} />}
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Actions */}
@@ -140,16 +144,20 @@ export function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-card px-4 sm:px-6 py-4 flex flex-col gap-1 animate-fadeIn rounded-b-2xl">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="px-4 py-3 text-[15px] text-muted-foreground hover:text-foreground hover:bg-muted rounded-[12px] transition-colors no-underline"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-3 text-[15px] text-muted-foreground hover:text-foreground hover:bg-muted rounded-[12px] transition-colors no-underline flex items-center gap-3"
+              >
+                {Icon && <Icon size={16} strokeWidth={1.5} />}
+                {link.label}
+              </Link>
+            );
+          })}
           <hr className="my-2 border-border" />
           {isHydrated && isAuthenticated && user ? (
             <>
