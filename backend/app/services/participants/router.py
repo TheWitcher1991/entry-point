@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -12,8 +12,10 @@ from app.services.participants.schemas import (
 from app.services.participants.service import (
     get_completed_tasks,
     get_or_create_profile,
+    get_profile_by_id,
     update_profile,
 )
+from app.services.reviews.schemas import ReviewResponse
 
 router = APIRouter(prefix="/participants", tags=["participants"])
 
@@ -63,6 +65,52 @@ async def get_my_completed_tasks(
                 result_links=sub.result_links,
                 review_comment=sub.review_comment,
                 completed_at=sub.updated_at,
+            )
+        )
+    return result
+
+
+@router.get("/{participant_id}", response_model=ParticipantProfileResponse)
+async def get_participant_profile(
+    participant_id: int,
+    db: AsyncSession = Depends(get_db),
+) -> ParticipantProfileResponse:
+    profile = await get_profile_by_id(db, participant_id)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    return ParticipantProfileResponse.model_validate(profile)
+
+
+@router.get("/{participant_id}/reviews", response_model=list[ReviewResponse])
+async def get_participant_reviews_endpoint(
+    participant_id: int,
+    db: AsyncSession = Depends(get_db),
+) -> list[ReviewResponse]:
+    profile = await get_profile_by_id(db, participant_id)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Participant not found")
+
+    from app.services.reviews.service import get_participant_reviews
+
+    reviews = await get_participant_reviews(db, participant_id)
+    result = []
+    for r in reviews:
+        company_name = r.company.name if r.company else None
+        task_title = r.task.title if r.task else None
+        result.append(
+            ReviewResponse(
+                id=r.id,
+                submission_id=r.submission_id,
+                company_id=r.company_id,
+                participant_id=r.participant_id,
+                task_id=r.task_id,
+                rating=r.rating,
+                text=r.text,
+                skills_confirmed=r.skills_confirmed,
+                created_at=r.created_at,
+                updated_at=r.updated_at,
+                company_name=company_name,
+                task_title=task_title,
             )
         )
     return result

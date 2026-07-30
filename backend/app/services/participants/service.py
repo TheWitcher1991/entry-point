@@ -41,6 +41,16 @@ async def update_profile(
     return profile
 
 
+async def get_profile_by_id(
+    db: AsyncSession, profile_id: int
+) -> ParticipantProfile | None:
+    """Get participant profile by primary key id."""
+    result = await db.execute(
+        select(ParticipantProfile).where(ParticipantProfile.id == profile_id)
+    )
+    return result.scalar_one_or_none()
+
+
 async def get_completed_tasks(
     db: AsyncSession, participant_profile_id: int
 ) -> list[TaskSubmission]:

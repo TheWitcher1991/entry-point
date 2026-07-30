@@ -13,6 +13,13 @@ class Settings(BaseSettings):
 
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
 
+    SMTP_HOST: str = "localhost"
+    SMTP_PORT: int = 1025
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = "noreply@talentpot.ru"
+    SMTP_USE_TLS: bool = False
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

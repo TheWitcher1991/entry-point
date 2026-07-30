@@ -19,3 +19,16 @@ class AdminUserResponse(BaseModel):
 
 class UpdateUserStatusRequest(BaseModel):
     status: UserStatus
+
+
+class AdminTaskResponse(BaseModel):
+    id: int
+    company_id: int
+    title: str
+    summary: str | None = None
+    difficulty: str | None = None
+    status: str
+    company_name: str | None = None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}

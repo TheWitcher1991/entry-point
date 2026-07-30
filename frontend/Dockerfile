@@ -1,21 +1,46 @@
-FROM node:22-alpine AS base
+# ─── Dependencies stage ───
+FROM node:22-alpine AS deps
+RUN corepack enable
 
 WORKDIR /app
-COPY package.json .
-RUN corepack enable && pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+
+# ─── Build stage ───
+FROM node:22-alpine AS build
+RUN corepack enable
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-FROM base AS dev
-EXPOSE 3000
-CMD ["pnpm", "dev"]
+ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL=/api/v1
 
-FROM base AS build
 RUN pnpm build
 
+
+# ─── Production stage ───
 FROM node:22-alpine AS prod
+RUN corepack enable
+
 WORKDIR /app
-COPY --from=build /app/.next .next
-COPY --from=build /app/public public
-COPY --from=build /app/package.json .
+
+# Create non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Copy built artifacts
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/.next/standalone ./
+
 EXPOSE 3000
-CMD ["pnpm", "start"]
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+USER appuser
+
+CMD ["node", "server.js"]

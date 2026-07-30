@@ -1,13 +1,15 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import Link from "next/link";
 import { useUnit } from "effector-react";
 import { $user } from "@features/auth";
-import { getMyCompanyTasks } from "@entities/task";
+import { getMyCompanyTasks, getTaskParticipants } from "@entities/task";
+import type { TaskParticipant } from "@entities/task";
 import { TASK_STATUS_LABELS } from "@entities/task";
 import { Header } from "@widgets/header";
 import { Plus, Clock, Layers, UserPlus, Edit, Eye, FileText } from "@shared/ui/Icons";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "text-muted-foreground bg-muted",
@@ -42,6 +44,25 @@ export default function CompanyTasksPage() {
   const completedTasks = tasks.filter(
     (t) => ["completed", "cancelled", "archived"].includes(t.status),
   );
+
+  // Fetch participants for active tasks that have participants
+  const activeParticipantStatuses = ["selected", "in_progress", "review", "rework"];
+  const tasksWithParticipants = tasks.filter(
+    (t) => activeParticipantStatuses.includes(t.status) && t.participant_count > 0,
+  );
+  const participantsQueries = useQueries({
+    queries: tasksWithParticipants.map((task) => ({
+      queryKey: ["task-participants", task.id],
+      queryFn: () => getTaskParticipants(task.id),
+      staleTime: 30_000,
+    })),
+  });
+  const participantsByTaskId: Record<number, TaskParticipant[]> = {};
+  tasksWithParticipants.forEach((task, index) => {
+    if (participantsQueries[index]?.data) {
+      participantsByTaskId[task.id] = participantsQueries[index].data;
+    }
+  });
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -167,6 +188,37 @@ export default function CompanyTasksPage() {
                           </span>
                         )}
                       </div>
+
+                      {/* Participants */}
+                      {participantsByTaskId[task.id]?.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <div className="flex flex-wrap gap-2">
+                            {participantsByTaskId[task.id].map((p) => (
+                              <Link
+                                key={p.id}
+                                href={`/participants/${p.participant_id}`}
+                                className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted hover:bg-muted/70 transition-[background-color,scale] duration-150 ease-out no-underline active:scale-[0.96]"
+                              >
+                                <Avatar size="sm">
+                                  {p.participant_avatar_url ? (
+                                    <AvatarImage
+                                      src={p.participant_avatar_url}
+                                      alt={p.participant_first_name || ""}
+                                    />
+                                  ) : null}
+                                  <AvatarFallback>
+                                    {p.participant_first_name?.[0] || "?"}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-[13px] text-foreground">
+                                  {p.participant_first_name}{" "}
+                                  {p.participant_last_name}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex gap-2 shrink-0">

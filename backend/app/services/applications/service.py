@@ -79,8 +79,62 @@ async def update_application_status(
     app = await get_application_by_id(db, application_id)
     if app is None:
         return None
+
+    old_status = app.status
     app.status = status
     await db.flush()
+
+    # ── Side effects on approval ──
+    if status == "approved" and old_status != "approved":
+        # Lazy imports to avoid circular dependencies
+        from app.services.notifications.service import create_notification
+        from app.services.participations.service import create_participation
+        from app.services.tasks.service import update_task_status
+
+        # 1. Create participation
+        await create_participation(db, app.task_id, app.participant_id)
+
+        # 2. Update task status to "selected" if currently "open"
+        task = app.task
+        if task is not None and task.status == "open":
+            await update_task_status(db, app.task_id, "selected")
+
+        # 3. Increment participant count
+        if task is not None:
+            task.participant_count = (task.participant_count or 0) + 1
+
+        # 4. Notify participant
+        participant_profile = app.participant_profile
+        if participant_profile is not None:
+            task_title = task.title if task else "the task"
+            await create_notification(
+                db,
+                user_id=participant_profile.user_id,
+                type="application_approved",
+                title="Application Approved",
+                message=f"Your application for '{task_title}' has been approved!",
+                link=f"/tasks/{app.task_id}",
+            )
+
+            # 5. Send email notification
+            from app.services.auth.models import User
+            from app.services.notifications.email_service import send_email
+
+            user_result = await db.execute(
+                select(User).where(User.id == participant_profile.user_id)
+            )
+            user = user_result.scalar_one_or_none()
+            if user is not None:
+                company_name = task.company_name if task else "Компания"
+                await send_email(
+                    to=user.email,
+                    subject="Заявка принята — Точка входа",
+                    text=(
+                        f"Ваша заявка на задачу \"{task_title}\" принята. "
+                        f"Компания {company_name} выбрала вас исполнителем."
+                    ),
+                )
+
     await db.refresh(app)
     return app
 

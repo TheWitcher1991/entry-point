@@ -46,3 +46,22 @@ export async function updateTaskStatus(
   const { data } = await api.patch<Task>(`/tasks/${id}/status`, { status });
   return data;
 }
+
+export interface TaskParticipant {
+  id: number;
+  participant_id: number;
+  status: string;
+  created_at: string;
+  participant_first_name: string | null;
+  participant_last_name: string | null;
+  participant_avatar_url: string | null;
+}
+
+export async function getTaskParticipants(
+  taskId: number,
+): Promise<TaskParticipant[]> {
+  const { data } = await api.get<TaskParticipant[]>(
+    `/tasks/${taskId}/participants`,
+  );
+  return data;
+}

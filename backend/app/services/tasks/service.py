@@ -157,6 +157,26 @@ async def list_tasks(
     return list(result.scalars().all())
 
 
+# ── Participants ──
+
+
+async def get_task_participants(
+    db: AsyncSession, task_id: int
+) -> list[Any]:
+    """Get all active participations for a task with eager-loaded profiles."""
+    from app.services.participations.models import Participation
+
+    result = await db.execute(
+        select(Participation)
+        .where(
+            Participation.task_id == task_id,
+            Participation.status == "active",
+        )
+        .options(selectinload(Participation.participant_profile))
+    )
+    return list(result.scalars().all())
+
+
 # ── Submissions ──
 
 
@@ -167,9 +187,26 @@ async def create_submission(
     description: str | None,
     result_links: str | None,
 ) -> TaskSubmission | None:
-    """Create a submission. Task must be in 'in_progress' status."""
+    """Create a submission. Task must be 'in_progress' with active participant participation."""
+    from app.services.participations.service import is_participant_assigned
+
     task = await get_task_by_id(db, task_id)
     if task is None or task.status != "in_progress":
+        return None
+
+    # Check participant has active participation
+    if not await is_participant_assigned(db, task_id, participant_id):
+        return None
+
+    # Check for existing pending submission
+    existing = await db.execute(
+        select(TaskSubmission).where(
+            TaskSubmission.task_id == task_id,
+            TaskSubmission.participant_id == participant_id,
+            TaskSubmission.status == "pending",
+        )
+    )
+    if existing.scalar_one_or_none():
         return None
 
     sub = TaskSubmission(
@@ -181,6 +218,36 @@ async def create_submission(
     )
     db.add(sub)
     await db.flush()
+
+    # Notify company about new submission
+    from app.services.auth.models import User
+    from app.services.notifications.email_service import send_email
+    from app.services.notifications.service import create_notification
+
+    if task.company is not None:
+        await create_notification(
+            db,
+            user_id=task.company.owner_id,
+            type="submission_received",
+            title="New Submission Received",
+            message=f"A participant has submitted work for '{task.title}'.",
+            link=f"/tasks/{task_id}/submissions",
+        )
+
+        # Send email to company owner
+        user_result = await db.execute(
+            select(User).where(User.id == task.company.owner_id)
+        )
+        user = user_result.scalar_one_or_none()
+        if user is not None:
+            await send_email(
+                to=user.email,
+                subject="Новый отклик — Точка входа",
+                text=(
+                    f"Участник отправил работу по задаче \"{task.title}\". "
+                    f"Перейдите в панель управления, чтобы проверить."
+                ),
+            )
 
     # Re-query with eager loading
     result = await db.execute(
@@ -203,29 +270,79 @@ async def get_task_submissions(
     return list(result.scalars().all())
 
 
+async def get_submission_by_id(
+    db: AsyncSession, submission_id: int
+) -> TaskSubmission | None:
+    """Get a single submission by ID with eager-loaded participant profile."""
+    result = await db.execute(
+        select(TaskSubmission)
+        .where(TaskSubmission.id == submission_id)
+        .options(selectinload(TaskSubmission.participant_profile))
+    )
+    return result.scalar_one_or_none()
+
+
 async def review_submission(
     db: AsyncSession,
     submission_id: int,
     status: str,
     review_comment: str | None,
 ) -> TaskSubmission | None:
-    sub = await db.get(TaskSubmission, submission_id)
+    from app.services.notifications.service import create_notification
+    from app.services.participations.service import get_participation, update_participation_status
+
+    sub = await get_submission_by_id(db, submission_id)
     if sub is None:
         return None
 
     sub.status = status
     sub.review_comment = review_comment
 
-    # Update task status based on review
+    # Update task and participation status based on review
     task = await db.get(ProjectTask, sub.task_id)
     if task is not None:
         if status == "approved":
             task.status = "completed"
-            task.participant_count = (task.participant_count or 0) + 1
+            # Update participation status to completed
+            part = await get_participation(db, task.id, sub.participant_id)
+            if part is not None:
+                await update_participation_status(db, part.id, "completed")
         elif status == "rejected":
             task.status = "rework"
 
     await db.flush()
+
+    # Notify participant about review
+    if task is not None:
+        profile = sub.participant_profile
+        if profile is not None:
+            title = "Submission Approved" if status == "approved" else "Submission Needs Rework"
+            await create_notification(
+                db,
+                user_id=profile.user_id,
+                type="review_created",
+                title=title,
+                message=f"Your submission for '{task.title}' has been {status}.",
+                link=f"/tasks/{task.id}",
+            )
+
+            # Send email to participant
+            from app.services.auth.models import User
+            from app.services.notifications.email_service import send_email
+
+            user_result = await db.execute(
+                select(User).where(User.id == profile.user_id)
+            )
+            user = user_result.scalar_one_or_none()
+            if user is not None:
+                status_text = "принят" if status == "approved" else "отправлен на доработку"
+                await send_email(
+                    to=user.email,
+                    subject="Результат проверки — Точка входа",
+                    text=(
+                        f"Ваш отклик по задаче \"{task.title}\" {status_text}."
+                    ),
+                )
 
     # Re-query with eager loading
     result = await db.execute(

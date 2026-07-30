@@ -7,6 +7,7 @@ from app.core.dependencies import get_current_user
 from app.services.auth.models import User, UserRole
 from app.services.companies.models import Company
 from app.services.participants.models import ParticipantProfile
+from app.services.participations.schemas import ParticipantsResponse
 from app.services.tasks.schemas import (
     SubmissionCreate,
     SubmissionResponse,
@@ -22,6 +23,7 @@ from app.services.tasks.service import (
     create_task,
     get_company_tasks,
     get_task_by_id,
+    get_task_participants,
     get_task_submissions,
     list_tasks,
     review_submission,
@@ -131,6 +133,48 @@ async def get_task(
             detail="Task not found",
         )
     return TaskResponse.model_validate(task)
+
+
+@router.get("/{task_id}/participants", response_model=list[ParticipantsResponse])
+async def get_task_active_participants(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[ParticipantsResponse]:
+    """Get active participants for a task. Company (owner) or admin only."""
+    is_admin = current_user.role == UserRole.ADMIN
+    is_company_user = current_user.role == UserRole.COMPANY
+
+    if is_company_user:
+        company = await _get_company(db, current_user.id)
+        if company is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Company profile not found.",
+            )
+        task = await get_task_by_id(db, task_id)
+        if task is None or task.company_id != company.id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found or not owned by you",
+            )
+    elif not is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Company or admin access required",
+        )
+
+    participants = await get_task_participants(db, task_id)
+    result = []
+    for p in participants:
+        resp = ParticipantsResponse.model_validate(p)
+        profile = p.participant_profile
+        if profile:
+            resp.participant_first_name = profile.first_name
+            resp.participant_last_name = profile.last_name
+            resp.participant_avatar_url = profile.avatar_url
+        result.append(resp)
+    return result
 
 
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)

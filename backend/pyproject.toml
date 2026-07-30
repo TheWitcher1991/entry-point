@@ -15,6 +15,7 @@ dependencies = [
     "bcrypt",
     "python-multipart",
     "httpx",
+    "aiosmtplib",
 ]
 
 [project.optional-dependencies]

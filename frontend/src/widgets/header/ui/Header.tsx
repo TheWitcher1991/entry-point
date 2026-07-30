@@ -7,6 +7,7 @@ import { useUnit } from "effector-react";
 import { $user, $isAuthenticated, $isHydrated, logout } from "@features/auth";
 import { ThemeToggle } from "@shared/ui/ThemeToggle";
 import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon } from "@shared/ui/Icons";
+import { NotificationBell } from "@widgets/notification-bell";
 
 const navLinks = [
   { href: "/catalog", label: "Задачи" },
@@ -57,6 +58,7 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
+          {isHydrated && isAuthenticated && <NotificationBell />}
           <ThemeToggle />
 
           {isHydrated && isAuthenticated && user ? (

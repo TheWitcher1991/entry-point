@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = ["/participant", "/company"];
+const PROTECTED_ROUTES = ["/participant", "/company", "/admin"];
 const AUTH_ROUTES = ["/login", "/register"];
 
 export function middleware(request: NextRequest) {
@@ -45,9 +45,20 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/participant", request.url));
   }
 
+  // Admin routes: only admin role allowed
+  if (pathname.startsWith("/admin") && role !== "admin") {
+    if (role === "company") {
+      return NextResponse.redirect(new URL("/company", request.url));
+    }
+    if (role === "participant") {
+      return NextResponse.redirect(new URL("/participant", request.url));
+    }
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/participant/:path*", "/company/:path*"],
+  matcher: ["/login", "/register", "/participant/:path*", "/company/:path*", "/admin/:path*"],
 };
