@@ -49,4 +49,9 @@ export {
   Target,
   DollarSign,
   FileText,
+  AlertTriangle,
+  CheckCircle,
+  Ban,
+  Lock,
+  Phone,
 } from "./Icons";

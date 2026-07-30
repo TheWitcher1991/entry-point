@@ -68,16 +68,16 @@ export function Footer() {
               Правовая информация
             </h4>
             <div className="flex flex-col gap-3">
-              <Link href="/how-it-works" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
+              <Link href="/terms" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
                 Пользовательское соглашение
               </Link>
-              <Link href="/how-it-works" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
+              <Link href="/privacy-policy" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
                 Политика конфиденциальности
               </Link>
-              <Link href="/how-it-works" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
+              <Link href="/rules-of-publication" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
                 Правила публикации
               </Link>
-              <Link href="/how-it-works" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
+              <Link href="/contacts" className="text-[14px] text-muted-foreground hover:text-primary no-underline transition-colors">
                 Контакты
               </Link>
             </div>
@@ -85,7 +85,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-muted-foreground">
-          <span>© {new Date().getFullYear()} Точка входа. Все права защищены.</span>
+          <span>© {new Date().getFullYear()} ООО ТалентСпот. Все права защищены.</span>
           <span>Сделано с заботой о начинающих специалистах</span>
         </div>
       </div>

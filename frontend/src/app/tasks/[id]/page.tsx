@@ -489,7 +489,10 @@ export default function TaskDetailPage() {
                   )}
 
                   {/* Company: Review submissions */}
-                  <ReviewSection taskId={task.id} />
+                  <ReviewSection
+                    taskId={task.id}
+                    skillNames={task.skills.map((s) => skillMap.get(s.skill_id) || s.skill_name || `#${s.skill_id}`)}
+                  />
 
                   {/* Company: Status management */}
                   {user?.role === "company" && task.status === "open" && (

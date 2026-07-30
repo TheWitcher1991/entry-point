@@ -4,14 +4,19 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTaskSubmissions, reviewSubmission } from "@entities/submission";
 import { SUBMISSION_STATUS_LABELS } from "@entities/submission";
-import { Check, X as XIcon } from "@shared/ui/Icons";
+import { ReviewForm } from "@features/review-form";
+import { Check, X as XIcon, MessageSquare } from "@shared/ui/Icons";
 
 interface ReviewSectionProps {
   taskId: number;
+  skillNames?: string[];
 }
 
-export function ReviewSection({ taskId }: ReviewSectionProps) {
+export function ReviewSection({ taskId, skillNames }: ReviewSectionProps) {
   const [reviewComment, setReviewComment] = useState("");
+  const [reviewingSubmissionId, setReviewingSubmissionId] = useState<
+    number | null
+  >(null);
   const queryClient = useQueryClient();
 
   const { data: submissions = [], isLoading } = useQuery({
@@ -42,8 +47,10 @@ export function ReviewSection({ taskId }: ReviewSectionProps) {
   if (submissions.length === 0) return null;
 
   const statusColors: Record<string, string> = {
-    pending: "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
-    approved: "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
+    pending:
+      "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
+    approved:
+      "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
     rejected: "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400",
   };
 
@@ -69,7 +76,9 @@ export function ReviewSection({ taskId }: ReviewSectionProps) {
                     statusColors[sub.status] || "bg-muted text-muted-foreground"
                   }`}
                 >
-                  {SUBMISSION_STATUS_LABELS[sub.status as keyof typeof SUBMISSION_STATUS_LABELS] || sub.status}
+                  {SUBMISSION_STATUS_LABELS[
+                    sub.status as keyof typeof SUBMISSION_STATUS_LABELS
+                  ] || sub.status}
                 </span>
               </div>
               <span className="text-[12px] text-muted-foreground">
@@ -89,13 +98,14 @@ export function ReviewSection({ taskId }: ReviewSectionProps) {
               </p>
             )}
 
-            {sub.review_comment && (
-              <div className="p-3 rounded-[10px] bg-muted text-[13px] text-muted-foreground mb-3">
-                <span className="font-medium text-foreground">Комментарий: </span>
+            {sub.review_comment && sub.status === "rejected" && (
+              <div className="p-3 rounded-[10px] bg-red-50 dark:bg-red-900/20 text-[13px] text-red-600 dark:text-red-400 mb-3">
+                <span className="font-medium">Комментарий: </span>
                 {sub.review_comment}
               </div>
             )}
 
+            {/* Pending: approve/reject */}
             {sub.status === "pending" && (
               <div className="flex flex-col gap-3">
                 <textarea
@@ -107,7 +117,10 @@ export function ReviewSection({ taskId }: ReviewSectionProps) {
                 <div className="flex gap-2">
                   <button
                     onClick={() =>
-                      reviewMutation.mutate({ submissionId: sub.id, status: "approved" })
+                      reviewMutation.mutate({
+                        submissionId: sub.id,
+                        status: "approved",
+                      })
                     }
                     disabled={reviewMutation.isPending}
                     className="flex-1 h-[36px] inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-white bg-emerald-600 hover:opacity-90 rounded-[10px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
@@ -117,7 +130,10 @@ export function ReviewSection({ taskId }: ReviewSectionProps) {
                   </button>
                   <button
                     onClick={() =>
-                      reviewMutation.mutate({ submissionId: sub.id, status: "rejected" })
+                      reviewMutation.mutate({
+                        submissionId: sub.id,
+                        status: "rejected",
+                      })
                     }
                     disabled={reviewMutation.isPending}
                     className="flex-1 h-[36px] inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-red-600 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-[10px] transition-colors cursor-pointer disabled:opacity-50"
@@ -128,6 +144,27 @@ export function ReviewSection({ taskId }: ReviewSectionProps) {
                 </div>
               </div>
             )}
+
+            {/* Approved: leave a review */}
+            {sub.status === "approved" &&
+              reviewingSubmissionId !== sub.id && (
+                <button
+                  onClick={() => setReviewingSubmissionId(sub.id)}
+                  className="inline-flex items-center gap-1.5 h-[36px] px-4 text-[13px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[10px] transition-colors cursor-pointer active:scale-[0.96]"
+                >
+                  <MessageSquare size={14} />
+                  Оставить отзыв
+                </button>
+              )}
+
+            {sub.status === "approved" &&
+              reviewingSubmissionId === sub.id && (
+                <ReviewForm
+                  taskId={taskId}
+                  submissionId={sub.id}
+                  skillNames={skillNames}
+                />
+              )}
           </div>
         ))}
       </div>

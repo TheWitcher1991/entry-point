@@ -1,61 +1,62 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Briefcase, Award, ArrowRight, LogIn } from "@shared/ui/Icons";
+import {
+  TrendingUp,
+  Users,
+  Briefcase,
+  Award,
+  ArrowRight,
+  LogIn,
+  Layers,
+  Clock,
+} from "@shared/ui/Icons";
+import { getStats } from "@entities/stats";
+import { getTasks, TASK_DIFFICULTY_LABELS } from "@entities/task";
+import type { TaskListItem } from "@entities/task";
 
-const popularTasks = [
-  {
-    company: "Verba Tech",
-    initial: "V",
-    title: "Telegram-бот для автоматизации заявок",
-    desc: "Разработка бота на Node.js для обработки пользовательских заявок с интеграцией в CRM-систему.",
-    tags: ["Node.js", "PostgreSQL"],
-    time: "14 дней",
-    level: "Средняя",
-    spots: "3 места",
-    applicants: 12,
-    color: "bg-[#E8F4F4] text-[#166666]",
-  },
-  {
-    company: "DataFlow",
-    initial: "D",
-    title: "Дизайн UI-компонента дашборда аналитики",
-    desc: "Набор компонентов для дашборда: графики, карточки показателей, фильтры.",
-    tags: ["Figma", "UI/UX"],
-    time: "10 дней",
-    level: "Лёгкая",
-    spots: "2 места",
-    applicants: 8,
-    color: "bg-[#FFF3E0] text-[#E65100]",
-  },
-  {
-    company: "MindBridge",
-    initial: "M",
-    title: "API-интеграция с платёжной системой",
-    desc: "Интеграция REST API платёжного провайдера. Создание платежей, проверка статусов, вебхуки.",
-    tags: ["Python", "FastAPI"],
-    time: "21 день",
-    level: "Средняя",
-    spots: "1 место",
-    applicants: 5,
-    color: "bg-[#E8F5E9] text-[#1B5E20]",
-  },
-  {
-    company: "PixelForge",
-    initial: "P",
-    title: "Автотесты для модуля авторизации",
-    desc: "E2E-тесты для регистрации, входа, восстановления пароля. Playwright или Cypress.",
-    tags: ["TypeScript", "Playwright"],
-    time: "7 дней",
-    level: "Лёгкая",
-    spots: "2 места",
-    applicants: 15,
-    color: "bg-[#F3E5F5] text-[#4A148C]",
-  },
+const LIGHT_BG_COLORS = [
+  "bg-[#E8F4F4] text-primary",
+  "bg-[#FFF3E0] text-[#E65100]",
+  "bg-[#E3F2FD] text-[#0D47A1]",
+  "bg-[#F3E5F5] text-[#4A148C]",
+  "bg-[#E8F5E9] text-[#1B5E20]",
+  "bg-[#FBE9E7] text-[#BF360C]",
+  "bg-[#FCE4EC] text-[#880E4F]",
+  "bg-[#E0F7FA] text-[#00695C]",
 ];
 
+function getTaskColor(id: number): string {
+  return LIGHT_BG_COLORS[id % LIGHT_BG_COLORS.length];
+}
+
+function getDifficultyLabel(difficulty: string | null): string | null {
+  if (!difficulty) return null;
+  return TASK_DIFFICULTY_LABELS[difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || difficulty;
+}
+
+function getInitials(name: string | null): string {
+  return name?.[0] || "?";
+}
+
 export default function LandingPage() {
+  const { data: stats } = useQuery({
+    queryKey: ["landing-stats"],
+    queryFn: getStats,
+    staleTime: 60_000,
+  });
+
+  const { data: popularTasks = [] } = useQuery({
+    queryKey: ["popular-tasks"],
+    queryFn: () => getTasks({ sort: "popular", limit: 4 }),
+    staleTime: 30_000,
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -93,16 +94,30 @@ export default function LandingPage() {
             {/* Stats */}
             <div className="flex items-center justify-center gap-8 md:gap-12 mt-16 pt-12 border-t border-border">
               {[
-                { value: "120+", label: "задач", icon: Briefcase },
-                { value: "45", label: "компаний", icon: TrendingUp },
-                { value: "890", label: "участников", icon: Users },
-                { value: "78%", label: "успешных", icon: Award },
+                {
+                  value: stats?.active_tasks != null ? `${stats.active_tasks}` : "—",
+                  label: "задач",
+                  icon: Briefcase,
+                },
+                {
+                  value: stats?.companies != null ? `${stats.companies}` : "—",
+                  label: "компаний",
+                  icon: TrendingUp,
+                },
+                {
+                  value: stats?.participants != null ? `${stats.participants}` : "—",
+                  label: "участников",
+                  icon: Users,
+                },
+                { value: "—", label: "успешных", icon: Award },
               ].map((stat) => {
                 const Icon = stat.icon;
                 return (
                   <div key={stat.label} className="text-center">
                     <Icon size={20} className="text-primary mx-auto mb-2" strokeWidth={1.5} />
-                    <div className="text-2xl md:text-3xl font-bold font-display text-primary">{stat.value}</div>
+                    <div className="text-2xl md:text-3xl font-bold font-display text-primary tabular-nums">
+                      {stat.value}
+                    </div>
                     <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
                   </div>
                 );
@@ -119,67 +134,103 @@ export default function LandingPage() {
                 <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground">Популярные задачи</h2>
                 <p className="text-muted-foreground mt-2">Начните с востребованных проектов</p>
               </div>
-              <a
+              <Link
                 href="/catalog"
-                className="inline-flex items-center justify-center h-9 px-4 rounded-2xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5"
+                className="inline-flex items-center justify-center h-9 px-4 rounded-2xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5 no-underline"
               >
                 Все задачи
                 <ArrowRight size={14} strokeWidth={2} />
-              </a>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {popularTasks.map((task) => (
-                <Card key={task.title} className="group cursor-pointer hover:shadow-sm transition-shadow">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold ${task.color}`}>
-                          {task.initial}
+              {popularTasks.length === 0 && (
+                <div className="col-span-full text-center py-12 text-muted-foreground">
+                  Загрузка задач…
+                </div>
+              )}
+              {popularTasks.map((task: TaskListItem) => {
+                const initials = getInitials(task.company_name);
+                const colorClass = getTaskColor(task.id);
+                const difficultyLabel = getDifficultyLabel(task.difficulty);
+                const spotsAvailable = task.participant_limit - task.participant_count;
+                const deadline = task.deadline
+                  ? `до ${new Date(task.deadline).toLocaleDateString("ru-RU")}`
+                  : null;
+
+                return (
+                  <Link
+                    key={task.id}
+                    href={`/tasks/${task.id}`}
+                    className="block no-underline"
+                  >
+                    <Card className="group cursor-pointer hover:shadow-sm transition-shadow">
+                      <CardContent className="pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold ${colorClass}`}>
+                              {initials}
+                            </div>
+                            <div>
+                              <div className="text-sm font-semibold text-foreground">
+                                {task.company_name || "Компания"}
+                              </div>
+                              <div className="text-xs text-muted-foreground">IT-компания</div>
+                            </div>
+                          </div>
+                          <Badge variant="secondary" className="text-[11px] h-5">
+                            Набор открыт
+                          </Badge>
                         </div>
-                        <div>
-                          <div className="text-sm font-semibold text-foreground">{task.company}</div>
-                          <div className="text-xs text-muted-foreground">Стартап</div>
+
+                        <h3 className="text-base font-semibold text-foreground mb-2 line-clamp-2 leading-snug">
+                          {task.title}
+                        </h3>
+                        {task.summary && (
+                          <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-2">
+                            {task.summary}
+                          </p>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {task.skills?.slice(0, 4).map((skill) => (
+                            <Badge key={skill.id} variant="outline" className="text-[11px] h-5">
+                              {skill.skill_name || `#${skill.skill_id}`}
+                            </Badge>
+                          ))}
                         </div>
-                      </div>
-                      <Badge variant="secondary" className="text-[11px] h-5">
-                        Набор открыт
-                      </Badge>
-                    </div>
 
-                    <h3 className="text-base font-semibold text-foreground mb-2 line-clamp-2 leading-snug">
-                      {task.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-2">
-                      {task.desc}
-                    </p>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                          {difficultyLabel && (
+                            <span className="flex items-center gap-1.5">
+                              <Layers size={14} strokeWidth={1.5} />
+                              {difficultyLabel}
+                            </span>
+                          )}
+                          {deadline && (
+                            <span className="flex items-center gap-1.5">
+                              <Clock size={14} strokeWidth={1.5} />
+                              {deadline}
+                            </span>
+                          )}
+                          {spotsAvailable > 0 && (
+                            <span>{spotsAvailable} {spotsAvailable === 1 ? "место" : "мест"}</span>
+                          )}
+                        </div>
 
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {task.tags.map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-[11px] h-5">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
-                      <span>{task.time}</span>
-                      <span>{task.level}</span>
-                      <span>{task.spots}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <span className="text-xs text-muted-foreground">{task.applicants} заявок</span>
-                      <a
-                        href="/catalog"
-                        className="inline-flex items-center justify-center h-9 px-4 rounded-2xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
-                      >
-                        Подробнее
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        <div className="flex items-center justify-between pt-4 border-t border-border">
+                          <span className="text-xs text-muted-foreground">
+                            {task.participant_count}/{task.participant_limit} участников
+                          </span>
+                          <span className="inline-flex items-center justify-center h-9 px-4 rounded-2xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]">
+                            Подробнее
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>

@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getCompanyById } from "@entities/company";
 import { getTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS } from "@entities/task";
 import type { TaskListItem } from "@entities/task";
+import { getCompanyReviews } from "@entities/review";
+import type { Review } from "@entities/review";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import {
@@ -57,45 +59,6 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-const MOCK_REVIEWS = [
-  {
-    initials: "АП",
-    name: "Алексей Петров",
-    role: "Backend-разработчик",
-    rating: 5,
-    avatarBg: "bg-[#E8F4F4] text-primary",
-    text: "Отличный опыт. Задача была подробно описана, документация на API предоставлена. Коммуникация на высшем уровне — ответы в течение часа.",
-    tags: ["Рекомендую"],
-  },
-  {
-    initials: "МК",
-    name: "Мария Козлова",
-    role: "Fullstack-разработчик",
-    rating: 5,
-    avatarBg: "bg-primary text-white",
-    text: "Приятно удивлена подходом компании. Вместо тестового задания — реальная небольшая задача с чёткими требованиями.",
-    tags: ["Рекомендую"],
-  },
-  {
-    initials: "ДС",
-    name: "Дмитрий Сидоров",
-    role: "Frontend-разработчик",
-    rating: 4,
-    avatarBg: "bg-[#F3E5F5] text-[#4A148C]",
-    text: "Хороший опыт для портфолио. Задача чётко структурирована, есть понятные критерии приёмки.",
-    tags: ["Рекомендую"],
-  },
-  {
-    initials: "ОВ",
-    name: "Ольга Волкова",
-    role: "Тестировщик",
-    rating: 5,
-    avatarBg: "bg-[#E3F2FD] text-[#0D47A1]",
-    text: "Задача по тестированию была интересной и реалистичной. Компания предоставила доступ к тестовому окружению.",
-    tags: ["Рекомендую"],
-  },
-];
-
 export default function PublicCompanyPage() {
   const params = useParams();
   const companyId = parseInt(params.id as string, 10);
@@ -117,9 +80,20 @@ export default function PublicCompanyPage() {
     enabled: !isNaN(companyId),
   });
 
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["company-reviews", companyId],
+    queryFn: () => getCompanyReviews(companyId),
+    enabled: !isNaN(companyId),
+  });
+
   const activeTasks = tasks.filter(
     (t) => !["draft", "completed", "cancelled", "archived", "blocked"].includes(t.status),
   );
+
+  const avgRating =
+    reviews.length > 0
+      ? Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length * 10) / 10
+      : null;
 
   if (isNaN(companyId)) {
     return (
@@ -216,6 +190,15 @@ export default function PublicCompanyPage() {
                     </span>
                   )}
                 </div>
+
+                {/* Rating */}
+                {avgRating && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <StarRating rating={Math.round(avgRating)} />
+                    <span className="text-[14px] font-semibold text-foreground">{avgRating}</span>
+                    <span className="text-[13px] text-muted-foreground">· {reviews.length} {reviews.length === 1 ? "отзыв" : reviews.length < 5 ? "отзыва" : "отзывов"}</span>
+                  </div>
+                )}
 
                 <div className="flex items-center gap-4 text-[14px] text-muted-foreground mb-4">
                   {company.city && (
@@ -322,7 +305,7 @@ export default function PublicCompanyPage() {
           <div className="flex gap-1 border-b border-border mb-8">
             {([
               { key: "tasks" as const, label: "Задачи", count: activeTasks.length },
-              { key: "reviews" as const, label: "Отзывы", count: MOCK_REVIEWS.length },
+              { key: "reviews" as const, label: "Отзывы", count: reviews.length },
               { key: "about" as const, label: "О компании", count: null },
             ]).map((tab) => (
               <button
@@ -440,39 +423,61 @@ export default function PublicCompanyPage() {
 
           {/* Reviews Tab */}
           {activeTab === "reviews" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {MOCK_REVIEWS.map((review) => (
-                <div key={review.name} className="p-6 rounded-[24px] bg-card border border-border">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[14px] font-bold ${review.avatarBg}`}>
-                      {review.initials}
+            reviews.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-[15px] text-muted-foreground">У компании пока нет отзывов</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {reviews.map((review: Review) => {
+                  const initials = [review.participant_first_name, review.participant_last_name]
+                    .filter(Boolean)
+                    .map((n) => n?.[0])
+                    .join("");
+                  const name = [review.participant_first_name, review.participant_last_name]
+                    .filter(Boolean)
+                    .join(" ");
+                  const avatarBg = LIGHT_BG_COLORS[review.id % LIGHT_BG_COLORS.length];
+                  const skills = review.skills_confirmed
+                    ? review.skills_confirmed.split(",").map((s) => s.trim())
+                    : [];
+
+                  return (
+                    <div key={review.id} className="p-6 rounded-[24px] bg-card border border-border">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[14px] font-bold ${avatarBg}`}>
+                          {initials || "?"}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-[14px] text-foreground">{name || "Участник"}</div>
+                          {review.task_title && (
+                            <div className="text-[12px] text-muted-foreground">Задача: {review.task_title}</div>
+                          )}
+                        </div>
+                        <div className="ml-auto">
+                          <StarRating rating={review.rating} />
+                        </div>
+                      </div>
+                      {review.text && (
+                        <p className="text-[14px] text-muted-foreground leading-relaxed mb-4">{review.text}</p>
+                      )}
+                      {skills.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {skills.map((skill) => (
+                            <span
+                              key={skill}
+                              className="inline-flex items-center h-6 px-2 rounded-full text-[12px] font-medium bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <div className="font-semibold text-[14px] text-foreground">{review.name}</div>
-                      <div className="text-[12px] text-muted-foreground">{review.role}</div>
-                    </div>
-                    <div className="ml-auto">
-                      <StarRating rating={review.rating} />
-                    </div>
-                  </div>
-                  <p className="text-[14px] text-muted-foreground leading-relaxed mb-4">{review.text}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {review.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className={`inline-flex items-center h-6 px-2 rounded-full text-[12px] font-medium ${
-                          tag === "Рекомендую"
-                            ? "bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400"
-                            : "bg-primary/10 text-primary"
-                        }`}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            )
           )}
 
           {/* About Tab */}

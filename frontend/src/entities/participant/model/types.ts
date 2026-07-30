@@ -32,6 +32,25 @@ export interface CompletedTask {
   completed_at: string;
 }
 
+/**
+ * Публичный профиль участника (возвращается GET /participants/{id}).
+ * Содержит только те поля, которые видны другим пользователям.
+ */
+export interface ParticipantPublicProfile {
+  id: number;
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
+  city: string | null;
+  bio: string | null;
+  education: string | null;
+  specialty: string | null;
+  desired_role: string | null;
+  github_url: string | null;
+  telegram: string | null;
+  portfolio_url: string | null;
+}
+
 /** Поля, которые можно отправить на PATCH /participants/me */
 export type ParticipantProfileUpdate = Partial<
   Pick<

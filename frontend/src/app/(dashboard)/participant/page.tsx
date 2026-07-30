@@ -12,6 +12,7 @@ import {
 } from "@entities/application";
 import { TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { getCompletedTasks, type CompletedTask } from "@entities/participant";
+import { getMyReviews, type Review } from "@entities/review";
 import { Header } from "@widgets/header";
 import { Search, Clock, Layers, Award, Star, ChevronRight } from "@shared/ui/Icons";
 
@@ -29,6 +30,16 @@ export default function ParticipantDashboardPage() {
     queryKey: ["my-completed-tasks"],
     queryFn: getCompletedTasks,
   });
+
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["my-reviews"],
+    queryFn: getMyReviews,
+  });
+
+  const reviewBySubmission = new Map<number, Review>();
+  for (const rev of reviews) {
+    reviewBySubmission.set(rev.submission_id, rev);
+  }
 
   const inProgressApps = applications.filter((a) => a.status === "approved");
   const completedCount = completedTasks.length;
@@ -123,12 +134,62 @@ export default function ParticipantDashboardPage() {
               </p>
             )}
 
-            {exp.review_comment && (
-              <div className="p-3 rounded-[10px] bg-muted text-[13px] text-muted-foreground mb-3">
-                <span className="font-medium text-foreground">Отзыв компании: </span>
-                {exp.review_comment}
-              </div>
-            )}
+            {(() => {
+              const review = reviewBySubmission.get(exp.submission_id);
+              if (review) {
+                return (
+                  <div className="p-3 rounded-[10px] bg-muted mb-3">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <svg
+                          key={star}
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill={star <= review.rating ? "#f59e0b" : "none"}
+                          stroke={star <= review.rating ? "#f59e0b" : "currentColor"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="shrink-0"
+                        >
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      ))}
+                      <span className="text-[13px] font-medium text-foreground ml-1">
+                        {review.rating}/5
+                      </span>
+                    </div>
+                    {review.text && (
+                      <p className="text-[13px] text-muted-foreground leading-relaxed mb-1.5">
+                        {review.text}
+                      </p>
+                    )}
+                    {review.skills_confirmed && (
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        {review.skills_confirmed.split(",").map((skill) => (
+                          <span
+                            key={skill.trim()}
+                            className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-medium"
+                          >
+                            {skill.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              if (exp.review_comment) {
+                return (
+                  <div className="p-3 rounded-[10px] bg-muted text-[13px] text-muted-foreground mb-3">
+                    <span className="font-medium text-foreground">Отзыв компании: </span>
+                    {exp.review_comment}
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
             <div className="flex items-center gap-1">
               <Award size={14} className="text-primary" />
