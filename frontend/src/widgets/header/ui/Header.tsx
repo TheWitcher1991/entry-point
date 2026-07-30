@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useUnit } from "effector-react";
 import { $user, $isAuthenticated, $isHydrated, logout } from "@features/auth";
 import { ThemeToggle } from "@shared/ui/ThemeToggle";
-import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon } from "@shared/ui/Icons";
+import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon, Bookmark } from "@shared/ui/Icons";
 import { NotificationBell } from "@widgets/notification-bell";
 
 const navLinks = [
@@ -58,7 +58,18 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          {isHydrated && isAuthenticated && <NotificationBell />}
+          {isHydrated && isAuthenticated && (
+            <>
+              <Link
+                href="/saved"
+                className="inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-primary hover:bg-muted rounded-[12px] transition-colors no-underline"
+                title="Сохранённые"
+              >
+                <Bookmark size={18} />
+              </Link>
+              <NotificationBell />
+            </>
+          )}
           <ThemeToggle />
 
           {isHydrated && isAuthenticated && user ? (

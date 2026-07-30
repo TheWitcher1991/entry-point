@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -8,6 +9,7 @@ from app.services.auth.models import User, UserRole
 from app.services.companies.models import Company
 from app.services.participants.models import ParticipantProfile
 from app.services.participations.schemas import ParticipantsResponse
+from app.services.tasks.models import ProjectTask, SavedTask, TaskSkill
 from app.services.tasks.schemas import (
     SubmissionCreate,
     SubmissionResponse,
@@ -116,6 +118,69 @@ async def get_my_company_tasks(
         )
     tasks = await get_company_tasks(db, company.id)
     return [TaskListItem.model_validate(t) for t in tasks]
+
+
+# ── Saved tasks (bookmarks) ──
+
+
+@router.get("/bookmarks/detail", response_model=list[TaskListItem])
+async def get_saved_tasks(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[TaskListItem]:
+    result = await db.execute(
+        select(ProjectTask)
+        .options(
+            joinedload(ProjectTask.company),
+            selectinload(ProjectTask.skills).selectinload(TaskSkill.skill),
+        )
+        .join(SavedTask, SavedTask.task_id == ProjectTask.id)
+        .where(SavedTask.user_id == current_user.id)
+        .order_by(SavedTask.created_at.desc())
+    )
+    return [TaskListItem.model_validate(t) for t in result.scalars().unique().all()]
+
+
+@router.get("/bookmarks", response_model=list[int])
+async def get_saved_task_ids(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[int]:
+    result = await db.execute(
+        select(SavedTask.task_id)
+        .where(SavedTask.user_id == current_user.id)
+        .order_by(SavedTask.created_at.desc())
+    )
+    return [row[0] for row in result.all()]
+
+
+@router.post("/{task_id}/bookmark", status_code=status.HTTP_204_NO_CONTENT)
+async def toggle_bookmark(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    # Check task exists
+    task_result = await db.execute(select(ProjectTask).where(ProjectTask.id == task_id))
+    if not task_result.scalar_one_or_none():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found",
+        )
+
+    # Toggle bookmark
+    existing = await db.execute(
+        select(SavedTask).where(
+            SavedTask.user_id == current_user.id,
+            SavedTask.task_id == task_id,
+        )
+    )
+    saved = existing.scalar_one_or_none()
+    if saved:
+        await db.delete(saved)
+    else:
+        db.add(SavedTask(user_id=current_user.id, task_id=task_id))
+    await db.commit()
 
 
 # ── Parameterised routes ──

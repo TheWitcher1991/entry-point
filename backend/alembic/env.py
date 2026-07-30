@@ -17,7 +17,7 @@ from app.services.notifications.models import Notification  # noqa: F401
 from app.services.participants.models import ParticipantProfile  # noqa: F401
 from app.services.participations.models import Participation  # noqa: F401
 from app.services.reviews.models import Review  # noqa: F401
-from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission  # noqa: F401
+from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission, SavedTask  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)

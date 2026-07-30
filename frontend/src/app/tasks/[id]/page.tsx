@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUnit } from "effector-react";
-import { getTask, getTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
+import { getTask, getTasks, getSavedTaskIds, toggleBookmark, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
 import { updateTaskStatus } from "@entities/task";
 import { getCompanyById } from "@entities/company";
 import { getSkills } from "@entities/skill";
@@ -21,14 +21,26 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 
 type Tab = "description" | "requirements" | "result" | "company";
 
-function BookmarkButton() {
+function BookmarkButton({ taskId }: { taskId: number }) {
   const user = useUnit($user);
+  const queryClient = useQueryClient();
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const handleClick = () => {
+  const { data: savedIds = [] } = useQuery({
+    queryKey: ["saved-task-ids"],
+    queryFn: getSavedTaskIds,
+    enabled: !!user,
+  });
+
+  const isSaved = savedIds.includes(taskId);
+
+  const handleClick = async () => {
     if (!user) {
       setLoginOpen(true);
+      return;
     }
+    await toggleBookmark(taskId);
+    queryClient.invalidateQueries({ queryKey: ["saved-task-ids"] });
   };
 
   return (
@@ -38,8 +50,11 @@ function BookmarkButton() {
           onClick={handleClick}
           className="inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors bg-transparent cursor-pointer active:scale-[0.96]"
         >
-          <Bookmark size={16} />
-          Сохранить
+          <Bookmark
+            size={16}
+            className={isSaved ? "fill-primary text-primary" : ""}
+          />
+          {isSaved ? "Сохранено" : "Сохранить"}
         </button>
       </div>
 
@@ -660,7 +675,7 @@ export default function TaskDetailPage() {
                     </div>
                   )}
 
-                  <BookmarkButton />
+                  <BookmarkButton taskId={task.id} />
                 </div>
               </div>
 

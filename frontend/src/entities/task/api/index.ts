@@ -57,6 +57,20 @@ export interface TaskParticipant {
   participant_avatar_url: string | null;
 }
 
+export async function getSavedTaskIds(): Promise<number[]> {
+  const { data } = await api.get<number[]>("/tasks/bookmarks");
+  return data;
+}
+
+export async function getSavedTasks(): Promise<TaskListItem[]> {
+  const { data } = await api.get<TaskListItem[]>("/tasks/bookmarks/detail");
+  return data;
+}
+
+export async function toggleBookmark(taskId: number): Promise<void> {
+  await api.post(`/tasks/${taskId}/bookmark`);
+}
+
 export async function getTaskParticipants(
   taskId: number,
 ): Promise<TaskParticipant[]> {
