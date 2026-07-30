@@ -7,8 +7,7 @@ import { getMyCompanyTasks } from "@entities/task";
 import { getTaskSubmissions, reviewSubmission, SUBMISSION_STATUS_LABELS } from "@entities/submission";
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, X as XIcon, ArrowLeft, Layers, Eye } from "@shared/ui/Icons";
-import { useRouter } from "next/navigation";
+import { Check, X as XIcon, Layers, Eye } from "@shared/ui/Icons";
 
 const statusColors: Record<string, string> = {
   pending: "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
@@ -17,7 +16,6 @@ const statusColors: Record<string, string> = {
 };
 
 export default function CompanySubmissionsPage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [comments, setComments] = useState<Record<number, string>>({});
 
@@ -88,14 +86,6 @@ export default function CompanySubmissionsPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 pt-10 pb-8">
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors mb-6 bg-transparent cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          Назад
-        </button>
-
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-[28px] font-bold font-display text-foreground">
@@ -115,22 +105,22 @@ export default function CompanySubmissionsPage() {
         <div className="flex gap-1 mb-8 border-b border-border">
           <Link
             href="/company/tasks"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Задачи
           </Link>
           <Link
             href="/company/applications"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Заявки
           </Link>
-          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
+          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary -mb-px flex items-center gap-2">
             Результаты
           </span>
           <Link
             href="/company/participants"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Участники
           </Link>

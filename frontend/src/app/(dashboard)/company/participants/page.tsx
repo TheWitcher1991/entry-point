@@ -7,7 +7,7 @@ import { getParticipants } from "@entities/participant";
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Search, MapPin, Briefcase, GraduationCap, ChevronRight } from "@shared/ui/Icons";
+import { Search, MapPin, Briefcase, GraduationCap, User, ExternalLink } from "@shared/ui/Icons";
 
 export default function CompanyParticipantsPage() {
   const [search, setSearch] = useState("");
@@ -30,23 +30,23 @@ export default function CompanyParticipantsPage() {
         <div className="flex gap-1 mb-8 border-b border-border">
           <Link
             href="/company/tasks"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Задачи
           </Link>
           <Link
             href="/company/applications"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Заявки
           </Link>
           <Link
             href="/company/submissions"
-            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent -mb-px hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Результаты
           </Link>
-          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
+          <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary -mb-px flex items-center gap-2">
             Участники
           </span>
         </div>
@@ -64,18 +64,33 @@ export default function CompanyParticipantsPage() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="p-5 rounded-3xl bg-card border border-border">
-                <div className="flex items-center gap-4 mb-4">
-                  <Skeleton className="w-12 h-12 rounded-full" />
-                  <div className="flex-1">
-                    <Skeleton className="h-5 w-32 mb-1" />
-                    <Skeleton className="h-3 w-24" />
+              <div key={i} className="rounded-[20px] bg-card border border-border shadow-sm">
+                <div className="p-5 pb-3">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="w-14 h-14 rounded-full" />
+                    <div className="flex-1">
+                      <Skeleton className="h-5 w-32 mb-1" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
                   </div>
                 </div>
-                <Skeleton className="h-3 w-full mb-2" />
-                <Skeleton className="h-3 w-2/3" />
+                <div className="px-5 pb-3">
+                  <div className="flex gap-2">
+                    <Skeleton className="h-6 w-20 rounded-lg" />
+                    <Skeleton className="h-6 w-28 rounded-lg" />
+                  </div>
+                </div>
+                <div className="px-5 pb-3">
+                  <Skeleton className="h-3 w-full mb-1.5" />
+                  <Skeleton className="h-3 w-2/3" />
+                </div>
+                <div className="border-t border-border mx-5" />
+                <div className="px-5 py-3 flex items-center justify-between">
+                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-3 w-14" />
+                </div>
               </div>
             ))}
           </div>
@@ -90,57 +105,77 @@ export default function CompanyParticipantsPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {participants.map((p) => (
               <Link
                 key={p.id}
                 href={`/participants/${p.id}`}
-                className="p-5 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-[scale,border-color] no-underline active:scale-[0.96] block group"
+                className="rounded-[20px] bg-card border border-border hover:border-primary/30 transition-[scale,border-color,box-shadow] no-underline active:scale-[0.96] block group shadow-sm hover:shadow-md"
               >
-                <div className="flex items-start gap-4">
-                  <Avatar>
-                    {p.avatar_url ? (
-                      <AvatarImage src={p.avatar_url} alt={p.first_name || ""} />
-                    ) : null}
-                    <AvatarFallback>
-                      {p.first_name?.[0] || p.last_name?.[0] || "?"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <h3 className="font-semibold text-[15px] text-foreground truncate group-hover:text-primary transition-colors">
+                {/* Card Header */}
+                <div className="p-5 pb-3">
+                  <div className="flex items-start gap-4">
+                    <Avatar className="w-14 h-14">
+                      {p.avatar_url ? (
+                        <AvatarImage src={p.avatar_url} alt={p.first_name || ""} />
+                      ) : null}
+                      <AvatarFallback className="text-lg">
+                        {p.first_name?.[0] || p.last_name?.[0] || <User size={20} />}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0 pt-1">
+                      <h3 className="font-semibold text-[16px] text-foreground group-hover:text-primary transition-colors">
                         {p.first_name} {p.last_name}
                       </h3>
-                      <ChevronRight size={16} className="text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-muted-foreground">
                       {p.specialty && (
-                        <span className="inline-flex items-center gap-1">
-                          <Briefcase size={12} strokeWidth={1.5} />
+                        <p className="text-[13px] text-muted-foreground mt-0.5">
                           {p.specialty}
-                        </span>
-                      )}
-                      {p.city && (
-                        <span className="inline-flex items-center gap-1">
-                          <MapPin size={12} strokeWidth={1.5} />
-                          {p.city}
-                        </span>
-                      )}
-                      {p.education && (
-                        <span className="inline-flex items-center gap-1">
-                          <GraduationCap size={12} strokeWidth={1.5} />
-                          {p.education}
-                        </span>
+                        </p>
                       )}
                     </div>
+                  </div>
+                </div>
 
-                    {p.bio && (
-                      <p className="text-[13px] text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
-                        {p.bio}
-                      </p>
+                {/* Details */}
+                <div className="px-5 pb-3">
+                  <div className="flex flex-wrap gap-3 text-[13px] text-muted-foreground">
+                    {p.city && (
+                      <span className="inline-flex items-center gap-1.5 bg-muted/50 px-2.5 py-1 rounded-lg">
+                        <MapPin size={13} strokeWidth={1.5} />
+                        {p.city}
+                      </span>
+                    )}
+                    {p.education && (
+                      <span className="inline-flex items-center gap-1.5 bg-muted/50 px-2.5 py-1 rounded-lg">
+                        <GraduationCap size={13} strokeWidth={1.5} />
+                        {p.education}
+                      </span>
                     )}
                   </div>
+                </div>
+
+                {/* Bio */}
+                {p.bio && (
+                  <div className="px-5 pb-3">
+                    <p className="text-[13px] text-muted-foreground/80 leading-relaxed line-clamp-2">
+                      {p.bio}
+                    </p>
+                  </div>
+                )}
+
+                {/* Divider */}
+                <div className="border-t border-border mx-5" />
+
+                {/* Footer */}
+                <div className="px-5 py-3 flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                    <Briefcase size={12} strokeWidth={1.5} />
+                    {p.specialty || "Участник"}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[12px] font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                    Профиль
+                    <ExternalLink size={12} />
+                  </span>
                 </div>
               </Link>
             ))}
