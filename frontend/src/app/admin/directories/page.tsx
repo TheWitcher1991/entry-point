@@ -188,9 +188,11 @@ export default function AdminDirectoriesPage() {
                   ))}
                 </div>
               ) : categories.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <Layers size={36} strokeWidth={1.5} className="text-muted-foreground mb-3" />
-                  <p className="text-muted-foreground text-[14px]">Нет категорий</p>
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-4">
+                    <Layers size={28} className="text-muted-foreground" />
+                  </div>
+                  <p className="text-muted-foreground text-[14px] max-w-sm">Нет категорий</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -297,9 +299,11 @@ export default function AdminDirectoriesPage() {
                   ))}
                 </div>
               ) : skills.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <Layers size={36} strokeWidth={1.5} className="text-muted-foreground mb-3" />
-                  <p className="text-muted-foreground text-[14px]">Нет навыков</p>
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-4">
+                    <Layers size={28} className="text-muted-foreground" />
+                  </div>
+                  <p className="text-muted-foreground text-[14px] max-w-sm">Нет навыков</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-2">

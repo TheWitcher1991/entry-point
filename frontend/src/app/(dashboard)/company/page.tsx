@@ -6,7 +6,7 @@ import { $user } from "@features/auth";
 import { useQuery } from "@tanstack/react-query";
 import { getMyCompanyTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { Header } from "@widgets/header";
-import { Plus, Layers, UserPlus, Clock, Award, Edit } from "@shared/ui/Icons";
+import { Plus, Layers, UserPlus, Clock, Award, Edit, FileText } from "@shared/ui/Icons";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "text-muted-foreground bg-muted",
@@ -94,8 +94,12 @@ export default function CompanyDashboardPage() {
               ))}
             </div>
           ) : tasks.length === 0 ? (
-            <div className="p-10 text-center rounded-3xl bg-card border border-border">
-              <p className="text-muted-foreground mb-4">У вас пока нет задач</p>
+            <div className="flex flex-col items-center justify-center p-10 text-center rounded-3xl bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
+              <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+                <FileText size={28} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-[18px] font-bold font-display text-foreground mb-2">У вас пока нет задач</h3>
+              <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Создайте первую задачу и начните поиск исполнителей</p>
               <Link
                 href="/company/tasks/new"
                 className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] no-underline"

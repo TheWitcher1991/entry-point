@@ -9,7 +9,7 @@ import { getSkills } from "@entities/skill";
 import { getCategories } from "@entities/category";
 import { TASK_STATUS_LABELS } from "@entities/task";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, X, Check, Eye } from "@shared/ui/Icons";
+import { ArrowLeft, X, Check, Eye, Search } from "@shared/ui/Icons";
 import Link from "next/link";
 
 interface EditTaskFormProps {
@@ -173,20 +173,20 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         <Skeleton className="h-4 w-24 mb-2" />
         <Skeleton className="h-8 w-72" />
         <Skeleton className="h-16 w-full rounded-[16px]" />
-        <div className="p-6 rounded-[24px] bg-card border border-border">
+        <div className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <Skeleton className="h-5 w-44 mb-5" />
           <div className="flex flex-col gap-5">
             <Skeleton className="h-[52px] w-full rounded-[16px]" />
             <Skeleton className="h-[80px] w-full rounded-[16px]" />
           </div>
         </div>
-        <div className="p-6 rounded-[24px] bg-card border border-border">
+        <div className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <Skeleton className="h-5 w-28 mb-5" />
           <div className="flex flex-col gap-5">
             <Skeleton className="h-[200px] w-full rounded-[16px]" />
           </div>
         </div>
-        <div className="p-6 rounded-[24px] bg-card border border-border">
+        <div className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <Skeleton className="h-5 w-20 mb-5" />
           <div className="flex gap-3">
             <Skeleton className="h-10 w-32 rounded-[12px]" />
@@ -200,15 +200,21 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
   // Error state
   if (!task) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6">
-        <p className="text-[15px] text-muted-foreground">Задача не найдена</p>
-        <Link
-          href="/company/tasks"
-          className="inline-flex items-center gap-2 px-4 py-2 text-[14px] font-medium text-primary bg-primary/5 border border-primary/20 rounded-[12px] hover:bg-primary/10 transition-colors no-underline"
-        >
-          <ArrowLeft size={16} />
-          Вернуться к списку задач
-        </Link>
+      <div className="flex-1 flex flex-col items-center justify-center px-6">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+            <Search size={28} className="text-muted-foreground" />
+          </div>
+          <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
+          <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Возможно, задача была удалена</p>
+          <Link
+            href="/company/tasks"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+          >
+            <ArrowLeft size={16} />
+            Вернуться к задачам
+          </Link>
+        </div>
       </div>
     );
   }
@@ -261,7 +267,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
       {/* Form */}
       <div className="flex flex-col gap-8">
         {/* Basic Info */}
-        <section className="p-6 rounded-[24px] bg-card border border-border">
+        <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <h2 className="text-[18px] font-bold font-display text-foreground mb-5">
             Основная информация
           </h2>
@@ -306,7 +312,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         </section>
 
         {/* Parameters */}
-        <section className="p-6 rounded-[24px] bg-card border border-border">
+        <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Параметры</h2>
           <div className="grid grid-cols-2 gap-5">
             <div>
@@ -368,7 +374,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
                   <button
                     key={n}
                     onClick={() => setParticipantLimit(n)}
-                    className={`w-[52px] h-[52px] rounded-[16px] text-[16px] font-semibold transition-all cursor-pointer ${
+                    className={`w-[52px] h-[52px] rounded-[16px] text-[16px] font-semibold transition-[background-color,color,border-color] duration-150 ease-out cursor-pointer ${
                       participantLimit === n
                         ? "bg-primary text-white"
                         : "bg-background border border-border text-foreground hover:border-muted-foreground/30"
@@ -383,7 +389,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         </section>
 
         {/* Skills */}
-        <section className="p-6 rounded-[24px] bg-card border border-border">
+        <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Навыки и технологии</h2>
           {selectedSkills.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -432,7 +438,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
                         <button
                           key={skill.id}
                           onClick={() => toggleSkill(skill.id)}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-all cursor-pointer ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-[background-color,color] duration-150 ease-out cursor-pointer ${
                             isSelected
                               ? "bg-primary text-white"
                               : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -457,7 +463,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
                       <button
                         key={skill.id}
                         onClick={() => toggleSkill(skill.id)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-all cursor-pointer ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-[background-color,color] duration-150 ease-out cursor-pointer ${
                           isSelected
                             ? "bg-primary text-white"
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -480,7 +486,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         </section>
 
         {/* Requirements & Results */}
-        <section className="p-6 rounded-[24px] bg-card border border-border">
+        <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Требования и результат</h2>
           <div className="flex flex-col gap-5">
             <div>
@@ -523,7 +529,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         </section>
 
         {/* Additional */}
-        <section className="p-6 rounded-[24px] bg-card border border-border">
+        <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Дополнительно</h2>
           <div className="flex flex-col gap-5">
             <div>
@@ -575,7 +581,7 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
         </section>
 
         {/* Submit */}
-        <div className="flex items-center justify-between p-6 rounded-[24px] bg-card border border-border">
+        <div className="flex items-center justify-between p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
           <div className="flex items-center gap-3">
             {isDraft && (
               <>

@@ -23,13 +23,25 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   return (
     <button
       onClick={toggle}
-      className={`inline-flex items-center justify-center w-9 h-9 rounded-[12px] text-muted-foreground hover:bg-muted transition-colors ${className}`}
+      className={`inline-flex items-center justify-center w-10 h-10 rounded-[12px] text-muted-foreground hover:bg-muted transition-colors relative ${className}`}
       aria-label="Переключить тему"
     >
-      <span className={theme === "light" ? "block" : "hidden"}>
+      <span
+        className="absolute inset-0 flex items-center justify-center transition-[scale,opacity] duration-200 ease-out"
+        style={{
+          scale: theme === "light" ? "1" : "0.25",
+          opacity: theme === "light" ? 1 : 0,
+        }}
+      >
         <Moon size={18} />
       </span>
-      <span className={theme === "dark" ? "block" : "hidden"}>
+      <span
+        className="absolute inset-0 flex items-center justify-center transition-[scale,opacity] duration-200 ease-out"
+        style={{
+          scale: theme === "dark" ? "1" : "0.25",
+          opacity: theme === "dark" ? 1 : 0,
+        }}
+      >
         <Sun size={18} />
       </span>
     </button>

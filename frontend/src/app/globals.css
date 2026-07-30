@@ -92,6 +92,18 @@
   }
 }
 
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Header glass: accent-tinted glass */
 .header-glass {
   background: linear-gradient(145deg, rgba(255,255,255,0.88) 0%, rgba(226,241,239,0.88) 100%);

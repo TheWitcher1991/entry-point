@@ -135,7 +135,7 @@ export default function NewTaskPage() {
         {/* Form */}
         <div className="flex flex-col gap-8">
           {/* Basic Info */}
-          <section className="p-6 rounded-[24px] bg-card border border-border">
+          <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
             <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Основная информация</h2>
 
             <div className="flex flex-col gap-5">
@@ -184,7 +184,7 @@ export default function NewTaskPage() {
           </section>
 
           {/* Parameters */}
-          <section className="p-6 rounded-[24px] bg-card border border-border">
+          <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
             <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Параметры</h2>
 
             <div className="grid grid-cols-2 gap-5">
@@ -253,7 +253,7 @@ export default function NewTaskPage() {
                     <button
                       key={n}
                       onClick={() => setParticipantLimit(n)}
-                      className={`w-[52px] h-[52px] rounded-[16px] text-[16px] font-semibold transition-all cursor-pointer ${
+                      className={`w-[52px] h-[52px] rounded-[16px] text-[16px] font-semibold transition-[background-color,color,border-color] duration-150 ease-out cursor-pointer ${
                         participantLimit === n
                           ? "bg-primary text-white"
                           : "bg-background border border-border text-foreground hover:border-muted-foreground/30"
@@ -268,7 +268,7 @@ export default function NewTaskPage() {
           </section>
 
           {/* Skills */}
-          <section className="p-6 rounded-[24px] bg-card border border-border">
+          <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
             <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Навыки и технологии</h2>
 
             {selectedSkills.length > 0 && (
@@ -320,7 +320,7 @@ export default function NewTaskPage() {
                           <button
                             key={skill.id}
                             onClick={() => toggleSkill(skill.id)}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-all cursor-pointer ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-[background-color,color] duration-150 ease-out cursor-pointer ${
                               isSelected
                                 ? "bg-primary text-white"
                                 : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -347,7 +347,7 @@ export default function NewTaskPage() {
                         <button
                           key={skill.id}
                           onClick={() => toggleSkill(skill.id)}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-all cursor-pointer ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-[13px] font-medium transition-[background-color,color] duration-150 ease-out cursor-pointer ${
                             isSelected
                               ? "bg-primary text-white"
                               : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -369,7 +369,7 @@ export default function NewTaskPage() {
           </section>
 
           {/* Requirements & Results */}
-          <section className="p-6 rounded-[24px] bg-card border border-border">
+          <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
             <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Требования и результат</h2>
 
             <div className="flex flex-col gap-5">
@@ -416,7 +416,7 @@ export default function NewTaskPage() {
           </section>
 
           {/* Additional */}
-          <section className="p-6 rounded-[24px] bg-card border border-border">
+          <section className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
             <h2 className="text-[18px] font-bold font-display text-foreground mb-5">Дополнительно</h2>
 
             <div className="flex flex-col gap-5">
@@ -473,7 +473,7 @@ export default function NewTaskPage() {
           </section>
 
           {/* Submit */}
-          <div className="flex items-center justify-between p-6 rounded-[24px] bg-card border border-border">
+          <div className="flex items-center justify-between p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)]">
             <div className="flex items-center gap-3">
               <span className="text-[14px] text-muted-foreground">Сохранить как черновик</span>
               <button

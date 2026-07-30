@@ -207,8 +207,14 @@ export default function LandingPage() {
                   </Card>
                 ))
               ) : popularTasks.length === 0 ? (
-                <div className="col-span-full text-center py-12 text-muted-foreground">
-                  Пока нет задач
+                <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                  <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+                    <Layers size={28} className="text-muted-foreground" />
+                  </div>
+                  <h3 className="text-[18px] font-bold font-display text-foreground mb-2">Пока нет задач</h3>
+                  <p className="text-[14px] text-muted-foreground max-w-sm">
+                    Задачи появятся здесь, когда компании начнут публиковать предложения
+                  </p>
                 </div>
               ) : (
                 popularTasks.map((task: TaskListItem) => {

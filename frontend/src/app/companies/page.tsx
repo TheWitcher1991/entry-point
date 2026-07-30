@@ -116,10 +116,12 @@ export default function CompaniesPage() {
               ))}
             </div>
           ) : companies.length === 0 ? (
-            <div className="text-center py-20">
-              <Building size={40} strokeWidth={1.5} className="mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-[18px] font-semibold text-foreground mb-2">Ничего не найдено</h3>
-              <p className="text-muted-foreground">Попробуйте изменить поисковый запрос</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+                <Building size={28} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-[18px] font-bold font-display text-foreground mb-2">Ничего не найдено</h3>
+              <p className="text-[14px] text-muted-foreground max-w-sm">Попробуйте изменить поисковый запрос</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">

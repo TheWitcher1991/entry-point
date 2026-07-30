@@ -88,7 +88,7 @@ export function RegisterForm() {
             key={opt.value}
             type="button"
             onClick={() => setRole(opt.value)}
-            className={`p-4 rounded-[16px] border-2 text-center cursor-pointer transition-all ${
+            className={`p-4 rounded-[16px] border-2 text-center cursor-pointer transition-[border-color,background-color] duration-150 ease-out ${
               role === opt.value
                 ? "border-primary bg-primary/10"
                 : "border-border bg-card hover:border-muted-foreground/30"

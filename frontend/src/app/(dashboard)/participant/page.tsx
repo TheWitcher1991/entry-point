@@ -14,7 +14,7 @@ import { TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { getCompletedTasks, type CompletedTask } from "@entities/participant";
 import { getMyReviews, type Review } from "@entities/review";
 import { Header } from "@widgets/header";
-import { Search, Clock, Layers, Award, Star, ChevronRight } from "@shared/ui/Icons";
+import { Search, Clock, Layers, Award, Star, ChevronRight, UserPlus, Briefcase } from "@shared/ui/Icons";
 
 export default function ParticipantDashboardPage() {
   const user = useUnit($user);
@@ -48,12 +48,16 @@ export default function ParticipantDashboardPage() {
   const renderApplications = () => {
     if (applications.length === 0) {
       return (
-        <div className="text-center py-12">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="w-14 h-14 rounded-[16px] bg-muted flex items-center justify-center mb-4">
+            <UserPlus size={24} className="text-muted-foreground" />
+          </div>
           <p className="text-[15px] text-muted-foreground mb-4">У вас пока нет заявок</p>
           <Link
             href="/catalog"
-            className="inline-flex items-center gap-2 px-4 py-2 text-[14px] font-medium text-white bg-primary rounded-[12px] hover:opacity-90 transition-opacity no-underline"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] no-underline"
           >
+            <Layers size={16} />
             Найти задачи
           </Link>
         </div>
@@ -208,7 +212,10 @@ export default function ParticipantDashboardPage() {
   const renderInProgress = () => {
     if (inProgressApps.length === 0) {
       return (
-        <div className="text-center py-12">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="w-14 h-14 rounded-[16px] bg-muted flex items-center justify-center mb-4">
+            <Briefcase size={24} className="text-muted-foreground" />
+          </div>
           <p className="text-[15px] text-muted-foreground">Нет задач в работе</p>
         </div>
       );

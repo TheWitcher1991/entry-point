@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Star,
   Bookmark,
+  Search,
 } from "@shared/ui/Icons";
 
 const LIGHT_BG_COLORS = [
@@ -86,7 +87,18 @@ export default function PublicParticipantPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Участник не найден</p>
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
+            <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Участник не найден</h2>
+            <Link
+              href="/catalog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Перейти в каталог
+            </Link>
+          </div>
         </div>
         <Footer />
       </div>
@@ -122,7 +134,19 @@ export default function PublicParticipantPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Участник не найден</p>
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
+            <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Участник не найден</h2>
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Участник был удалён или не существует</p>
+            <Link
+              href="/catalog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Перейти в каталог
+            </Link>
+          </div>
         </div>
         <Footer />
       </div>

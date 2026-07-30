@@ -6,13 +6,13 @@ import Image from "next/image";
 import { useUnit } from "effector-react";
 import { $user, $isAuthenticated, $isHydrated, logout } from "@features/auth";
 import { ThemeToggle } from "@shared/ui/ThemeToggle";
-import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon, Bookmark, Layers, UserPlus, FileText, Users, Building } from "@shared/ui/Icons";
+import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon, Bookmark, Layers, UserPlus, FileText, Users, Building, Target } from "@shared/ui/Icons";
 import { NotificationBell } from "@widgets/notification-bell";
 
 const publicLinks = [
   { href: "/catalog" as const, label: "Задачи", icon: Layers },
   { href: "/companies" as const, label: "Компании", icon: Building },
-  { href: "/how-it-works" as const, label: "Как это работает", icon: undefined },
+  { href: "/how-it-works" as const, label: "Как это работает", icon: Target },
 ];
 
 const companyLinks = [
@@ -78,7 +78,7 @@ export function Header() {
             <>
               <Link
                 href="/saved"
-                className="inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-primary hover:bg-muted rounded-[12px] transition-colors no-underline"
+                className="inline-flex items-center justify-center w-10 h-10 text-muted-foreground hover:text-primary hover:bg-muted rounded-[12px] transition-colors no-underline"
                 title="Сохранённые"
               >
                 <Bookmark size={18} />
@@ -99,7 +99,7 @@ export function Header() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="hidden sm:inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-[12px] transition-colors"
+                className="hidden sm:inline-flex items-center justify-center w-10 h-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-[12px] transition-colors"
                 title="Выйти"
               >
                 <LogOut size={18} />
@@ -107,7 +107,7 @@ export function Header() {
               {/* Avatar */}
               <Link
                 href={user.role === "company" ? "/company/profile" : "/participant/profile"}
-                className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[14px] font-semibold shrink-0 no-underline hover:opacity-80 transition-opacity"
+                className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[14px] font-semibold shrink-0 no-underline hover:opacity-80 transition-opacity"
                 title="Профиль"
               >
                 {user.first_name?.[0] || user.email[0].toUpperCase()}
@@ -133,7 +133,7 @@ export function Header() {
           {/* Mobile toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:bg-muted rounded-[12px] transition-colors"
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 text-muted-foreground hover:bg-muted rounded-[12px] transition-colors"
             aria-label="Меню"
           >
             {mobileOpen ? <XIcon size={22} /> : <MenuIcon size={22} />}

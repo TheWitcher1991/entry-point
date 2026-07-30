@@ -133,10 +133,12 @@ export default function CompanyTasksPage() {
           </div>
         ) : tasks.length === 0 ? (
           /* Empty state */
-          <div className="flex flex-col items-center justify-center py-20">
-            <FileText size={40} strokeWidth={1.5} className="text-muted-foreground mb-4" />
-            <h3 className="text-[18px] font-semibold text-foreground mb-2">У вас пока нет задач</h3>
-            <p className="text-[14px] text-muted-foreground mb-6">Создайте первую задачу и начните поиск исполнителей</p>
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <FileText size={28} className="text-muted-foreground" />
+            </div>
+            <h3 className="text-[18px] font-bold font-display text-foreground mb-2">У вас пока нет задач</h3>
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Создайте первую задачу и начните поиск исполнителей</p>
             <Link
               href="/company/tasks/new"
               className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] no-underline"

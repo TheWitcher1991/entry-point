@@ -1,4 +1,5 @@
 import type { Task } from "@entities/task";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface TaskCardProps {
   task: Task;
@@ -6,29 +7,28 @@ interface TaskCardProps {
 
 export function TaskCard({ task }: TaskCardProps) {
   return (
-    <article
-      style={{
-        background: "var(--color-surface, #ffffff)",
-        borderRadius: 24,
-        padding: 32,
-        border: "1px solid var(--color-border, #ececec)",
-      }}
-    >
-      <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>{task.title}</h3>
-      <p style={{ color: "var(--color-text-secondary, #6e7478)", marginBottom: 12 }}>
-        {task.summary}
-      </p>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14 }}>
-        <span>{task.difficulty}</span>
-        <span>•</span>
-        <span>до {task.deadline}</span>
-        {task.participant_count !== undefined && (
-          <>
-            <span>•</span>
-            <span>{task.participant_count}/{task.participant_limit}</span>
-          </>
+    <Card className="p-8">
+      <CardContent className="p-0 flex flex-col gap-3">
+        <h3 className="text-[20px] font-semibold text-foreground leading-snug text-wrap-pretty">
+          {task.title}
+        </h3>
+        {task.summary && (
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {task.summary}
+          </p>
         )}
-      </div>
-    </article>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span className="tabular-nums">{task.difficulty}</span>
+          <span aria-hidden="true">•</span>
+          <span>до {task.deadline}</span>
+          {task.participant_count !== undefined && (
+            <>
+              <span aria-hidden="true">•</span>
+              <span className="tabular-nums">{task.participant_count}/{task.participant_limit}</span>
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

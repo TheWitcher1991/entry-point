@@ -47,8 +47,7 @@ function TaskCard({ task }: { task: TaskListItem }) {
   return (
     <Link
       href={`/tasks/${task.id}`}
-      className="p-6 rounded-[24px] bg-card border border-border hover:border-muted-foreground/20 hover:shadow-md transition-all no-underline block active:scale-[0.98]"
-      style={{ transitionProperty: "scale, border-color, box-shadow" }}
+      className="p-6 rounded-[24px] bg-card shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)] hover:shadow-[0_0_0_1px_oklch(0_0_0_/_0.06),0_4px_12px_oklch(0_0_0_/_0.08)] transition-[scale,box-shadow] duration-200 ease-out no-underline block active:scale-[0.98]"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -245,7 +244,7 @@ export default function CatalogPage() {
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-surface rounded-3xl p-8 border border-border animate-pulse">
+                <div key={i} className="bg-surface rounded-3xl p-8 shadow-[0_0_0_1px_oklch(0_0_0_/_0.04),0_1px_3px_oklch(0_0_0_/_0.04)] animate-pulse">
                   <div className="h-5 w-3/4 bg-muted/70 rounded-[8px] mb-3" />
                   <div className="h-4 w-full bg-muted/50 rounded-[8px] mb-2" />
                   <div className="h-4 w-2/3 bg-muted/50 rounded-[8px] mb-5" />
@@ -260,10 +259,12 @@ export default function CatalogPage() {
               ))}
             </div>
           ) : tasks.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Search size={40} strokeWidth={1.5} className="text-muted-foreground mb-4" />
-              <h3 className="text-[18px] font-semibold text-foreground mb-2">Задачи не найдены</h3>
-              <p className="text-muted-foreground text-[14px]">Попробуйте изменить фильтры или параметры поиска</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+                <Search size={28} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-[18px] font-bold font-display text-foreground mb-2">Задачи не найдены</h3>
+              <p className="text-muted-foreground text-[14px] max-w-sm">Попробуйте изменить фильтры или параметры поиска</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">

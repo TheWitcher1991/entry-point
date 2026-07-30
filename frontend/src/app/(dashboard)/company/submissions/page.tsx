@@ -113,12 +113,14 @@ export default function CompanySubmissionsPage() {
             ))}
           </div>
         ) : totalSubmissions === 0 ? (
-          <div className="text-center py-20">
-            <Layers size={40} strokeWidth={1.5} className="text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-[18px] font-semibold text-foreground mb-2">
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Layers size={28} className="text-muted-foreground" />
+            </div>
+            <h3 className="text-[18px] font-bold font-display text-foreground mb-2">
               Нет результатов
             </h3>
-            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm mx-auto">
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">
               Когда участники отправят результаты, они появятся здесь — можно будет проверить, принять или отправить на доработку.
             </p>
             <Link

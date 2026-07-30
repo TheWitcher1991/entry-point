@@ -55,10 +55,12 @@ export function ApplicationReviewList() {
 
   if (applications.length === 0) {
     return (
-      <div className="text-center py-16">
-        <Briefcase size={40} strokeWidth={1.5} className="text-muted-foreground mx-auto mb-4" />
-        <h3 className="text-[18px] font-semibold text-foreground mb-2">Нет заявок</h3>
-        <p className="text-[14px] text-muted-foreground max-w-sm mx-auto">
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+          <Briefcase size={28} className="text-muted-foreground" />
+        </div>
+        <h3 className="text-[18px] font-bold font-display text-foreground mb-2">Нет заявок</h3>
+        <p className="text-[14px] text-muted-foreground max-w-sm">
           Заявки на ваши задачи появятся здесь после публикации
         </p>
       </div>

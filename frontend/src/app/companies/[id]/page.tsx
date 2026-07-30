@@ -22,6 +22,7 @@ import {
   Layers,
   Briefcase,
   Users,
+  Search,
 } from "@shared/ui/Icons";
 
 const LIGHT_BG_COLORS = [
@@ -100,7 +101,18 @@ export default function PublicCompanyPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Компания не найдена</p>
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
+            <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Компания не найдена</h2>
+            <Link
+              href="/companies"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Вернуться к списку компаний
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -134,7 +146,19 @@ export default function PublicCompanyPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Компания не найдена</p>
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
+            <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Компания не найдена</h2>
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Компания была удалена или не существует</p>
+            <Link
+              href="/companies"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Вернуться к списку компаний
+            </Link>
+          </div>
         </div>
       </div>
     );

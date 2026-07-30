@@ -8,7 +8,7 @@ import { getTaskApplications, updateApplicationStatus, APPLICATION_STATUS_LABELS
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon } from "@shared/ui/Icons";
+import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon, Search } from "@shared/ui/Icons";
 import type { ApplicationStatus } from "@entities/application";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -80,9 +80,17 @@ export default function CompanyTaskDetailPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
             <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
-            <Link href="/company/tasks" className="text-primary hover:underline">Вернуться к задачам</Link>
+            <Link
+              href="/company/tasks"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Вернуться к задачам
+            </Link>
           </div>
         </main>
       </div>
@@ -114,10 +122,18 @@ export default function CompanyTaskDetailPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
             <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
-            <p className="text-muted-foreground mb-4">Возможно, задача была удалена</p>
-            <Link href="/company/tasks" className="text-primary hover:underline">Вернуться к задачам</Link>
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Возможно, задача была удалена</p>
+            <Link
+              href="/company/tasks"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Вернуться к задачам
+            </Link>
           </div>
         </main>
       </div>

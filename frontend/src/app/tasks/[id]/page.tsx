@@ -15,7 +15,7 @@ import { Footer } from "@widgets/footer";
 import { ApplyButton } from "@features/application-apply";
 import { SubmitForm } from "@features/task-submit";
 import { ReviewSection } from "@features/task-review";
-import { ChevronRight, Bookmark, ExternalLink, Check, Layers } from "@shared/ui/Icons";
+import { ChevronRight, Bookmark, ExternalLink, Check, Layers, Search } from "@shared/ui/Icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
@@ -151,9 +151,17 @@ export default function TaskDetailPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
             <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
-            <Link href="/catalog" className="text-primary hover:underline">Вернуться в каталог</Link>
+            <Link
+              href="/catalog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Вернуться в каталог
+            </Link>
           </div>
         </main>
         <Footer />
@@ -188,10 +196,18 @@ export default function TaskDetailPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
             <h2 className="text-[24px] font-bold font-display text-foreground mb-2">Задача не найдена</h2>
-            <p className="text-muted-foreground mb-4">Возможно, задача была удалена или у вас нет доступа</p>
-            <Link href="/catalog" className="text-primary hover:underline">Вернуться в каталог</Link>
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">Возможно, задача была удалена или у вас нет доступа</p>
+            <Link
+              href="/catalog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
+              Вернуться в каталог
+            </Link>
           </div>
         </main>
         <Footer />
@@ -570,7 +586,7 @@ export default function TaskDetailPage() {
 
                     <Link
                       href={`/companies/${company.id}`}
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted hover:border-foreground/20 rounded-[14px] transition-all active:scale-[0.96] no-underline"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted hover:border-foreground/20 rounded-[14px] transition-[background-color,border-color] duration-150 ease-out active:scale-[0.96] no-underline"
                     >
                       <ExternalLink size={14} />
                       Профиль компании

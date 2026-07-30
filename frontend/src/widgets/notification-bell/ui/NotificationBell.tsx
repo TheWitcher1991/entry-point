@@ -144,8 +144,11 @@ export function NotificationBell() {
 
           {/* List */}
           {notifications.length === 0 ? (
-            <div className="px-5 py-8 text-center text-[14px] text-muted-foreground">
-              Нет уведомлений
+            <div className="flex flex-col items-center justify-center px-5 py-8 text-center">
+              <div className="w-12 h-12 rounded-[14px] bg-muted flex items-center justify-center mb-3">
+                <Bell size={20} className="text-muted-foreground" />
+              </div>
+              <p className="text-[14px] text-muted-foreground">Нет уведомлений</p>
             </div>
           ) : (
             <div className="py-1">

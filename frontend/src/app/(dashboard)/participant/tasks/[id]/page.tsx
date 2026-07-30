@@ -12,7 +12,7 @@ import { getMySubmission, type Submission } from "@entities/submission";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import { SubmitForm } from "@features/task-submit";
-import { ChevronRight, Check, Clock, Layers, ExternalLink, Briefcase } from "@shared/ui/Icons";
+import { ChevronRight, Check, Clock, Layers, ExternalLink, Briefcase, Search } from "@shared/ui/Icons";
 
 /* ── Helpers ── */
 
@@ -145,11 +145,17 @@ export default function ParticipantTaskWorkspacePage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
             <h2 className="text-[24px] font-bold font-display text-foreground mb-2">
               Задача не найдена
             </h2>
-            <Link href="/participant" className="text-primary hover:underline">
+            <Link
+              href="/participant"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
               Вернуться в кабинет
             </Link>
           </div>
@@ -178,14 +184,20 @@ export default function ParticipantTaskWorkspacePage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="flex flex-col items-center text-center px-6">
+            <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+              <Search size={28} className="text-muted-foreground" />
+            </div>
             <h2 className="text-[24px] font-bold font-display text-foreground mb-2">
               Задача не найдена
             </h2>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-[14px] text-muted-foreground mb-6 max-w-sm">
               Возможно, задача была удалена или у вас нет доступа
             </p>
-            <Link href="/participant" className="text-primary hover:underline">
+            <Link
+              href="/participant"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline"
+            >
               Вернуться в кабинет
             </Link>
           </div>
