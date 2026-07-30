@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "@entities/task";
@@ -146,6 +146,13 @@ export default function CatalogPage() {
     staleTime: 30_000,
   });
 
+  // If page returns no results, go back to page 0
+  useEffect(() => {
+    if (!isLoading && tasks.length === 0 && page > 0) {
+      setPage(0);
+    }
+  }, [isLoading, tasks.length, page]);
+
   // Debounce search
   const [searchInput, setSearchInput] = useState("");
   const handleSearch = () => setSearch(searchInput.trim());
@@ -267,37 +274,71 @@ export default function CatalogPage() {
           )}
 
           {/* Pagination */}
-          {tasks.length > 0 && (
-            <div className="flex items-center justify-center gap-2">
-              <button
-                onClick={() => setPage(Math.max(0, page - 1))}
-                disabled={page === 0}
-                className="w-10 h-10 rounded-[12px] border border-border bg-card flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              {[0, 1, 2, 3].map((p) => (
+          {(tasks.length > 0 || page > 0) && (() => {
+            // If current page is empty, show it as a disabled page so user can navigate back
+            const currentPageHasData = tasks.length > 0;
+            const hasMore = currentPageHasData && tasks.length >= pageSize;
+            // Build visible page numbers around current page
+            const startPage = Math.max(0, page - 2);
+            const endPage = hasMore ? page + 2 : page;
+            const pages: number[] = [];
+            for (let i = startPage; i <= endPage; i++) {
+              pages.push(i);
+            }
+
+            // Determine which buttons are active (have data)
+            const isActive = (p: number) => currentPageHasData && p === page;
+
+            return (
+              <div className="flex items-center justify-center gap-2">
                 <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`w-10 h-10 rounded-[12px] text-[14px] font-medium transition-colors cursor-pointer ${
-                    p === page
-                      ? "bg-primary text-white"
-                      : "border border-border bg-card text-muted-foreground hover:bg-muted"
-                  }`}
+                  onClick={() => setPage(Math.max(0, page - 1))}
+                  disabled={page === 0}
+                  className="w-10 h-10 rounded-[12px] border border-border bg-card flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  {p + 1}
+                  <ChevronLeft size={16} />
                 </button>
-              ))}
-              <button
-                onClick={() => setPage(page + 1)}
-                disabled={tasks.length < pageSize}
-                className="w-10 h-10 rounded-[12px] border border-border bg-card flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          )}
+
+                {pages[0] > 0 && (
+                  <>
+                    <button
+                      onClick={() => setPage(0)}
+                      className="w-10 h-10 rounded-[12px] border border-border bg-card text-[14px] font-medium text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
+                    >
+                      1
+                    </button>
+                    <span className="text-muted-foreground text-[13px] select-none">···</span>
+                  </>
+                )}
+
+                {pages.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => currentPageHasData || p < page ? setPage(p) : undefined}
+                    className={`w-10 h-10 rounded-[12px] text-[14px] font-medium transition-colors cursor-pointer ${
+                      isActive(p)
+                        ? "bg-primary text-white"
+                        : "border border-border bg-card text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {p + 1}
+                  </button>
+                ))}
+
+                {hasMore && (
+                  <span className="text-muted-foreground text-[13px] select-none">···</span>
+                )}
+
+                <button
+                  onClick={() => setPage(page + 1)}
+                  disabled={!hasMore}
+                  className="w-10 h-10 rounded-[12px] border border-border bg-card flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            );
+          })()}
         </div>
       </main>
       <Footer />
