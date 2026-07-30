@@ -8,7 +8,7 @@ import { getTaskApplications, updateApplicationStatus, APPLICATION_STATUS_LABELS
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Edit, Eye, ArrowLeft, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon } from "@shared/ui/Icons";
+import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon } from "@shared/ui/Icons";
 import type { ApplicationStatus } from "@entities/application";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -145,15 +145,18 @@ export default function CompanyTaskDetailPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 pt-10 pb-8">
-        {/* Back + Edit */}
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-2 text-[13px] text-muted-foreground mb-6">
+          <Link href="/company/tasks" className="hover:text-primary transition-colors no-underline">Задачи</Link>
+          <span className="text-muted-foreground/40">/</span>
+          <span className="text-foreground truncate">{task?.title || "Загрузка..."}</span>
+        </div>
+
+        {/* Task actions */}
         <div className="flex items-center justify-between mb-8">
-          <Link
-            href="/company/tasks"
-            className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors no-underline"
-          >
-            <ArrowLeft size={16} />
-            К задачам
-          </Link>
+          <div>
+            <h1 className="text-[26px] font-bold font-display text-foreground">Задача</h1>
+          </div>
           <div className="flex items-center gap-2">
             <Link
               href={`/tasks/${task.id}`}

@@ -17,8 +17,9 @@ const publicLinks = [
 
 const companyLinks = [
   { href: "/company/tasks", label: "Задачи" },
+  { href: "/company/applications", label: "Заявки" },
+  { href: "/company/submissions", label: "Результаты" },
   { href: "/company/participants", label: "Участники" },
-  { href: "/how-it-works", label: "Как это работает" },
 ];
 
 export function Header() {

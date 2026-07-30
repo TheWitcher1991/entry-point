@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createTask, updateTaskStatus } from "@entities/task";
 import type { TaskCreatePayload } from "@entities/task";
 import { getSkills } from "@entities/skill";
 import { getCategories } from "@entities/category";
 import { Header } from "@widgets/header";
-import { ArrowLeft, X, Check } from "@shared/ui/Icons";
+import { X, Check } from "@shared/ui/Icons";
 
 export default function NewTaskPage() {
   const router = useRouter();
@@ -122,14 +123,12 @@ export default function NewTaskPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[900px] w-full mx-auto px-6 pt-10 pb-8">
-        {/* Back link */}
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors mb-6 bg-transparent cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          Назад
-        </button>
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-2 text-[13px] text-muted-foreground mb-6">
+          <Link href="/company/tasks" className="hover:text-primary transition-colors no-underline">Задачи</Link>
+          <span className="text-muted-foreground/40">/</span>
+          <span className="text-foreground">Создание</span>
+        </div>
 
         <h1 className="text-[28px] font-bold font-display text-foreground mb-8">Создание задачи</h1>
 

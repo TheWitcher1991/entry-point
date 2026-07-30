@@ -215,14 +215,14 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
 
   return (
     <>
-      {/* Back link */}
-      <button
-        onClick={() => router.back()}
-        className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors mb-6 bg-transparent cursor-pointer"
-      >
-        <ArrowLeft size={16} />
-        Назад
-      </button>
+      {/* Breadcrumbs */}
+      <div className="flex items-center gap-2 text-[13px] text-muted-foreground mb-6">
+        <Link href="/company/tasks" className="hover:text-primary transition-colors no-underline">Задачи</Link>
+        <span className="text-muted-foreground/40">/</span>
+        <Link href={`/company/tasks/${taskId}`} className="hover:text-primary transition-colors no-underline">{task.title}</Link>
+        <span className="text-muted-foreground/40">/</span>
+        <span className="text-foreground">Редактирование</span>
+      </div>
 
       <h1 className="text-[28px] font-bold font-display text-foreground mb-3">
         Редактирование задачи

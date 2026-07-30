@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -66,6 +66,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export default function PublicParticipantPage() {
   const params = useParams();
+  const router = useRouter();
   const participantId = parseInt(params.id as string, 10);
 
   const { data: profile, isLoading: profileLoading } = useQuery({
@@ -145,7 +146,7 @@ export default function PublicParticipantPage() {
 
       {/* Breadcrumbs */}
       <div className="border-b border-border pt-6">
-        <div className="max-w-[1200px] mx-auto px-6 py-3">
+        <div className="max-w-[1200px] mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors no-underline">
               Главная
@@ -153,6 +154,12 @@ export default function PublicParticipantPage() {
             <ChevronRight size={14} className="text-muted-foreground" />
             <span className="text-foreground">{fullName}</span>
           </div>
+          <button
+            onClick={() => router.back()}
+            className="text-[13px] text-muted-foreground hover:text-foreground transition-colors bg-transparent cursor-pointer"
+          >
+            ← Назад
+          </button>
         </div>
       </div>
 
