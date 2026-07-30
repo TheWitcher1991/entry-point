@@ -14,7 +14,7 @@ import { TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { getCompletedTasks, type CompletedTask } from "@entities/participant";
 import { getMyReviews, type Review } from "@entities/review";
 import { Header } from "@widgets/header";
-import { Search, Clock, Layers, Award, Star, ChevronRight, Bookmark } from "@shared/ui/Icons";
+import { Search, Clock, Layers, Award, Star, ChevronRight } from "@shared/ui/Icons";
 
 export default function ParticipantDashboardPage() {
   const user = useUnit($user);
@@ -259,22 +259,13 @@ export default function ParticipantDashboardPage() {
               Добро пожаловать, {userName}
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/participant/saved"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-muted hover:bg-muted/80 rounded-[14px] transition-[scale,background-color] no-underline active:scale-[0.96]"
-            >
-              <Bookmark size={16} />
-              Сохранённые
-            </Link>
-            <Link
-              href="/catalog"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-opacity no-underline"
-            >
-              <Search size={16} />
-              Найти задачу
-            </Link>
-          </div>
+          <Link
+            href="/catalog"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-opacity no-underline"
+          >
+            <Search size={16} />
+            Найти задачу
+          </Link>
         </div>
 
         {/* Stats */}
