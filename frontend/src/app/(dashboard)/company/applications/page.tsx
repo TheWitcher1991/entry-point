@@ -12,7 +12,7 @@ export default function CompanyApplicationsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="flex-1 max-w-[900px] w-full mx-auto px-6 pt-10 pb-8">
+      <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 pt-10 pb-8">
         <button
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors mb-6 bg-transparent cursor-pointer"
