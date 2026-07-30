@@ -89,9 +89,13 @@ export function Header() {
                 <LogOut size={18} />
               </button>
               {/* Avatar */}
-              <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[14px] font-semibold shrink-0">
+              <Link
+                href={user.role === "company" ? "/company/profile" : "/participant/profile"}
+                className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[14px] font-semibold shrink-0 no-underline hover:opacity-80 transition-opacity"
+                title="Профиль"
+              >
                 {user.first_name?.[0] || user.email[0].toUpperCase()}
-              </div>
+              </Link>
             </>
           ) : (
             <>
