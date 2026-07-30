@@ -25,6 +25,15 @@ export async function getTaskSubmissions(
   return data;
 }
 
+export async function getMySubmission(
+  taskId: number,
+): Promise<Submission | null> {
+  const { data } = await api.get<Submission | null>(
+    `/tasks/${taskId}/my-submission`,
+  );
+  return data;
+}
+
 export async function reviewSubmission(
   taskId: number,
   submissionId: number,

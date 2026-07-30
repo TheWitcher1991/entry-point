@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { $user, $isHydrated } from "@features/auth";
 import { getTask, TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { getMyParticipations, type Participation } from "@entities/participation";
-import { getTaskSubmissions, type Submission } from "@entities/submission";
+import { getMySubmission, type Submission } from "@entities/submission";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import { SubmitForm } from "@features/task-submit";
@@ -126,19 +126,15 @@ export default function ParticipantTaskWorkspacePage() {
     enabled: !Number.isNaN(taskId),
   });
 
-  const { data: submissions = [] } = useQuery({
-    queryKey: ["task-submissions", taskId],
-    queryFn: () => getTaskSubmissions(taskId),
+  const { data: mySubmission } = useQuery({
+    queryKey: ["task-my-submission", taskId],
+    queryFn: () => getMySubmission(taskId),
     enabled: !Number.isNaN(taskId) && !!user,
   });
 
   // ── Derived state ──
   const participation = participations.find(
     (p: Participation) => p.task_id === taskId,
-  );
-
-  const mySubmission: Submission | undefined = submissions.find(
-    (s: Submission) => s.participant_id === user?.id,
   );
 
   const isLoading = !isHydrated || partsLoading || taskLoading;

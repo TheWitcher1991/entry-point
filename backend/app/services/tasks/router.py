@@ -9,7 +9,7 @@ from app.services.auth.models import User, UserRole
 from app.services.companies.models import Company
 from app.services.participants.models import ParticipantProfile
 from app.services.participations.schemas import ParticipantsResponse
-from app.services.tasks.models import ProjectTask, SavedTask, TaskSkill
+from app.services.tasks.models import ProjectTask, SavedTask, TaskSkill, TaskSubmission
 from app.services.tasks.schemas import (
     SubmissionCreate,
     SubmissionResponse,
@@ -316,6 +316,45 @@ async def submit_task_result(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Task not found or not in progress",
         )
+
+    resp = SubmissionResponse.model_validate(sub)
+    resp.participant_first_name = profile.first_name
+    resp.participant_last_name = profile.last_name
+    return resp
+
+
+@router.get("/{task_id}/my-submission", response_model=SubmissionResponse | None)
+async def get_my_submission(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> SubmissionResponse | None:
+    """Get the current participant's own submission for a task."""
+    if current_user.role != UserRole.PARTICIPANT:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Participant access required",
+        )
+    profile = await _get_participant_profile(db, current_user.id)
+    if profile is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Participant profile not found",
+        )
+
+    result = await db.execute(
+        select(TaskSubmission)
+        .where(
+            TaskSubmission.task_id == task_id,
+            TaskSubmission.participant_id == profile.id,
+        )
+        .options(selectinload(TaskSubmission.participant_profile))
+        .order_by(TaskSubmission.created_at.desc())
+        .limit(1)
+    )
+    sub = result.scalar_one_or_none()
+    if sub is None:
+        return None
 
     resp = SubmissionResponse.model_validate(sub)
     resp.participant_first_name = profile.first_name
