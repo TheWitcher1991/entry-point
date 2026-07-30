@@ -18,6 +18,7 @@ const publicLinks = [
 const companyLinks = [
   { href: "/company/tasks", label: "Задачи" },
   { href: "/company/participants", label: "Участники" },
+  { href: "/how-it-works", label: "Как это работает" },
 ];
 
 export function Header() {
@@ -151,15 +152,6 @@ export function Header() {
           <hr className="my-2 border-border" />
           {isHydrated && isAuthenticated && user ? (
             <>
-              {user.role === "company" && (
-                <Link
-                  href="/company/participants"
-                  onClick={() => setMobileOpen(false)}
-                  className="px-4 py-3 text-[15px] text-muted-foreground hover:text-foreground hover:bg-muted rounded-[12px] transition-colors no-underline"
-                >
-                  Участники
-                </Link>
-              )}
               <Link
                 href={user.role === "company" ? "/company" : "/participant"}
                 onClick={() => setMobileOpen(false)}
