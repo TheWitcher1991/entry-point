@@ -92,7 +92,7 @@ export default function LandingPage() {
 
       <main>
         {/* ───── HERO ───── */}
-        <section className="relative pt-20 pb-16 overflow-hidden">
+        <section className="relative pt-28 pb-16 overflow-hidden">
           {/* Background decoration */}
           <div className="absolute inset-0 -z-10">
             <div className="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-primary/[0.04] dark:bg-primary/[0.06] blur-3xl" />
@@ -176,7 +176,7 @@ export default function LandingPage() {
               </div>
               <Link
                 href="/catalog"
-                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-4 rounded-2xl border border-border bg-background text-[13px] font-medium text-foreground hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline shrink-0"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-2xl border border-border bg-background text-[13px] font-medium text-foreground hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline shrink-0"
               >
                 Все задачи
                 <ArrowRight size={14} strokeWidth={2} />
@@ -294,17 +294,6 @@ export default function LandingPage() {
                 })
               )}
             </div>
-
-            {/* Mobile link */}
-            <div className="mt-8 text-center sm:hidden">
-              <Link
-                href="/catalog"
-                className="inline-flex items-center gap-1.5 h-10 px-5 rounded-2xl border border-border bg-background text-[13px] font-medium text-foreground hover:bg-muted transition-colors no-underline"
-              >
-                Все задачи
-                <ArrowRight size={14} strokeWidth={2} />
-              </Link>
-            </div>
           </div>
         </section>
 
@@ -409,63 +398,57 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Participants */}
-              <div className="relative p-8 md:p-10 rounded-3xl bg-gradient-to-br from-primary/5 via-primary/[0.02] to-transparent border border-primary/10 overflow-hidden group hover:shadow-sm transition-shadow duration-200">
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-primary/[0.03] dark:bg-primary/[0.06] blur-2xl" />
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5">
-                    <Users size={22} strokeWidth={1.5} />
-                  </div>
-                  <h3 className="text-[22px] font-bold font-display text-foreground mb-3">Участникам</h3>
-                  <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
-                    Получи подтверждённый опыт, отзывы от компаний и реальные карьерные возможности. 
-                    Дополни портфолио кейсами и резюме — фактами.
-                  </p>
-                  <ul className="flex flex-col gap-2 mb-7">
-                    {["Живые задачи от реальных IT-компаний", "Конструктивная обратная связь", "Подтверждение навыков в профиле"].map((item) => (
-                      <li key={item} className="flex items-center gap-2 text-[13px] text-muted-foreground">
-                        <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <a
-                    href="/register"
-                    className="inline-flex items-center justify-center h-11 px-6 rounded-2xl bg-primary text-primary-foreground text-[14px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2"
-                  >
-                    Начать как участник
-                    <ArrowRight size={15} strokeWidth={2.5} />
-                  </a>
+              <div className="p-8 md:p-10 rounded-3xl bg-card border border-border hover:shadow-sm transition-shadow duration-200">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5">
+                  <Users size={22} strokeWidth={1.5} />
                 </div>
+                <h3 className="text-[22px] font-bold font-display text-foreground mb-3">Участникам</h3>
+                <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
+                  Получи подтверждённый опыт, отзывы от компаний и реальные карьерные возможности. 
+                  Дополни портфолио кейсами и резюме — фактами.
+                </p>
+                <ul className="flex flex-col gap-2.5 mb-8">
+                  {["Живые задачи от реальных IT-компаний", "Конструктивная обратная связь", "Подтверждение навыков в профиле"].map((item) => (
+                    <li key={item} className="flex items-center gap-2.5 text-[14px] text-muted-foreground">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="/register"
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-2xl bg-primary text-primary-foreground text-[14px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2"
+                >
+                  Начать как участник
+                  <ArrowRight size={15} strokeWidth={2.5} />
+                </a>
               </div>
 
               {/* Companies */}
-              <div className="relative p-8 md:p-10 rounded-3xl bg-gradient-to-br from-amber-500/5 via-amber-500/[0.02] to-transparent border border-amber-500/10 overflow-hidden group hover:shadow-sm transition-shadow duration-200">
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-amber-500/[0.03] dark:bg-amber-500/[0.06] blur-2xl" />
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-5">
-                    <Briefcase size={22} strokeWidth={1.5} />
-                  </div>
-                  <h3 className="text-[22px] font-bold font-display text-foreground mb-3">Компаниям</h3>
-                  <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
-                    Публикуй задачи, находи мотивированных исполнителей и формируй кадровый резерв 
-                    из проверенных специалистов.
-                  </p>
-                  <ul className="flex flex-col gap-2 mb-7">
-                    {["Проверка навыков на реальных задачах", "Кадровый резерв без лишних затрат", "Бренд работодателя среди IT-специалистов"].map((item) => (
-                      <li key={item} className="flex items-center gap-2 text-[13px] text-muted-foreground">
-                        <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <a
-                    href="/how-it-works"
-                    className="inline-flex items-center justify-center h-11 px-6 rounded-2xl bg-amber-600 dark:bg-amber-500 text-white text-[14px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2"
-                  >
-                    Для компаний
-                    <ArrowRight size={15} strokeWidth={2.5} />
-                  </a>
+              <div className="p-8 md:p-10 rounded-3xl bg-card border border-border hover:shadow-sm transition-shadow duration-200">
+                <div className="w-12 h-12 rounded-2xl bg-muted text-foreground flex items-center justify-center mb-5">
+                  <Briefcase size={22} strokeWidth={1.5} />
                 </div>
+                <h3 className="text-[22px] font-bold font-display text-foreground mb-3">Компаниям</h3>
+                <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
+                  Публикуй задачи, находи мотивированных исполнителей и формируй кадровый резерв 
+                  из проверенных специалистов.
+                </p>
+                <ul className="flex flex-col gap-2.5 mb-8">
+                  {["Проверка навыков на реальных задачах", "Кадровый резерв без лишних затрат", "Бренд работодателя среди IT-специалистов"].map((item) => (
+                    <li key={item} className="flex items-center gap-2.5 text-[14px] text-muted-foreground">
+                      <span className="w-1.5 h-1.5 rounded-full bg-foreground/30 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="/how-it-works"
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-2xl bg-foreground text-background text-[14px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2"
+                >
+                  Для компаний
+                  <ArrowRight size={15} strokeWidth={2.5} />
+                </a>
               </div>
             </div>
           </div>
