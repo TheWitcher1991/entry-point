@@ -285,7 +285,7 @@ export default function HowItWorksPage() {
       {/* ───── CTA ───── */}
       <section className="py-20">
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="relative p-10 md:p-16 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground text-center overflow-hidden">
+          <div className="relative p-10 md:p-16 rounded-3xl bg-primary text-primary-foreground text-center overflow-hidden">
             <div className="absolute top-[-60px] right-[-60px] w-[200px] h-[200px] rounded-full bg-primary-foreground/[0.06] blur-2xl" />
             <div className="absolute bottom-[-80px] left-[-40px] w-[250px] h-[250px] rounded-full bg-primary-foreground/[0.04] blur-2xl" />
             <div className="relative">
