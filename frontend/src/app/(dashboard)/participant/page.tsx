@@ -219,7 +219,7 @@ export default function ParticipantDashboardPage() {
         {inProgressApps.map((app: Application) => (
           <Link
             key={app.id}
-            href={`/tasks/${app.task_id}`}
+            href={`/participant/tasks/${app.task_id}`}
             className="p-5 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-[scale,border-color] no-underline active:scale-[0.96] block"
           >
             <div className="flex items-center gap-4">
