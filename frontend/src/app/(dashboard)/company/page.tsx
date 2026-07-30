@@ -43,7 +43,7 @@ export default function CompanyDashboardPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-8">
+      <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 pt-10 pb-8">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

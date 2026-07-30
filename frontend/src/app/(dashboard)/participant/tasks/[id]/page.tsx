@@ -168,7 +168,7 @@ export default function ParticipantTaskWorkspacePage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 max-w-[1200px] mx-auto px-6 py-8 w-full">
+        <main className="flex-1 max-w-[1200px] mx-auto px-6 pt-10 pb-8 w-full">
           <WorkspaceSkeleton />
         </main>
         <Footer />
@@ -406,7 +406,7 @@ export default function ParticipantTaskWorkspacePage() {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-10 pb-8">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
             {/* ── LEFT: Task Info ── */}

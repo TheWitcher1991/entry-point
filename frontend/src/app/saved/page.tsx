@@ -16,7 +16,7 @@ export default function SavedTasksPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-8">
+      <div className="flex-1 max-w-[1200px] w-full mx-auto px-6 pt-10 pb-8">
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-[28px] font-bold font-display text-foreground">Сохранённые задачи</h1>

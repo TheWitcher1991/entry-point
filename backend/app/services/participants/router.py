@@ -70,6 +70,37 @@ async def get_my_completed_tasks(
     return result
 
 
+@router.get("/me/reviews", response_model=list[ReviewResponse])
+async def get_my_reviews(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[ReviewResponse]:
+    from app.services.reviews.service import get_participant_reviews
+
+    reviews = await get_participant_reviews(db, current_user.id)
+    result = []
+    for r in reviews:
+        company_name = r.company.name if r.company else None
+        task_title = r.task.title if r.task else None
+        result.append(
+            ReviewResponse(
+                id=r.id,
+                submission_id=r.submission_id,
+                company_id=r.company_id,
+                participant_id=r.participant_id,
+                task_id=r.task_id,
+                rating=r.rating,
+                text=r.text,
+                skills_confirmed=r.skills_confirmed,
+                created_at=r.created_at,
+                updated_at=r.updated_at,
+                company_name=company_name,
+                task_title=task_title,
+            )
+        )
+    return result
+
+
 @router.get("/{participant_id}", response_model=ParticipantProfileResponse)
 async def get_participant_profile(
     participant_id: int,

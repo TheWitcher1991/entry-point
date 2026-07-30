@@ -11,7 +11,7 @@ export default function EditTaskPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="flex-1 max-w-[900px] w-full mx-auto px-6 py-8">
+      <div className="flex-1 max-w-[900px] w-full mx-auto px-6 pt-10 pb-8">
         <EditTaskForm taskId={taskId} />
       </div>
     </div>

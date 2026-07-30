@@ -121,7 +121,7 @@ export default function NewTaskPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="flex-1 max-w-[900px] w-full mx-auto px-6 py-8">
+      <div className="flex-1 max-w-[900px] w-full mx-auto px-6 pt-10 pb-8">
         {/* Back link */}
         <button
           onClick={() => router.back()}
