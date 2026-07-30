@@ -22,6 +22,13 @@ export async function getCompletedTasks(): Promise<CompletedTask[]> {
   return data;
 }
 
+export async function getParticipants(
+  params?: { search?: string; specialty?: string; city?: string; offset?: number; limit?: number },
+): Promise<ParticipantProfile[]> {
+  const { data } = await api.get<ParticipantProfile[]>("/participants", { params });
+  return data;
+}
+
 export async function getParticipantPublicProfile(
   id: number,
 ): Promise<ParticipantProfile> {

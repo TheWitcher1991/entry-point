@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.services.auth.models import User
+from app.services.participants.models import ParticipantProfile
 from app.services.participants.schemas import (
     CompletedTaskResponse,
     ParticipantProfileResponse,
@@ -99,6 +101,35 @@ async def get_my_reviews(
             )
         )
     return result
+
+
+@router.get("", response_model=list[ParticipantProfileResponse])
+async def list_participants(
+    search: str | None = Query(None, min_length=2),
+    specialty: str | None = Query(None),
+    city: str | None = Query(None),
+    offset: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+) -> list[ParticipantProfileResponse]:
+    """List all participants with optional search and filters."""
+    query = select(ParticipantProfile).order_by(ParticipantProfile.created_at.desc())
+
+    if search:
+        query = query.where(
+            ParticipantProfile.first_name.ilike(f"%{search}%")
+            | ParticipantProfile.last_name.ilike(f"%{search}%")
+            | ParticipantProfile.specialty.ilike(f"%{search}%")
+        )
+    if specialty:
+        query = query.where(ParticipantProfile.specialty.ilike(f"%{specialty}%"))
+    if city:
+        query = query.where(ParticipantProfile.city.ilike(f"%{city}%"))
+
+    query = query.offset(offset).limit(limit)
+    result = await db.execute(query)
+    profiles = result.scalars().all()
+    return [ParticipantProfileResponse.model_validate(p) for p in profiles]
 
 
 @router.get("/{participant_id}", response_model=ParticipantProfileResponse)

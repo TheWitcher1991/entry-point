@@ -40,6 +40,7 @@ export {
   Award,
   Bookmark,
   TrendingUp,
+  GraduationCap,
   Moon,
   Sun,
   Globe,

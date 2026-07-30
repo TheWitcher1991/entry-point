@@ -2,6 +2,7 @@ export {
   getProfile,
   updateProfile,
   getCompletedTasks,
+  getParticipants,
   getParticipantPublicProfile,
   getParticipantPublicReviews,
 } from "./api";

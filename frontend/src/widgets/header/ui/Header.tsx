@@ -9,10 +9,15 @@ import { ThemeToggle } from "@shared/ui/ThemeToggle";
 import { LogIn, User, LogOut, Menu as MenuIcon, X as XIcon, Bookmark } from "@shared/ui/Icons";
 import { NotificationBell } from "@widgets/notification-bell";
 
-const navLinks = [
+const publicLinks = [
   { href: "/catalog", label: "Задачи" },
   { href: "/companies", label: "Компании" },
   { href: "/how-it-works", label: "Как это работает" },
+];
+
+const companyLinks = [
+  { href: "/company/tasks", label: "Задачи" },
+  { href: "/company/participants", label: "Участники" },
 ];
 
 export function Header() {
@@ -25,6 +30,11 @@ export function Header() {
     logout();
     setMobileOpen(false);
   };
+
+  const navLinks =
+    isHydrated && isAuthenticated && user?.role === "company"
+      ? companyLinks
+      : publicLinks;
 
   return (
     <header className="sticky top-4 z-50 w-full max-w-[1200px] mx-auto rounded-2xl backdrop-blur-lg shadow-[0px_0px_0px_1px_oklch(0_0_0_/_0.06),0px_1px_2px_-1px_oklch(0_0_0_/_0.06),0px_2px_4px_0px_oklch(0_0_0_/_0.04)] header-glass">
@@ -141,6 +151,15 @@ export function Header() {
           <hr className="my-2 border-border" />
           {isHydrated && isAuthenticated && user ? (
             <>
+              {user.role === "company" && (
+                <Link
+                  href="/company/participants"
+                  onClick={() => setMobileOpen(false)}
+                  className="px-4 py-3 text-[15px] text-muted-foreground hover:text-foreground hover:bg-muted rounded-[12px] transition-colors no-underline"
+                >
+                  Участники
+                </Link>
+              )}
               <Link
                 href={user.role === "company" ? "/company" : "/participant"}
                 onClick={() => setMobileOpen(false)}

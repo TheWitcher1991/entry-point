@@ -117,7 +117,7 @@ export default function CompanySubmissionsPage() {
             href="/company/tasks"
             className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
-            Мои задачи
+            Задачи
           </Link>
           <Link
             href="/company/applications"
@@ -128,6 +128,12 @@ export default function CompanySubmissionsPage() {
           <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
             Результаты
           </span>
+          <Link
+            href="/company/participants"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Участники
+          </Link>
         </div>
 
         {isLoading ? (

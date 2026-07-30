@@ -31,7 +31,7 @@ export default function CompanyApplicationsPage() {
             href="/company/tasks"
             className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
-            Мои задачи
+            Задачи
           </Link>
           <span className="px-4 py-3 text-[14px] font-medium text-foreground border-b-2 border-primary flex items-center gap-2">
             Заявки
@@ -41,6 +41,12 @@ export default function CompanyApplicationsPage() {
             className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
           >
             Результаты
+          </Link>
+          <Link
+            href="/company/participants"
+            className="px-4 py-3 text-[14px] font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-muted-foreground/20 flex items-center gap-2 bg-transparent no-underline transition-colors"
+          >
+            Участники
           </Link>
         </div>
 
