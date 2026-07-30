@@ -6,7 +6,7 @@ import { $user } from "@features/auth";
 import { useQuery } from "@tanstack/react-query";
 import { getMyCompanyTasks, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS } from "@entities/task";
 import { Header } from "@widgets/header";
-import { Plus, Layers, UserPlus, Clock, Award } from "@shared/ui/Icons";
+import { Plus, Layers, UserPlus, Clock, Award, Edit } from "@shared/ui/Icons";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "text-muted-foreground bg-muted",
@@ -140,16 +140,28 @@ export default function CompanyDashboardPage() {
                   ? `до ${new Date(task.deadline).toLocaleDateString("ru-RU")}`
                   : null;
                 return (
-                  <Link
+                  <div
                     key={task.id}
-                    href={`/tasks/${task.id}`}
-                    className="p-4 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-[border-color] no-underline block active:scale-[0.98]"
+                    className="p-4 rounded-3xl bg-card border border-border hover:border-muted-foreground/20 transition-[border-color]"
                   >
                     <div className="flex items-center justify-between gap-4 mb-1">
-                      <h4 className="font-semibold text-[15px] text-foreground">{task.title}</h4>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium shrink-0 ${statusClass}`}>
-                        {TASK_STATUS_LABELS[task.status] || task.status}
-                      </span>
+                      <Link href={`/company/tasks/${task.id}`} className="font-semibold text-[15px] text-foreground hover:text-primary transition-colors no-underline min-w-0 truncate">
+                        {task.title}
+                      </Link>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium ${statusClass}`}>
+                          {TASK_STATUS_LABELS[task.status] || task.status}
+                        </span>
+                        {["draft", "moderation", "revision", "published", "open"].includes(task.status) && (
+                          <Link
+                            href={`/company/tasks/${task.id}/edit`}
+                            className="inline-flex items-center px-2 py-1.5 text-[11px] font-medium text-primary bg-primary/5 border border-primary/20 hover:bg-primary/10 rounded-[8px] transition-colors no-underline"
+                            title="Редактировать"
+                          >
+                            <Edit size={11} />
+                          </Link>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
                       {task.difficulty && <span>{TASK_DIFFICULTY_LABELS[task.difficulty as keyof typeof TASK_DIFFICULTY_LABELS] || task.difficulty}</span>}
@@ -157,7 +169,7 @@ export default function CompanyDashboardPage() {
                       <span className="text-muted-foreground/40">·</span>
                       <span>{task.participant_count}/{task.participant_limit}</span>
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
