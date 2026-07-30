@@ -151,7 +151,7 @@ export default function PublicCompanyPage() {
       <Header />
 
       {/* Breadcrumbs */}
-      <div className="border-b border-border">
+      <div className="border-b border-border pt-6">
         <div className="max-w-[1200px] mx-auto px-6 py-3">
           <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors no-underline">

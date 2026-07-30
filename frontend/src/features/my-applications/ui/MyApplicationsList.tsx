@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   getMyApplications,
   updateApplicationStatus,
@@ -26,7 +27,21 @@ export function MyApplicationsList() {
 
   if (isLoading) {
     return (
-      <div className="text-[15px] text-muted-foreground">Загрузка...</div>
+      <div className="flex flex-col gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="p-6 rounded-3xl bg-card border border-border">
+            <div className="flex items-start justify-between mb-3">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-6 w-24 rounded-full" />
+            </div>
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-3/4 mb-4" />
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-3 w-32" />
+            </div>
+          </div>
+        ))}
+      </div>
     );
   }
 

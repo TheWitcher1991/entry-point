@@ -5,6 +5,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createApplication } from "@entities/application";
 import { useUnit } from "effector-react";
 import { $user } from "@features/auth";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import Link from "next/link";
 
 interface ApplyButtonProps {
   taskId: number;
@@ -13,6 +20,7 @@ interface ApplyButtonProps {
 export function ApplyButton({ taskId }: ApplyButtonProps) {
   const user = useUnit($user);
   const [showForm, setShowForm] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
   const queryClient = useQueryClient();
 
@@ -30,7 +38,16 @@ export function ApplyButton({ taskId }: ApplyButtonProps) {
     },
   });
 
-  if (user?.role !== "participant") return null;
+  // Company users don't see the button at all
+  if (user?.role === "company") return null;
+
+  const handleClick = () => {
+    if (!user) {
+      setShowLoginModal(true);
+    } else {
+      setShowForm(true);
+    }
+  };
 
   if (mutation.isSuccess) {
     return (
@@ -74,13 +91,61 @@ export function ApplyButton({ taskId }: ApplyButtonProps) {
   }
 
   return (
-    <div className="border-t border-border pt-5">
-      <button
-        onClick={() => setShowForm(true)}
-        className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer"
-      >
-        Подать заявку
-      </button>
-    </div>
+    <>
+      <div className="border-t border-border pt-5">
+        <button
+          onClick={handleClick}
+          className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.98] cursor-pointer"
+        >
+          Подать заявку
+        </button>
+      </div>
+
+      {/* Login prompt modal for unauthorized users */}
+      <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
+        <DialogContent className="p-6 sm:max-w-sm text-center">
+          <div className="flex flex-col items-center gap-4 py-4">
+            <div className="w-14 h-14 rounded-[16px] bg-primary/10 flex items-center justify-center">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-primary"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <DialogTitle className="text-[18px] font-bold font-display">
+              Войдите в аккаунт
+            </DialogTitle>
+            <DialogDescription className="text-[14px] text-muted-foreground">
+              Чтобы откликнуться на задачу, войдите в профиль участника или зарегистрируйтесь.
+            </DialogDescription>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="/login"
+              className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] no-underline"
+              onClick={() => setShowLoginModal(false)}
+            >
+              Войти
+            </Link>
+            <Link
+              href="/register"
+              className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors no-underline"
+              onClick={() => setShowLoginModal(false)}
+            >
+              Зарегистрироваться
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

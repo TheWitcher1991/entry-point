@@ -16,8 +16,80 @@ import { ApplyButton } from "@features/application-apply";
 import { SubmitForm } from "@features/task-submit";
 import { ReviewSection } from "@features/task-review";
 import { ChevronRight, Bookmark, ExternalLink, Check, Layers } from "@shared/ui/Icons";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 type Tab = "description" | "requirements" | "result" | "company";
+
+function BookmarkButton() {
+  const user = useUnit($user);
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  const handleClick = () => {
+    if (!user) {
+      setLoginOpen(true);
+    }
+  };
+
+  return (
+    <>
+      <div className="text-center">
+        <button
+          onClick={handleClick}
+          className="inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors bg-transparent cursor-pointer active:scale-[0.96]"
+        >
+          <Bookmark size={16} />
+          Сохранить
+        </button>
+      </div>
+
+      <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+        <DialogContent className="p-6 sm:max-w-sm text-center">
+          <div className="flex flex-col items-center gap-4 py-4">
+            <div className="w-14 h-14 rounded-[16px] bg-primary/10 flex items-center justify-center">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-primary"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <DialogTitle className="text-[18px] font-bold font-display">
+              Войдите в аккаунт
+            </DialogTitle>
+            <DialogDescription className="text-[14px] text-muted-foreground">
+              Чтобы сохранять задачи, войдите в свой аккаунт.
+            </DialogDescription>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="/login"
+              className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-white bg-primary hover:opacity-90 rounded-[14px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] no-underline"
+              onClick={() => setLoginOpen(false)}
+            >
+              Войти
+            </Link>
+            <Link
+              href="/register"
+              className="w-full h-[44px] inline-flex items-center justify-center text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors no-underline"
+              onClick={() => setLoginOpen(false)}
+            >
+              Зарегистрироваться
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 
 export default function TaskDetailPage() {
   const params = useParams();
@@ -136,7 +208,7 @@ export default function TaskDetailPage() {
       <Header />
 
       {/* Breadcrumbs */}
-      <div className="border-b border-border">
+      <div className="border-b border-border pt-6">
         <div className="max-w-[1200px] mx-auto px-6 py-3">
           <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors no-underline">Главная</Link>
@@ -163,7 +235,7 @@ export default function TaskDetailPage() {
                   </div>
                   <div>
                     <div className="font-semibold text-[15px] text-foreground">
-                      {company?.name || "Загрузка..."}
+                      {company ? company.name : <Skeleton className="h-5 w-40" />}
                     </div>
                     {company && (
                       <div className="text-[13px] text-muted-foreground">
@@ -355,7 +427,7 @@ export default function TaskDetailPage() {
 
                     {/* Acceptance Criteria */}
                     {task.acceptance_criteria && (
-                      <div>
+                      <div className="mt-6">
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Критерии приёмки</h3>
                         <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
                           {task.acceptance_criteria}
@@ -365,7 +437,7 @@ export default function TaskDetailPage() {
 
                     {/* Career Opportunities */}
                     {task.career_opportunities && (
-                      <div className="p-6 rounded-3xl bg-card border border-border">
+                      <div className="mt-6 p-6 rounded-3xl bg-card border border-border">
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Что получает участник</h3>
                         <div className="grid grid-cols-2 gap-3">
                           {task.career_opportunities.split("\n").filter(Boolean).map((item, i) => (
@@ -380,7 +452,7 @@ export default function TaskDetailPage() {
 
                     {/* Portfolio Policy */}
                     {task.portfolio_policy && (
-                      <div>
+                      <div className="mt-6">
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Политика публикации результата</h3>
                         <div className="text-[14px] text-muted-foreground leading-relaxed">
                           {task.portfolio_policy}
@@ -390,49 +462,100 @@ export default function TaskDetailPage() {
 
                     {/* IP Policy */}
                     {task.ip_policy && (
-                      <div>
+                      <div className="mt-6">
                         <h3 className="text-[20px] font-bold font-display text-foreground mb-4">Интеллектуальные права</h3>
                         <div className="text-[14px] text-muted-foreground leading-relaxed">
                           {task.ip_policy}
                         </div>
                       </div>
                     )}
+
+                    {/* Empty state */}
+                    {!task.expected_result && !task.acceptance_criteria && !task.career_opportunities && !task.portfolio_policy && !task.ip_policy && (
+                      <div className="flex flex-col items-center justify-center py-16 text-center">
+                        <div className="w-16 h-16 rounded-[20px] bg-muted flex items-center justify-center mb-5">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                          </svg>
+                        </div>
+                        <h4 className="text-[16px] font-bold font-display text-foreground mb-1">Результат не указан</h4>
+                        <p className="text-[14px] text-muted-foreground max-w-xs">Компания пока не добавила информацию о результатах этой задачи.</p>
+                      </div>
+                    )}
                   </>
                 )}
 
                 {activeTab === "company" && company && (
-                  <div>
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-[16px] bg-primary/10 text-primary flex items-center justify-center text-[26px] font-bold shrink-0">
+                  <div className="space-y-6">
+                    {/* Company Header */}
+                    <div className="flex items-center gap-5">
+                      <div className="w-[72px] h-[72px] rounded-[20px] bg-primary/10 text-primary flex items-center justify-center text-[32px] font-bold shrink-0">
                         {company.name ? company.name[0].toUpperCase() : "?"}
                       </div>
-                      <div>
-                        <h3 className="text-[20px] font-bold font-display text-foreground">{company.name}</h3>
-                        <div className="text-[14px] text-muted-foreground">
-                          {[company.industry, company.company_size ? `${company.company_size} сотрудников` : "", company.city].filter(Boolean).join(" · ") || "Компания"}
+                      <div className="min-w-0">
+                        <h3 className="text-[22px] font-bold font-display text-foreground">{company.name}</h3>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-[14px] text-muted-foreground">
+                          {company.industry && (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[12px] font-medium">
+                              {company.industry}
+                            </span>
+                          )}
+                          {company.company_size && (
+                            <span>{company.company_size} сотрудников</span>
+                          )}
+                          {company.city && (
+                            <span>· {company.city}</span>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     {company.description && (
-                      <p className="text-muted-foreground leading-relaxed mb-6">{company.description}</p>
+                      <p className="text-[15px] text-muted-foreground leading-relaxed">{company.description}</p>
                     )}
 
-                    {company.website && (
-                      <a
-                        href={company.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-[14px] font-medium text-primary hover:underline mb-6"
-                      >
-                        <ExternalLink size={14} />
-                        {company.website}
-                      </a>
+                    {/* Stack tags */}
+                    {company.stack && (
+                      <div className="flex flex-wrap gap-2">
+                        {company.stack.split(",").map((t: string) => (
+                          <span key={t.trim()} className="inline-flex items-center px-3 py-1.5 rounded-[10px] bg-muted text-muted-foreground text-[13px] font-medium">
+                            {t.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Contact & Website row */}
+                    {(company.website || company.contact_name) && (
+                      <div className="flex flex-wrap gap-4 pt-2">
+                        {company.website && (
+                          <a
+                            href={company.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-[14px] font-medium text-primary hover:underline"
+                          >
+                            <ExternalLink size={14} />
+                            {company.website.replace(/^https?:\/\//, "")}
+                          </a>
+                        )}
+                        {company.contact_name && (
+                          <span className="inline-flex items-center gap-2 text-[14px] text-muted-foreground">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                              <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            {company.contact_name}{company.contact_position ? `, ${company.contact_position}` : ""}
+                          </span>
+                        )}
+                      </div>
                     )}
 
                     <Link
                       href={`/companies/${company.id}`}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors no-underline"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 text-[14px] font-medium text-foreground bg-transparent border border-border hover:bg-muted hover:border-foreground/20 rounded-[14px] transition-all active:scale-[0.96] no-underline"
                     >
                       <ExternalLink size={14} />
                       Профиль компании
@@ -537,12 +660,7 @@ export default function TaskDetailPage() {
                     </div>
                   )}
 
-                  <div className="text-center">
-                    <button className="inline-flex items-center gap-2 text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors bg-transparent cursor-pointer active:scale-[0.96]">
-                      <Bookmark size={16} />
-                      Сохранить
-                    </button>
-                  </div>
+                  <BookmarkButton />
                 </div>
               </div>
 

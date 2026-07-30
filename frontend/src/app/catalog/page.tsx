@@ -18,6 +18,7 @@ import {
   Briefcase,
   X,
 } from "@shared/ui/Icons";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const DIFFICULTY_OPTIONS = [
   { value: "", label: "Сложность" },
@@ -214,7 +215,7 @@ export default function CatalogPage() {
           <div className="flex items-center justify-between mb-6 py-3">
             <span className="text-[14px] text-muted-foreground">
               {isLoading ? (
-                "Загрузка..."
+                <Skeleton className="h-4 w-32" />
               ) : (
                 <>Найдено <strong className="text-foreground">{tasks.length}</strong> задач</>
               )}

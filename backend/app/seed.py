@@ -139,15 +139,15 @@ TEST_PASSWORD = "test123!"
 
 # fmt: off
 COMPANY_USERS = [
-    {"email": "company1@test.local", "first_name": "Михаил", "last_name": "Соколов"},
-    {"email": "company2@test.local", "first_name": "Елена", "last_name": "Волкова"},
-    {"email": "company3@test.local", "first_name": "Дмитрий", "last_name": "Морозов"},
+    {"email": "company1@example.com", "first_name": "Михаил", "last_name": "Соколов"},
+    {"email": "company2@example.com", "first_name": "Елена", "last_name": "Волкова"},
+    {"email": "company3@example.com", "first_name": "Дмитрий", "last_name": "Морозов"},
 ]
 
 PARTICIPANT_USERS = [
-    {"email": "participant1@test.local", "first_name": "Иван", "last_name": "Петров"},
-    {"email": "participant2@test.local", "first_name": "Анна", "last_name": "Смирнова"},
-    {"email": "participant3@test.local", "first_name": "Алексей", "last_name": "Козлов"},
+    {"email": "participant1@example.com", "first_name": "Иван", "last_name": "Петров"},
+    {"email": "participant2@example.com", "first_name": "Анна", "last_name": "Смирнова"},
+    {"email": "participant3@example.com", "first_name": "Алексей", "last_name": "Козлов"},
 ]
 
 COMPANIES = [
@@ -338,9 +338,21 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
     logger.info("Seeding test data...")
 
     async with async_session_factory() as session:
+        # ── Migrate legacy status ───────────────────────────────
+        # Earlier versions used "active" instead of "open"
+        fix_result = await session.execute(
+            select(ProjectTask).where(ProjectTask.status == "active")
+        )
+        legacy_tasks = list(fix_result.scalars().all())
+        for t in legacy_tasks:
+            t.status = "open"
+        if legacy_tasks:
+            await session.commit()
+            logger.info("Migrated %d tasks: 'active' → 'open'", len(legacy_tasks))
+
         # ── Check if already seeded ─────────────────────────────
         existing = await session.execute(
-            select(User).where(User.email == "company1@test.local")
+            select(User).where(User.email == "company1@example.com")
         )
         if existing.scalar_one_or_none():
             logger.info("Test data already seeded, skipping.")
@@ -436,7 +448,7 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
                 category_id=cat.id if cat else None,
                 difficulty=difficulty,
                 format=fmt,
-                status="active",
+                status="open",
                 participant_limit=3,
                 participant_count=0,
             )

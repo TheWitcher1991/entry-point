@@ -96,8 +96,8 @@ python -m app.seed
 ```
 
 Создаёт:
-- 3 компании (пароль `test123!`)
-- 3 участника (пароль `test123!`)
+- 3 компании: `company1@example.com`, `company2@example.com`, `company3@example.com` (пароль `test123!`)
+- 3 участника: `participant1@example.com`, `participant2@example.com`, `participant3@example.com` (пароль `test123!`)
 - 6 задач с навыками
 - 6 заявок
 - 4 сабмита, 2 отзыва

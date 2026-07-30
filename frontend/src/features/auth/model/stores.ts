@@ -94,9 +94,14 @@ sample({
 // On login/register failure — store error
 sample({
   clock: [loginFx.fail, registerFx.fail],
-  fn: ({ error }) =>
-    (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-    "Ошибка соединения",
+  fn: ({ error }) => {
+    const detail = (error as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail;
+    if (Array.isArray(detail)) {
+      return detail.map((d: { msg?: string }) => d.msg).filter(Boolean).join("; ") || "Ошибка сервера";
+    }
+    if (typeof detail === "string") return detail;
+    return "Ошибка соединения";
+  },
   target: $authError,
 });
 

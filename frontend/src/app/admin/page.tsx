@@ -7,6 +7,7 @@ import { useUnit } from "effector-react";
 import { $user, $isHydrated } from "@features/auth";
 import { useQuery } from "@tanstack/react-query";
 import { getStats } from "@entities/stats";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import {
@@ -43,8 +44,26 @@ export default function AdminDashboardPage() {
 
   if (!isHydrated || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-muted-foreground text-[15px]">
-        Загрузка...
+      <div className="min-h-screen flex flex-col">
+        <header className="h-16 border-b border-border bg-background/80 backdrop-blur-md" />
+        <main className="flex-1 max-w-[1200px] mx-auto px-6 py-8 w-full">
+          <div className="flex items-center gap-3 mb-2">
+            <Skeleton className="h-7 w-7 rounded-[8px]" />
+            <Skeleton className="h-8 w-72" />
+          </div>
+          <Skeleton className="h-4 w-56 mb-8" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="p-6 rounded-3xl bg-card border border-border">
+                <Skeleton className="h-6 w-6 rounded-[8px] mb-3" />
+                <Skeleton className="h-8 w-20 mb-1" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            ))}
+          </div>
+          <Skeleton className="h-6 w-40 mb-5" />
+          <Skeleton className="h-32 w-full rounded-3xl" />
+        </main>
       </div>
     );
   }

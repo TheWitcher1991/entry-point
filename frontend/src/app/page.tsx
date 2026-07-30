@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -51,7 +52,7 @@ export default function LandingPage() {
     staleTime: 60_000,
   });
 
-  const { data: popularTasks = [] } = useQuery({
+  const { data: popularTasks = [], isLoading: isPopularLoading } = useQuery({
     queryKey: ["popular-tasks"],
     queryFn: () => getTasks({ sort: "popular", limit: 4 }),
     staleTime: 30_000,
@@ -144,12 +145,39 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {popularTasks.length === 0 && (
+              {isPopularLoading ? (
+                <>
+                  {[1, 2, 3, 4].map((i) => (
+                    <Card key={i}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <Skeleton className="h-11 w-11 rounded-xl" />
+                          <div>
+                            <Skeleton className="h-4 w-28 mb-1" />
+                            <Skeleton className="h-3 w-20" />
+                          </div>
+                        </div>
+                        <Skeleton className="h-5 w-full mb-2" />
+                        <Skeleton className="h-4 w-3/4 mb-4" />
+                        <div className="flex gap-2 mb-4">
+                          <Skeleton className="h-5 w-16 rounded-full" />
+                          <Skeleton className="h-5 w-20 rounded-full" />
+                          <Skeleton className="h-5 w-14 rounded-full" />
+                        </div>
+                        <div className="flex gap-4">
+                          <Skeleton className="h-3 w-24" />
+                          <Skeleton className="h-3 w-20" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </>
+              ) : popularTasks.length === 0 ? (
                 <div className="col-span-full text-center py-12 text-muted-foreground">
-                  Загрузка задач…
+                  Нет популярных задач
                 </div>
-              )}
-              {popularTasks.map((task: TaskListItem) => {
+              ) : (
+                popularTasks.map((task: TaskListItem) => {
                 const initials = getInitials(task.company_name);
                 const colorClass = getTaskColor(task.id);
                 const difficultyLabel = getDifficultyLabel(task.difficulty);
@@ -230,7 +258,7 @@ export default function LandingPage() {
                     </Card>
                   </Link>
                 );
-              })}
+              }))}
             </div>
           </div>
         </section>

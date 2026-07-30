@@ -6,6 +6,7 @@ import {
   updateApplicationStatus,
   APPLICATION_STATUS_LABELS,
 } from "@entities/application";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ApplicationStatus } from "@entities/application";
 
 export function ApplicationReviewList() {
@@ -26,7 +27,26 @@ export function ApplicationReviewList() {
 
   if (isLoading) {
     return (
-      <div className="text-[15px] text-muted-foreground">Загрузка заявок...</div>
+      <div className="flex flex-col gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="p-6 rounded-3xl bg-card border border-border">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <Skeleton className="h-5 w-36 mb-1" />
+                <Skeleton className="h-3 w-48" />
+              </div>
+              <Skeleton className="h-6 w-24 rounded-full" />
+            </div>
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-3/4 mb-4" />
+            <Skeleton className="h-3 w-28 mb-4" />
+            <div className="flex gap-2">
+              <Skeleton className="h-9 w-24 rounded-[10px]" />
+              <Skeleton className="h-9 w-24 rounded-[10px]" />
+            </div>
+          </div>
+        ))}
+      </div>
     );
   }
 

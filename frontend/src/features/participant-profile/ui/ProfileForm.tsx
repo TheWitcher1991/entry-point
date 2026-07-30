@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile } from "@entities/participant";
 import type { ParticipantProfile } from "@entities/participant";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@shared/ui/Button";
 import { Input } from "@shared/ui/Input";
 import { Check } from "@shared/ui/Icons";
@@ -102,8 +103,39 @@ export function ParticipantProfileForm() {
 
   if (isLoading) {
     return (
-      <div className="p-12 text-center text-muted-foreground text-[15px]">
-        Загрузка профиля...
+      <div className="flex flex-col gap-8">
+        <div>
+          <Skeleton className="h-5 w-24 mb-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+          </div>
+        </div>
+        <div>
+          <Skeleton className="h-5 w-20 mb-4" />
+          <Skeleton className="h-[120px] rounded-[16px] mb-5" />
+          <Skeleton className="h-[52px] w-[280px] rounded-[16px]" />
+        </div>
+        <div>
+          <Skeleton className="h-5 w-28 mb-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] w-[200px] rounded-[16px]" />
+          </div>
+        </div>
+        <div>
+          <Skeleton className="h-5 w-16 mb-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+            <Skeleton className="h-[52px] rounded-[16px]" />
+          </div>
+        </div>
+        <Skeleton className="h-12 w-32 rounded-[16px]" />
       </div>
     );
   }

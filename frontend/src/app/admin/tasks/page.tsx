@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAdminTasks, updateTaskStatus } from "@entities/admin";
 import type { AdminTask } from "@entities/admin";
 import { TASK_STATUS_LABELS } from "@entities/task";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import {
@@ -259,8 +260,31 @@ export default function AdminTasksPage() {
 
   if (!isHydrated || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-muted-foreground text-[15px]">
-        Загрузка...
+      <div className="min-h-screen flex flex-col">
+        <header className="h-16 border-b border-border bg-background/80 backdrop-blur-md" />
+        <main className="flex-1 max-w-[1200px] mx-auto px-6 py-8 w-full">
+          <Skeleton className="h-4 w-32 mb-6" />
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-48 mb-8" />
+          <div className="flex gap-1 mb-6 border-b border-border">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-10 w-28 rounded-none rounded-t-[8px]" />
+            ))}
+          </div>
+          <div className="flex flex-col gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="p-6 rounded-3xl bg-card border border-border">
+                <Skeleton className="h-5 w-1/3 mb-3" />
+                <Skeleton className="h-4 w-2/3 mb-2" />
+                <Skeleton className="h-4 w-1/2 mb-5" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-9 w-28 rounded-[12px]" />
+                  <Skeleton className="h-9 w-28 rounded-[12px]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
       </div>
     );
   }

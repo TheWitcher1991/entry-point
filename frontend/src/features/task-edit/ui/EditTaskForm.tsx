@@ -8,6 +8,7 @@ import type { TaskUpdatePayload } from "@entities/task";
 import { getSkills } from "@entities/skill";
 import { getCategories } from "@entities/category";
 import { TASK_STATUS_LABELS } from "@entities/task";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, X, Check, Eye } from "@shared/ui/Icons";
 import Link from "next/link";
 
@@ -168,8 +169,30 @@ export function EditTaskForm({ taskId }: EditTaskFormProps) {
   // Loading state
   if (isTaskLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground text-[15px]">
-        Загрузка задачи...
+      <div className="flex-1 flex flex-col gap-6 px-6 py-8 max-w-[800px]">
+        <Skeleton className="h-4 w-24 mb-2" />
+        <Skeleton className="h-8 w-72" />
+        <Skeleton className="h-16 w-full rounded-[16px]" />
+        <div className="p-6 rounded-[24px] bg-card border border-border">
+          <Skeleton className="h-5 w-44 mb-5" />
+          <div className="flex flex-col gap-5">
+            <Skeleton className="h-[52px] w-full rounded-[16px]" />
+            <Skeleton className="h-[80px] w-full rounded-[16px]" />
+          </div>
+        </div>
+        <div className="p-6 rounded-[24px] bg-card border border-border">
+          <Skeleton className="h-5 w-28 mb-5" />
+          <div className="flex flex-col gap-5">
+            <Skeleton className="h-[200px] w-full rounded-[16px]" />
+          </div>
+        </div>
+        <div className="p-6 rounded-[24px] bg-card border border-border">
+          <Skeleton className="h-5 w-20 mb-5" />
+          <div className="flex gap-3">
+            <Skeleton className="h-10 w-32 rounded-[12px]" />
+            <Skeleton className="h-10 w-32 rounded-[12px]" />
+          </div>
+        </div>
       </div>
     );
   }
