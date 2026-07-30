@@ -9,6 +9,7 @@ import {
 } from "@features/auth";
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Footer } from "@widgets/footer";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const user = useUnit($user);
@@ -80,5 +81,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }
 
   // Just render children — the pages control their own layout structure
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <Footer />
+    </>
+  );
 }
