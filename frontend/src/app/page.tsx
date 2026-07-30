@@ -6,16 +6,15 @@ import { Header } from "@widgets/header";
 import { Footer } from "@widgets/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
   Users,
   Briefcase,
   Award,
   ArrowRight,
-  LogIn,
   Layers,
-  Clock,
+  Star,
+  Activity,
 } from "@shared/ui/Icons";
 import { getStats } from "@entities/stats";
 import { getTasks, TASK_DIFFICULTY_LABELS } from "@entities/task";
@@ -32,6 +31,14 @@ const LIGHT_BG_COLORS = [
   "bg-[#E0F7FA] text-[#00695C]",
 ];
 
+const CONFETTI_COLORS = [
+  "bg-[#166666]",
+  "bg-[#E65100]",
+  "bg-[#0D47A1]",
+  "bg-[#4A148C]",
+  "bg-[#2EC4B6]",
+];
+
 function getTaskColor(id: number): string {
   return LIGHT_BG_COLORS[id % LIGHT_BG_COLORS.length];
 }
@@ -44,6 +51,27 @@ function getDifficultyLabel(difficulty: string | null): string | null {
 function getInitials(name: string | null): string {
   return name?.[0] || "?";
 }
+
+const testimonials = [
+  {
+    name: "Анна К.",
+    role: "Frontend-разработчик",
+    text: "После выполнения трёх задач получила оффер от компании. Подтверждённые навыки в профиле работают лучше любого резюме.",
+    rating: 5,
+  },
+  {
+    name: "Михаил С.",
+    role: "Backend-стажёр",
+    text: "Отличная возможность попробовать реальные проекты без страха провала. Конструктивная обратная связь от компаний — бесценна.",
+    rating: 5,
+  },
+  {
+    name: "Екатерина В.",
+    role: "Product Analyst",
+    text: "За три месяца собрала портфолио из 5 кейсов. HR-ы из компаний сами находят и приглашают на собеседования.",
+    rating: 5,
+  },
+];
 
 export default function LandingPage() {
   const { data: stats } = useQuery({
@@ -63,297 +91,303 @@ export default function LandingPage() {
       <Header />
 
       <main>
-        {/* Hero */}
-        <section className="pt-24 pb-16">
-          <div className="max-w-[1200px] mx-auto px-6 text-center">
-            <Badge variant="outline" className="mb-6 h-7 px-3 text-xs">
+        {/* ───── HERO ───── */}
+        <section className="relative pt-20 pb-16 overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-primary/[0.04] dark:bg-primary/[0.06] blur-3xl" />
+            <div className="absolute bottom-[-100px] left-[-60px] w-[350px] h-[350px] rounded-full bg-primary/[0.03] dark:bg-primary/[0.05] blur-3xl" />
+            <div className="absolute top-[30%] left-[20%] w-[6px] h-[6px] rounded-full bg-primary/20" />
+            <div className="absolute top-[20%] right-[30%] w-[4px] h-[4px] rounded-full bg-primary/20" />
+            <div className="absolute bottom-[40%] right-[15%] w-[8px] h-[8px] rounded-full bg-primary/15" />
+            <div className="absolute top-[60%] left-[10%] w-[5px] h-[5px] rounded-full bg-primary/20" />
+          </div>
+
+          <div className="max-w-[1200px] mx-auto px-6 text-center relative">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 mb-6 h-7 px-3 rounded-full border border-primary/20 bg-primary/5 text-primary text-[12px] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               Реальные задачи от IT-компаний
-            </Badge>
-            <h1 className="text-[44px] md:text-[56px] font-bold font-display text-foreground leading-[1.1] mb-6 max-w-[800px] mx-auto">
-              Начните карьеру с&nbsp;реальных проектов
+            </div>
+
+            {/* Heading */}
+            <h1 className="text-[44px] md:text-[60px] font-bold font-display text-foreground leading-[1.05] mb-5 max-w-[820px] mx-auto">
+              Преврати знания в&nbsp;подтверждённый&nbsp;опыт
             </h1>
-            <p className="text-lg text-muted-foreground max-w-[560px] mx-auto mb-10 leading-relaxed">
-              Выполняйте задачи от IT-компаний, подтверждайте навыки и получайте приглашения на стажировку или работу.
+
+            {/* Subtitle */}
+            <p className="text-[17px] md:text-[18px] text-muted-foreground max-w-[560px] mx-auto mb-10 leading-relaxed">
+              Выполняй задачи от IT-компаний, получай фидбек и приглашения на работу. Бесплатно.
             </p>
-            <div className="flex items-center justify-center gap-4">
+
+            {/* CTAs */}
+            <div className="flex items-center justify-center gap-3 md:gap-4">
               <a
                 href="/register"
-                className="inline-flex items-center justify-center h-12 px-8 rounded-2xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
+                className="group inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl bg-primary text-primary-foreground text-[14px] md:text-[15px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2 shadow-sm"
               >
                 Начать бесплатно
-                <ArrowRight size={16} strokeWidth={2} />
+                <ArrowRight size={16} strokeWidth={2.5} className="transition-transform duration-150 group-hover:translate-x-0.5" />
               </a>
               <a
                 href="/catalog"
-                className="inline-flex items-center justify-center h-12 px-8 rounded-2xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color,border-color] duration-150 ease-out active:scale-[0.96] gap-2"
+                className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl border border-border bg-background text-[14px] md:text-[15px] font-medium text-foreground hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
               >
-                <LogIn size={16} strokeWidth={2} />
+                <Layers size={16} strokeWidth={1.5} />
                 Смотреть задачи
               </a>
             </div>
 
             {/* Stats */}
-            <div className="flex items-center justify-center gap-8 md:gap-12 mt-16 pt-12 border-t border-border">
-              {[
-                {
-                  value: stats?.active_tasks != null ? `${stats.active_tasks}` : "—",
-                  label: "задач",
-                  icon: Briefcase,
-                },
-                {
-                  value: stats?.companies != null ? `${stats.companies}` : "—",
-                  label: "компаний",
-                  icon: TrendingUp,
-                },
-                {
-                  value: stats?.participants != null ? `${stats.participants}` : "—",
-                  label: "участников",
-                  icon: Users,
-                },
-                { value: "—", label: "успешных", icon: Award },
-              ].map((stat) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={stat.label} className="text-center">
-                    <Icon size={20} className="text-primary mx-auto mb-2" strokeWidth={1.5} />
-                    <div className="text-2xl md:text-3xl font-bold font-display text-primary tabular-nums">
-                      {stat.value}
+            <div className="mx-auto mt-16 pt-10 border-t border-border max-w-[800px]">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                {[
+                  { value: stats?.active_tasks != null ? `${stats.active_tasks}` : "—", label: "активных задач", icon: Briefcase },
+                  { value: stats?.companies != null ? `${stats.companies}` : "—", label: "компаний", icon: TrendingUp },
+                  { value: stats?.participants != null ? `${stats.participants}` : "—", label: "участников", icon: Users },
+                  { value: "скоро", label: "выполнено", icon: Award },
+                ].map((stat) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={stat.label} className="text-center">
+                      <Icon size={18} className="text-primary mx-auto mb-1.5" strokeWidth={1.5} />
+                      <div className="text-[26px] md:text-[30px] font-bold font-display text-foreground tabular-nums leading-none mb-1">
+                        {stat.value}
+                      </div>
+                      <div className="text-[13px] text-muted-foreground">{stat.label}</div>
                     </div>
-                    <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Popular Tasks */}
+        {/* ───── POPULAR TASKS ───── */}
         <section className="py-16 bg-muted/30">
           <div className="max-w-[1200px] mx-auto px-6">
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex items-end justify-between mb-10">
               <div>
-                <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground">Популярные задачи</h2>
-                <p className="text-muted-foreground mt-2">Начните с востребованных проектов</p>
+                <div className="inline-flex items-center gap-1.5 text-[13px] font-medium text-primary mb-2">
+                  <Activity size={14} />
+                  Популярное
+                </div>
+                <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground">Задачи, которые выбирают чаще</h2>
               </div>
               <Link
                 href="/catalog"
-                className="inline-flex items-center justify-center h-9 px-4 rounded-2xl border border-border bg-background text-sm font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5 no-underline"
+                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-4 rounded-2xl border border-border bg-background text-[13px] font-medium text-foreground hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] no-underline shrink-0"
               >
                 Все задачи
                 <ArrowRight size={14} strokeWidth={2} />
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {isPopularLoading ? (
-                <>
-                  {[1, 2, 3, 4].map((i) => (
-                    <Card key={i}>
-                      <CardContent className="pt-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <Skeleton className="h-11 w-11 rounded-xl" />
-                          <div>
-                            <Skeleton className="h-4 w-28 mb-1" />
-                            <Skeleton className="h-3 w-20" />
-                          </div>
-                        </div>
-                        <Skeleton className="h-5 w-full mb-2" />
-                        <Skeleton className="h-4 w-3/4 mb-4" />
-                        <div className="flex gap-2 mb-4">
-                          <Skeleton className="h-5 w-16 rounded-full" />
-                          <Skeleton className="h-5 w-20 rounded-full" />
-                          <Skeleton className="h-5 w-14 rounded-full" />
-                        </div>
-                        <div className="flex gap-4">
-                          <Skeleton className="h-3 w-24" />
+                Array.from({ length: 4 }).map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Skeleton className="h-11 w-11 rounded-xl" />
+                        <div>
+                          <Skeleton className="h-4 w-28 mb-1" />
                           <Skeleton className="h-3 w-20" />
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </>
+                      </div>
+                      <Skeleton className="h-5 w-full mb-2" />
+                      <Skeleton className="h-4 w-3/4 mb-4" />
+                      <div className="flex gap-2 mb-4">
+                        {[1, 2, 3].map((j) => (
+                          <Skeleton key={j} className="h-6 w-16 rounded-full" />
+                        ))}
+                      </div>
+                      <Skeleton className="h-4 w-32" />
+                    </CardContent>
+                  </Card>
+                ))
               ) : popularTasks.length === 0 ? (
                 <div className="col-span-full text-center py-12 text-muted-foreground">
-                  Нет популярных задач
+                  Пока нет задач
                 </div>
               ) : (
                 popularTasks.map((task: TaskListItem) => {
-                const initials = getInitials(task.company_name);
-                const colorClass = getTaskColor(task.id);
-                const difficultyLabel = getDifficultyLabel(task.difficulty);
-                const spotsAvailable = task.participant_limit - task.participant_count;
-                const deadline = task.deadline
-                  ? `до ${new Date(task.deadline).toLocaleDateString("ru-RU")}`
-                  : null;
+                  const initials = getInitials(task.company_name);
+                  const colorClass = getTaskColor(task.id);
+                  const difficultyLabel = getDifficultyLabel(task.difficulty);
+                  const deadline = task.deadline
+                    ? `до ${new Date(task.deadline).toLocaleDateString("ru-RU")}`
+                    : null;
 
-                return (
-                  <Link
-                    key={task.id}
-                    href={`/tasks/${task.id}`}
-                    className="block no-underline"
-                  >
-                    <Card className="group cursor-pointer hover:shadow-sm transition-shadow">
-                      <CardContent className="pt-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold ${colorClass}`}>
-                              {initials}
-                            </div>
-                            <div>
-                              <div className="text-sm font-semibold text-foreground">
-                                {task.company_name || "Компания"}
+                  return (
+                    <Link
+                      key={task.id}
+                      href={`/tasks/${task.id}`}
+                      className="group block no-underline active:scale-[0.98] transition-transform duration-150 ease-out"
+                    >
+                      <Card className="h-full cursor-pointer hover:shadow-md transition-[box-shadow] duration-200">
+                        <CardContent className="pt-6 flex flex-col h-full">
+                          {/* Header */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-[15px] font-bold shrink-0 ${colorClass}`}>
+                                {initials}
                               </div>
-                              <div className="text-xs text-muted-foreground">IT-компания</div>
+                              <div className="min-w-0">
+                                <div className="text-[14px] font-semibold text-foreground truncate">
+                                  {task.company_name || "Компания"}
+                                </div>
+                                <div className="text-[12px] text-muted-foreground">IT-компания</div>
+                              </div>
                             </div>
+                            <Star size={14} className="text-primary/40" strokeWidth={1.5} />
                           </div>
-                          <Badge variant="secondary" className="text-[11px] h-5">
-                            Набор открыт
-                          </Badge>
-                        </div>
 
-                        <h3 className="text-base font-semibold text-foreground mb-2 line-clamp-2 leading-snug">
-                          {task.title}
-                        </h3>
-                        {task.summary && (
-                          <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-2">
-                            {task.summary}
-                          </p>
-                        )}
+                          {/* Title */}
+                          <h3 className="text-[16px] font-semibold text-foreground mb-2 line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-150">
+                            {task.title}
+                          </h3>
+                          {task.summary && (
+                            <p className="text-[13px] text-muted-foreground leading-relaxed mb-4 line-clamp-2">
+                              {task.summary}
+                            </p>
+                          )}
 
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {task.skills?.slice(0, 4).map((skill) => (
-                            <Badge key={skill.id} variant="outline" className="text-[11px] h-5">
-                              {skill.skill_name || `#${skill.skill_id}`}
-                            </Badge>
-                          ))}
-                        </div>
+                          {/* Skills */}
+                          {task.skills && task.skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mb-4">
+                              {task.skills.slice(0, 4).map((skill) => (
+                                <span
+                                  key={skill.id}
+                                  className="inline-flex items-center px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-[11px] font-medium"
+                                >
+                                  {skill.skill_name || `#${skill.skill_id}`}
+                                </span>
+                              ))}
+                              {task.skills.length > 4 && (
+                                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-[11px] font-medium">
+                                  +{task.skills.length - 4}
+                                </span>
+                              )}
+                            </div>
+                          )}
 
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
-                          {difficultyLabel && (
-                            <span className="flex items-center gap-1.5">
-                              <Layers size={14} strokeWidth={1.5} />
-                              {difficultyLabel}
+                          {/* Spacer */}
+                          <div className="flex-1" />
+
+                          {/* Meta */}
+                          <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                            <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+                              {difficultyLabel && <span>{difficultyLabel}</span>}
+                              {deadline && <span>{deadline}</span>}
+                              <span>{task.participant_count}/{task.participant_limit}</span>
+                            </div>
+                            <span className="inline-flex items-center gap-1 h-8 px-3.5 rounded-xl bg-primary text-primary-foreground text-[11px] font-semibold group-hover:opacity-90 transition-opacity">
+                              Подробнее
+                              <ArrowRight size={11} strokeWidth={3} />
                             </span>
-                          )}
-                          {deadline && (
-                            <span className="flex items-center gap-1.5">
-                              <Clock size={14} strokeWidth={1.5} />
-                              {deadline}
-                            </span>
-                          )}
-                          {spotsAvailable > 0 && (
-                            <span>{spotsAvailable} {spotsAvailable === 1 ? "место" : "мест"}</span>
-                          )}
-                        </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  );
+                })
+              )}
+            </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-border">
-                          <span className="text-xs text-muted-foreground">
-                            {task.participant_count}/{task.participant_limit} участников
-                          </span>
-                          <span className="inline-flex items-center justify-center h-9 px-4 rounded-2xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/80 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]">
-                            Подробнее
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                );
-              }))}
+            {/* Mobile link */}
+            <div className="mt-8 text-center sm:hidden">
+              <Link
+                href="/catalog"
+                className="inline-flex items-center gap-1.5 h-10 px-5 rounded-2xl border border-border bg-background text-[13px] font-medium text-foreground hover:bg-muted transition-colors no-underline"
+              >
+                Все задачи
+                <ArrowRight size={14} strokeWidth={2} />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* How It Works */}
-        <section className="py-16">
+        {/* ───── HOW IT WORKS ───── */}
+        <section className="py-16 md:py-20">
           <div className="max-w-[1200px] mx-auto px-6">
-            <div className="text-center mb-14">
-              <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground mb-3">Как это работает</h2>
-              <p className="text-muted-foreground">Пять простых шагов к подтверждённому опыту</p>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-1.5 text-[13px] font-medium text-primary mb-2">
+                <Award size={14} />
+                Как это работает
+              </div>
+              <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground mb-3">
+                От нуля до подтверждённого опыта за 4 шага
+              </h2>
+              <p className="text-muted-foreground max-w-[480px] mx-auto">
+                Всё просто: создаёшь профиль, выбираешь задачу, выполняешь — получаешь результат.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 relative">
               {[
-                { step: "1", title: "Создайте профиль", desc: "Укажите навыки и технологии" },
-                { step: "2", title: "Найдите задачу", desc: "Выберите по интересам и уровню" },
-                { step: "3", title: "Подайте заявку", desc: "Расскажите о мотивации" },
-                { step: "4", title: "Выполните задачу", desc: "Работайте с обратной связью" },
-                { step: "5", title: "Получите результат", desc: "Опыт, отзыв, рекомендация" },
+                { step: "01", title: "Заполни профиль", desc: "Укажи навыки, чтобы задачи подбирались под тебя", icon: Users },
+                { step: "02", title: "Выбери задачу", desc: "Отфильтруй по сложности, формату и сроку", icon: Layers },
+                { step: "03", title: "Выполни и получи фидбек", desc: "Работай в своём темпе с обратной связью от компании", icon: Activity },
+                { step: "04", title: "Пополни портфолио", desc: "Подтверждённый опыт, отзыв и карьерные возможности", icon: Award },
               ].map((item, i) => (
-                <div key={item.step} className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold font-display mx-auto mb-4">
-                    {item.step}
-                  </div>
-                  <h3 className="text-sm font-semibold text-foreground mb-2">{item.title}</h3>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
-                  {i < 4 && (
-                    <div className="hidden md:block w-full h-[2px] bg-border mt-6" />
+                <div key={item.step} className="relative">
+                  {/* Connecting line */}
+                  {i < 3 && (
+                    <div className="hidden md:block absolute top-8 left-[calc(50%+24px)] w-[calc(100%-48px)] h-px bg-border" />
                   )}
+
+                  <div className="relative p-6 rounded-3xl bg-card border border-border hover:border-primary/20 transition-colors duration-200 text-center md:text-left h-full">
+                    <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto md:mx-0 mb-4">
+                      <item.icon size={22} strokeWidth={1.5} />
+                    </div>
+                    <div className="text-[11px] font-semibold text-primary/50 tracking-wider mb-1">{item.step}</div>
+                    <h3 className="text-[16px] font-bold font-display text-foreground mb-2">{item.title}</h3>
+                    <p className="text-[13px] text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* For Whom */}
+        {/* ───── TESTIMONIALS ───── */}
         <section className="py-16 bg-muted/30">
           <div className="max-w-[1200px] mx-auto px-6">
-            <div className="text-center mb-14">
-              <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground mb-3">Для кого это</h2>
-              <p className="text-muted-foreground">Платформа подходит и участникам, и компаниям</p>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-1.5 text-[13px] font-medium text-primary mb-2">
+                <Star size={14} />
+                Результаты участников
+              </div>
+              <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground mb-3">
+                Кому это помогло
+              </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Участникам",
-                  desc: "Получите подтверждённый опыт, отзывы от компаний и реальные карьерные возможности. Дополните портфолио кейсами.",
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                    </svg>
-                  ),
-                  action: "Начать как участник",
-                  href: "/register",
-                },
-                {
-                  title: "Компаниям",
-                  desc: "Публикуйте задачи, находите мотивированных исполнителей и формируйте кадровый резерв из проверенных специалистов.",
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                    </svg>
-                  ),
-                  action: "Для компаний",
-                  href: "/how-it-works",
-                },
-                {
-                  title: "Безопасно",
-                  desc: "Небольшие задачи без доступа к критическим данным. Политика конфиденциальности защищает обе стороны.",
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                  ),
-                  action: "Как это работает",
-                  href: "/how-it-works",
-                },
-              ].map((item) => (
-                <Card key={item.title}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {testimonials.map((t) => (
+                <Card key={t.name} className="hover:shadow-sm transition-shadow duration-200">
                   <CardContent className="pt-8 pb-6">
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5">
-                      {item.icon}
+                    {/* Stars */}
+                    <div className="flex items-center gap-0.5 mb-5">
+                      {Array.from({ length: t.rating }).map((_, i) => (
+                        <Star key={i} size={14} className="text-amber-400 fill-amber-400" strokeWidth={0} />
+                      ))}
                     </div>
-                    <h3 className="text-lg font-semibold font-display text-foreground mb-3">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-6">{item.desc}</p>
-                    <a
-                      href={item.href}
-                      className="inline-flex items-center justify-center h-9 px-4 rounded-2xl border border-border bg-background text-xs font-medium hover:bg-muted transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-1.5"
-                    >
-                      <ArrowRight size={12} strokeWidth={2.5} />
-                      {item.action}
-                    </a>
+
+                    <p className="text-[14px] text-foreground leading-relaxed mb-6">
+                      &ldquo;{t.text}&rdquo;
+                    </p>
+
+                    <div className="flex items-center gap-3 pt-4 border-t border-border">
+                      <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[13px] font-bold shrink-0">
+                        {t.name[0]}
+                      </div>
+                      <div>
+                        <div className="text-[13px] font-semibold text-foreground">{t.name}</div>
+                        <div className="text-[12px] text-muted-foreground">{t.role}</div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -361,28 +395,127 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16">
+        {/* ───── FOR WHOM ───── */}
+        <section className="py-16 md:py-20">
           <div className="max-w-[1200px] mx-auto px-6">
-            <div className="p-10 md:p-14 rounded-2xl bg-primary text-primary-foreground text-center">
-              <h2 className="text-[28px] md:text-[36px] font-bold font-display mb-4">Готовы попробовать?</h2>
-              <p className="text-base text-primary-foreground/80 mb-8 max-w-[480px] mx-auto">
-                Создайте аккаунт и найдите первую задачу уже сегодня. Это бесплатно.
+            <div className="text-center mb-12">
+              <h2 className="text-[28px] md:text-[32px] font-bold font-display text-foreground mb-3">
+                Для кого платформа
+              </h2>
+              <p className="text-muted-foreground max-w-[480px] mx-auto">
+                Подходит и тем, кто ищет опыт, и тем, кто ищет таланты
               </p>
-              <div className="flex items-center justify-center gap-4">
-                <a
-                  href="/register"
-                  className="inline-flex items-center justify-center h-12 px-8 rounded-2xl bg-primary-foreground text-primary text-sm font-medium hover:bg-primary-foreground/90 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] gap-2"
-                >
-                  <ArrowRight size={16} strokeWidth={2} />
-                  Зарегистрироваться
-                </a>
-                <a
-                  href="/catalog"
-                  className="inline-flex items-center justify-center h-12 px-8 rounded-2xl border-2 border-primary-foreground/30 text-primary-foreground text-sm font-medium hover:bg-primary-foreground/10 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
-                >
-                  Смотреть задачи
-                </a>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Participants */}
+              <div className="relative p-8 md:p-10 rounded-3xl bg-gradient-to-br from-primary/5 via-primary/[0.02] to-transparent border border-primary/10 overflow-hidden group hover:shadow-sm transition-shadow duration-200">
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-primary/[0.03] dark:bg-primary/[0.06] blur-2xl" />
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5">
+                    <Users size={22} strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[22px] font-bold font-display text-foreground mb-3">Участникам</h3>
+                  <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
+                    Получи подтверждённый опыт, отзывы от компаний и реальные карьерные возможности. 
+                    Дополни портфолио кейсами и резюме — фактами.
+                  </p>
+                  <ul className="flex flex-col gap-2 mb-7">
+                    {["Живые задачи от реальных IT-компаний", "Конструктивная обратная связь", "Подтверждение навыков в профиле"].map((item) => (
+                      <li key={item} className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                        <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="/register"
+                    className="inline-flex items-center justify-center h-11 px-6 rounded-2xl bg-primary text-primary-foreground text-[14px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2"
+                  >
+                    Начать как участник
+                    <ArrowRight size={15} strokeWidth={2.5} />
+                  </a>
+                </div>
+              </div>
+
+              {/* Companies */}
+              <div className="relative p-8 md:p-10 rounded-3xl bg-gradient-to-br from-amber-500/5 via-amber-500/[0.02] to-transparent border border-amber-500/10 overflow-hidden group hover:shadow-sm transition-shadow duration-200">
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-amber-500/[0.03] dark:bg-amber-500/[0.06] blur-2xl" />
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-5">
+                    <Briefcase size={22} strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[22px] font-bold font-display text-foreground mb-3">Компаниям</h3>
+                  <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
+                    Публикуй задачи, находи мотивированных исполнителей и формируй кадровый резерв 
+                    из проверенных специалистов.
+                  </p>
+                  <ul className="flex flex-col gap-2 mb-7">
+                    {["Проверка навыков на реальных задачах", "Кадровый резерв без лишних затрат", "Бренд работодателя среди IT-специалистов"].map((item) => (
+                      <li key={item} className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                        <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="/how-it-works"
+                    className="inline-flex items-center justify-center h-11 px-6 rounded-2xl bg-amber-600 dark:bg-amber-500 text-white text-[14px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2"
+                  >
+                    Для компаний
+                    <ArrowRight size={15} strokeWidth={2.5} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ───── FINAL CTA ───── */}
+        <section className="py-20">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <div className="relative p-10 md:p-16 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground text-center overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-[-60px] right-[-60px] w-[200px] h-[200px] rounded-full bg-primary-foreground/[0.06] blur-2xl" />
+              <div className="absolute bottom-[-80px] left-[-40px] w-[250px] h-[250px] rounded-full bg-primary-foreground/[0.04] blur-2xl" />
+              {CONFETTI_COLORS.map((color, i) => (
+                <div
+                  key={i}
+                  className={`absolute w-2 h-2 rounded-full ${color} opacity-20 hidden md:block`}
+                  style={{
+                    top: `${15 + i * 18}%`,
+                    right: `${8 + i * 7}%`,
+                  }}
+                />
+              ))}
+
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 mb-5 px-3 h-6 rounded-full bg-primary-foreground/10 text-primary-foreground/80 text-[12px] font-medium border border-primary-foreground/10">
+                  <Star size={12} />
+                  Совершенно бесплатно
+                </div>
+                <h2 className="text-[28px] md:text-[40px] font-bold font-display mb-4 leading-[1.1]">
+                  Готов попробовать?
+                </h2>
+                <p className="text-[15px] md:text-[16px] text-primary-foreground/80 max-w-[480px] mx-auto mb-8 leading-relaxed">
+                  Создай аккаунт, найди первую задачу и получи подтверждённый опыт — это бесплатно.
+                </p>
+                <div className="flex items-center justify-center gap-3 md:gap-4">
+                  <a
+                    href="/register"
+                    className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl bg-primary-foreground text-primary text-[14px] md:text-[15px] font-semibold hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] gap-2 shadow-sm"
+                  >
+                    Зарегистрироваться
+                    <ArrowRight size={16} strokeWidth={2.5} />
+                  </a>
+                  <a
+                    href="/catalog"
+                    className="inline-flex items-center justify-center h-12 md:h-13 px-7 md:px-8 rounded-2xl border-2 border-primary-foreground/20 text-primary-foreground text-[14px] md:text-[15px] font-medium hover:bg-primary-foreground/10 transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
+                  >
+                    <Layers size={16} strokeWidth={1.5} />
+                    Смотреть задачи
+                  </a>
+                </div>
               </div>
             </div>
           </div>
