@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ParticipationResponse(BaseModel):
@@ -23,3 +23,7 @@ class ParticipantsResponse(BaseModel):
     participant_first_name: str | None = None
     participant_last_name: str | None = None
     participant_avatar_url: str | None = None
+
+
+class ParticipantStatusUpdate(BaseModel):
+    status: str = Field(pattern=r"^(active|completed)$")

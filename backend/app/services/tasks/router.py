@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
@@ -8,7 +8,10 @@ from app.core.dependencies import get_current_user
 from app.services.auth.models import User, UserRole
 from app.services.companies.models import Company
 from app.services.participants.models import ParticipantProfile
-from app.services.participations.schemas import ParticipantsResponse
+from app.services.participations.schemas import (
+    ParticipantsResponse,
+    ParticipantStatusUpdate,
+)
 from app.services.tasks.models import ProjectTask, SavedTask, TaskSkill, TaskSubmission
 from app.services.tasks.schemas import (
     SubmissionCreate,
@@ -21,6 +24,7 @@ from app.services.tasks.schemas import (
     TaskUpdate,
 )
 from app.services.tasks.service import (
+    approve_participant_without_submission,
     create_submission,
     create_task,
     get_company_tasks,
@@ -240,6 +244,189 @@ async def get_task_active_participants(
             resp.participant_avatar_url = profile.avatar_url
         result.append(resp)
     return result
+
+
+def _enrich_participant_response(
+    p: object, participant_profile: ParticipantProfile | None
+) -> ParticipantsResponse:
+    resp = ParticipantsResponse.model_validate(p)
+    if participant_profile:
+        resp.participant_first_name = participant_profile.first_name
+        resp.participant_last_name = participant_profile.last_name
+        resp.participant_avatar_url = participant_profile.avatar_url
+    return resp
+
+
+async def _get_owned_task(
+    db: AsyncSession, current_user: User, task_id: int
+) -> ProjectTask:
+    """Fetch a task, enforcing company-owner or admin access."""
+    is_admin = current_user.role == UserRole.ADMIN
+    is_company_user = current_user.role == UserRole.COMPANY
+
+    company_id: int | None = None
+    if is_company_user:
+        company = await _get_company(db, current_user.id)
+        if company is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Company profile not found.",
+            )
+        company_id = company.id
+    elif not is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Company or admin access required",
+        )
+
+    task = await get_task_by_id(db, task_id)
+    if task is None or (company_id is not None and task.company_id != company_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found or not owned by you",
+        )
+    return task
+
+
+@router.delete(
+    "/{task_id}/participants/{participant_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def remove_task_participant(
+    task_id: int,
+    participant_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Remove a participant from a task (company owner or admin only).
+
+    Deletes the participation, marks the related approved application as
+    rejected (so the UI stays consistent), and recomputes participant_count.
+    """
+    task = await _get_owned_task(db, current_user, task_id)
+
+    from app.services.applications.models import Application
+    from app.services.participations.models import Participation
+
+    part_result = await db.execute(
+        select(Participation).where(
+            Participation.task_id == task_id,
+            Participation.participant_id == participant_id,
+        )
+    )
+    part = part_result.scalar_one_or_none()
+    if part is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Participant is not in this task",
+        )
+
+    await db.delete(part)
+
+    app_result = await db.execute(
+        select(Application).where(
+            Application.task_id == task_id,
+            Application.participant_id == participant_id,
+        )
+    )
+    app = app_result.scalar_one_or_none()
+    if app is not None and app.status == "approved":
+        app.status = "rejected"
+        await db.flush()
+
+    count_result = await db.execute(
+        select(func.count())
+        .select_from(Participation)
+        .where(Participation.task_id == task_id)
+    )
+    task.participant_count = count_result.scalar() or 0
+    await db.flush()
+
+
+@router.post(
+    "/{task_id}/participants/{participant_id}/approve",
+    response_model=SubmissionResponse,
+)
+async def approve_participant_no_result(
+    task_id: int,
+    participant_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> SubmissionResponse:
+    """Approve a participant who never submitted a result (owner/admin only).
+
+    Creates an approved submission record so the company can leave a review
+    and the participant gets verified experience.
+    """
+    await _get_owned_task(db, current_user, task_id)
+
+    from app.services.participations.models import Participation
+
+    part_result = await db.execute(
+        select(Participation).where(
+            Participation.task_id == task_id,
+            Participation.participant_id == participant_id,
+        )
+    )
+    part = part_result.scalar_one_or_none()
+    if part is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Participant is not in this task",
+        )
+
+    sub = await approve_participant_without_submission(db, task_id, participant_id)
+    if sub is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Participant already has a submission or is not active",
+        )
+
+    resp = SubmissionResponse.model_validate(sub)
+    profile = sub.participant_profile
+    if profile:
+        resp.participant_first_name = profile.first_name
+        resp.participant_last_name = profile.last_name
+    return resp
+
+
+@router.patch(
+    "/{task_id}/participants/{participant_id}/status",
+    response_model=ParticipantsResponse,
+)
+async def update_task_participant_status(
+    task_id: int,
+    participant_id: int,
+    payload: ParticipantStatusUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ParticipantsResponse:
+    """Update a participant's status (active <-> completed). Owner/admin only."""
+    await _get_owned_task(db, current_user, task_id)
+
+    from app.services.participations.models import Participation
+
+    part_result = await db.execute(
+        select(Participation)
+        .where(
+            Participation.task_id == task_id,
+            Participation.participant_id == participant_id,
+        )
+        .options(joinedload(Participation.participant_profile))
+    )
+    part = part_result.scalar_one_or_none()
+    if part is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Participant is not in this task",
+        )
+
+    profile = part.participant_profile
+    part.status = payload.status
+    await db.flush()
+    await db.refresh(part)
+
+    return _enrich_participant_response(part, profile)
 
 
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)

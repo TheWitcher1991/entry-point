@@ -10,7 +10,7 @@ Requires an active database with tables created (alembic upgrade head).
 import asyncio
 import logging
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import async_session_factory, engine
@@ -20,6 +20,7 @@ from app.services.auth.models import User, UserRole, UserStatus
 from app.services.companies.models import Company
 from app.services.directories.models import Category, Skill
 from app.services.participants.models import ParticipantProfile
+from app.services.participations.models import Participation
 from app.services.reviews.models import Review
 from app.services.tasks.models import ProjectTask, TaskSkill, TaskSubmission
 
@@ -333,6 +334,70 @@ REVIEWS_DATA = [
 # fmt: on
 
 
+async def repair_missing_participations(session: AsyncSession) -> int:
+    """Backfill: ensure every approved application has a Participation row.
+
+    Older seeds and pre-participation data approved applications without
+    creating participations, so approved participants never appeared in
+    task participant lists. Also recomputes participant_count for affected
+    tasks. Idempotent — safe to run on every seed invocation.
+
+    Returns the number of participations created.
+    """
+    apps_result = await session.execute(
+        select(Application).where(Application.status == "approved")
+    )
+    apps = list(apps_result.scalars().all())
+    if not apps:
+        return 0
+
+    parts_result = await session.execute(select(Participation))
+    existing_parts = {
+        (p.task_id, p.participant_id) for p in parts_result.scalars().all()
+    }
+
+    subs_result = await session.execute(
+        select(TaskSubmission).where(TaskSubmission.status == "approved")
+    )
+    approved_subs = {
+        (s.task_id, s.participant_id) for s in subs_result.scalars().all()
+    }
+
+    affected_task_ids: set[int] = set()
+    created = 0
+    for app in apps:
+        key = (app.task_id, app.participant_id)
+        affected_task_ids.add(app.task_id)
+        if key in existing_parts:
+            continue
+        part = Participation(
+            task_id=app.task_id,
+            participant_id=app.participant_id,
+            status="completed" if key in approved_subs else "active",
+        )
+        session.add(part)
+        created += 1
+
+    await session.flush()
+
+    # Recompute participant_count from participations
+    for task_id in affected_task_ids:
+        count_result = await session.execute(
+            select(func.count())
+            .select_from(Participation)
+            .where(Participation.task_id == task_id)
+        )
+        count = count_result.scalar() or 0
+        task = await session.get(ProjectTask, task_id)
+        if task is not None and task.participant_count != count:
+            task.participant_count = count
+
+    if created:
+        await session.flush()
+        logger.info("Created %d missing participations", created)
+    return created
+
+
 async def seed_test_data(_category_map: dict[str, Category]) -> None:
     """Seed test users, tasks, applications, submissions, reviews."""
     logger.info("Seeding test data...")
@@ -349,6 +414,12 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
         if legacy_tasks:
             await session.commit()
             logger.info("Migrated %d tasks: 'active' → 'open'", len(legacy_tasks))
+
+        # ── Repair: approved applications without participations ──
+        # Older seeds approved applications without creating participation rows,
+        # so approved participants never appeared in task participant lists.
+        await repair_missing_participations(session)
+        await session.commit()
 
         # ── Check if already seeded ─────────────────────────────
         existing = await session.execute(
@@ -433,8 +504,8 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
 
         # ── Create tasks ────────────────────────────────────────
         task_ids: list[int] = []
-        for t in TASKS_DATA:
-            company_idx, title, summary, desc, cat_name, difficulty, fmt, skills = t
+        for task_data in TASKS_DATA:
+            company_idx, title, summary, desc, cat_name, difficulty, fmt, skills = task_data
             company = companies[company_idx]
 
             # Find category id
@@ -509,10 +580,10 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
 
             # If approved, update task participant_count and status
             if status == "approved":
-                task = await session.get(ProjectTask, task_ids[task_idx])
-                if task:
-                    task.participant_count = (task.participant_count or 0) + 1
-                    task.status = "completed"
+                task_row = await session.get(ProjectTask, task_ids[task_idx])
+                if task_row:
+                    task_row.participant_count = (task_row.participant_count or 0) + 1
+                    task_row.status = "completed"
 
         await session.flush()
         logger.info("Created %d submissions", len(SUBMISSIONS_DATA))
@@ -543,6 +614,23 @@ async def seed_test_data(_category_map: dict[str, Category]) -> None:
                 skills_confirmed=skills_confirmed,
             )
             session.add(review)
+
+        # ── Create participations for approved applications ────
+        # Mirrors the real flow (application approval → participation),
+        # with "completed" for pairs that have an approved submission.
+        await repair_missing_participations(session)
+
+        # ── Align task statuses for a coherent demo ─────────────
+        # Tasks with approved applications but no approved submission
+        # are in progress (work started), not open for new applications.
+        await session.flush()
+        for a in APPLICATIONS_DATA:
+            part_idx, task_idx, status = a
+            if status != "approved":
+                continue
+            task_row = await session.get(ProjectTask, task_ids[task_idx])
+            if task_row and task_row.status == "open":
+                task_row.status = "in_progress"
 
         await session.commit()
 

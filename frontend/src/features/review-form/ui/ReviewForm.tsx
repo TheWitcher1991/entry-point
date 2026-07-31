@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createReview } from "@entities/review";
-import { Check } from "@shared/ui/Icons";
+import { createReview, updateReview } from "@entities/review";
+import type { Review } from "@entities/review";
+import { Check, X as XIcon } from "@shared/ui/Icons";
 
 interface ReviewFormProps {
   taskId: number;
   submissionId: number;
   skillNames?: string[];
+  /** When provided, the form edits this review instead of creating one. */
+  review?: Review;
+  onCancel?: () => void;
 }
 
 function StarIcon({ filled, size = 22 }: { filled: boolean; size?: number }) {
@@ -26,26 +30,47 @@ function StarIcon({ filled, size = 22 }: { filled: boolean; size?: number }) {
   );
 }
 
-export function ReviewForm({ taskId, submissionId, skillNames }: ReviewFormProps) {
-  const [rating, setRating] = useState(0);
+export function ReviewForm({
+  taskId,
+  submissionId,
+  skillNames,
+  review,
+  onCancel,
+}: ReviewFormProps) {
+  const isEditing = !!review;
+  const initialSkills = review?.skills_confirmed
+    ? review.skills_confirmed
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+
+  const [rating, setRating] = useState(review?.rating ?? 0);
   const [hoveredRating, setHoveredRating] = useState(0);
-  const [text, setText] = useState("");
-  const [confirmedSkills, setConfirmedSkills] = useState<string[]>([]);
+  const [text, setText] = useState(review?.text ?? "");
+  const [confirmedSkills, setConfirmedSkills] = useState<string[]>(initialSkills);
   const [submitted, setSubmitted] = useState(false);
   const queryClient = useQueryClient();
 
   const reviewMutation = useMutation({
-    mutationFn: () =>
-      createReview(taskId, submissionId, {
+    mutationFn: () => {
+      const payload = {
         rating,
         text: text.trim() || null,
-        skills_confirmed: confirmedSkills.length > 0 ? confirmedSkills.join(", ") : null,
-      }),
+        skills_confirmed:
+          confirmedSkills.length > 0 ? confirmedSkills.join(", ") : null,
+      };
+      return isEditing && review
+        ? updateReview(taskId, review.id, payload)
+        : createReview(taskId, submissionId, payload);
+    },
     onSuccess: () => {
       setSubmitted(true);
       queryClient.invalidateQueries({ queryKey: ["task-submissions", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task-reviews", taskId] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
       queryClient.invalidateQueries({ queryKey: ["company-reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["participant-reviews"] });
     },
   });
 
@@ -54,17 +79,37 @@ export function ReviewForm({ taskId, submissionId, skillNames }: ReviewFormProps
       <div className="p-4 rounded-[16px] bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800">
         <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-[14px] font-medium">
           <Check size={16} strokeWidth={3} />
-          Отзыв оставлен! Спасибо.
+          {isEditing ? "Отзыв обновлён!" : "Отзыв оставлен! Спасибо."}
         </div>
+        {isEditing && onCancel && (
+          <button
+            onClick={onCancel}
+            className="mt-3 inline-flex items-center gap-1 px-3 py-1.5 text-[12px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[8px] transition-colors cursor-pointer"
+          >
+            <XIcon size={12} />
+            Закрыть
+          </button>
+        )}
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <h5 className="text-[14px] font-semibold text-foreground">
-        Оставить отзыв участнику
-      </h5>
+      <div className="flex items-center justify-between">
+        <h5 className="text-[14px] font-semibold text-foreground">
+          {isEditing ? "Редактировать отзыв" : "Оставить отзыв участнику"}
+        </h5>
+        {isEditing && onCancel && (
+          <button
+            onClick={onCancel}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground bg-transparent border border-border hover:bg-muted rounded-[8px] transition-colors cursor-pointer"
+          >
+            <XIcon size={12} />
+            Отмена
+          </button>
+        )}
+      </div>
 
       {/* Star Rating */}
       <div>
@@ -143,12 +188,18 @@ export function ReviewForm({ taskId, submissionId, skillNames }: ReviewFormProps
         disabled={rating === 0 || reviewMutation.isPending}
         className="w-full h-[40px] inline-flex items-center justify-center gap-2 text-[13px] font-medium text-white bg-primary hover:opacity-90 rounded-[12px] transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {reviewMutation.isPending ? "Отправка..." : "Отправить отзыв"}
+        {reviewMutation.isPending
+          ? "Сохранение..."
+          : isEditing
+            ? "Сохранить изменения"
+            : "Отправить отзыв"}
       </button>
 
       {reviewMutation.isError && (
         <p className="text-[12px] text-destructive">
-          Не удалось отправить отзыв. Попробуйте снова.
+          {isEditing
+            ? "Не удалось обновить отзыв. Попробуйте снова."
+            : "Не удалось отправить отзыв. Попробуйте снова."}
         </p>
       )}
     </div>

@@ -21,3 +21,9 @@ class MessageResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class ConversationParticipantOut(BaseModel):
+    id: int
+    first_name: str
+    last_name: str

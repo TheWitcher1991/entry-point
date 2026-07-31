@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   getMyApplications,
   updateApplicationStatus,
@@ -11,6 +13,10 @@ import {
 
 export function MyApplicationsList() {
   const queryClient = useQueryClient();
+  const [withdrawTarget, setWithdrawTarget] = useState<{
+    id: number;
+    title: string;
+  } | null>(null);
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["my-applications"],
@@ -108,7 +114,9 @@ export function MyApplicationsList() {
 
             {app.status === "pending" && (
               <button
-                onClick={() => withdrawMutation.mutate(app.id)}
+                onClick={() =>
+                  setWithdrawTarget({ id: app.id, title: app.task_title || "" })
+                }
                 disabled={withdrawMutation.isPending}
                 className="text-[13px] font-medium text-muted-foreground hover:text-destructive transition-colors bg-transparent cursor-pointer"
               >
@@ -118,6 +126,20 @@ export function MyApplicationsList() {
           </div>
         </div>
       ))}
+
+      <ConfirmDialog
+        open={!!withdrawTarget}
+        onOpenChange={(open) => !open && setWithdrawTarget(null)}
+        title="Отозвать заявку?"
+        description={`Заявка на «${withdrawTarget?.title}» будет отозвана. Действие необратимо, подать заявку заново будет нельзя.`}
+        confirmLabel="Отозвать"
+        onConfirm={() => {
+          if (withdrawTarget) {
+            withdrawMutation.mutate(withdrawTarget.id);
+            setWithdrawTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }

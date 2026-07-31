@@ -26,10 +26,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Authenticated on auth routes → participant dashboard by default
-  // (role-based redirect happens client-side in DashboardLayout)
+  // Authenticated on auth routes → redirect to role dashboard
+  const role = request.cookies.get("user_role")?.value;
+  const dashboard =
+    role === "company" ? "/company" : role === "admin" ? "/admin" : "/participant";
   if (isAuthRoute) {
-    return NextResponse.redirect(new URL("/participant", request.url));
+    return NextResponse.redirect(new URL(dashboard, request.url));
   }
 
   return NextResponse.next();

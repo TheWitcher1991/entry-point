@@ -1,23 +1,59 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.services.auth.models import User
 from app.services.companies.models import Company
-from app.services.experiences.service import create_experience_from_review
+from app.services.experiences.service import (
+    create_experience_from_review,
+    delete_experience_by_review,
+    update_experience_from_review,
+)
+from app.services.reviews.models import Review
 from app.services.reviews.schemas import ReviewCreate, ReviewResponse
 from app.services.reviews.service import (
     create_review,
     get_company_reviews,
     get_participant_reviews,
     get_review_by_submission,
+    get_task_reviews,
 )
 from app.services.tasks.models import ProjectTask
 from app.services.tasks.service import get_submission_by_id
 
 router = APIRouter(tags=["reviews"])
+
+
+async def _get_owned_review(
+    db: AsyncSession,
+    current_user: User,
+    task_id: int,
+    review_id: int,
+) -> tuple[Review, Company]:
+    """Fetch a review, enforcing company-owner access."""
+    company_result = await db.execute(
+        select(Company).where(Company.owner_id == current_user.id)
+    )
+    company = company_result.scalar_one_or_none()
+    if company is None:
+        raise HTTPException(
+            status_code=403, detail="Only companies can manage reviews"
+        )
+
+    review_result = await db.execute(
+        select(Review)
+        .where(Review.id == review_id, Review.task_id == task_id)
+        .options(joinedload(Review.company))
+    )
+    review = review_result.scalar_one_or_none()
+    if review is None or review.company_id != company.id:
+        raise HTTPException(
+            status_code=404, detail="Review not found or not owned by you"
+        )
+    return review, company
 
 
 @router.post(
@@ -117,6 +153,121 @@ async def create_submission_review(
         updated_at=review.updated_at,
         company_name=company.name,
     )
+
+
+@router.patch(
+    "/tasks/{task_id}/reviews/{review_id}",
+    response_model=ReviewResponse,
+)
+async def update_task_review(
+    task_id: int,
+    review_id: int,
+    body: ReviewCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ReviewResponse:
+    """Edit a review (owning company only). Keeps the verified experience in sync."""
+    review, company = await _get_owned_review(db, current_user, task_id, review_id)
+
+    review.rating = body.rating
+    review.text = body.text
+    review.skills_confirmed = body.skills_confirmed
+    await db.flush()
+    await db.refresh(review)
+
+    await update_experience_from_review(
+        db,
+        review_id=review.id,
+        rating=body.rating,
+        review_text=body.text,
+        skills_confirmed=body.skills_confirmed,
+    )
+
+    return ReviewResponse(
+        id=review.id,
+        submission_id=review.submission_id,
+        company_id=review.company_id,
+        participant_id=review.participant_id,
+        task_id=review.task_id,
+        rating=review.rating,
+        text=review.text,
+        skills_confirmed=review.skills_confirmed,
+        created_at=review.created_at,
+        updated_at=review.updated_at,
+        company_name=company.name,
+    )
+
+
+@router.delete(
+    "/tasks/{task_id}/reviews/{review_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_task_review(
+    task_id: int,
+    review_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Withdraw a review (owning company only). Removes the verified experience too."""
+    review, _ = await _get_owned_review(db, current_user, task_id, review_id)
+
+    await delete_experience_by_review(db, review_id=review.id)
+    await db.delete(review)
+    await db.flush()
+
+
+@router.get(
+    "/tasks/{task_id}/reviews",
+    response_model=list[ReviewResponse],
+)
+async def list_task_reviews(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[ReviewResponse]:
+    """Get reviews left for a task (only the owning company)."""
+    # Verify user is a company
+    company_result = await db.execute(
+        select(Company).where(Company.owner_id == current_user.id)
+    )
+    company = company_result.scalar_one_or_none()
+    if company is None:
+        raise HTTPException(
+            status_code=403, detail="Only companies can view task reviews"
+        )
+
+    # Verify task exists and belongs to this company
+    task_result = await db.execute(
+        select(ProjectTask).where(ProjectTask.id == task_id)
+    )
+    task = task_result.scalar_one_or_none()
+    if task is None or task.company_id != company.id:
+        raise HTTPException(
+            status_code=404, detail="Task not found or not owned by you"
+        )
+
+    reviews = await get_task_reviews(db, task_id)
+    response = []
+    for r in reviews:
+        p_first = r.participant_profile.first_name if r.participant_profile else None
+        p_last = r.participant_profile.last_name if r.participant_profile else None
+        response.append(
+            ReviewResponse(
+                id=r.id,
+                submission_id=r.submission_id,
+                company_id=r.company_id,
+                participant_id=r.participant_id,
+                task_id=r.task_id,
+                rating=r.rating,
+                text=r.text,
+                skills_confirmed=r.skills_confirmed,
+                created_at=r.created_at,
+                updated_at=r.updated_at,
+                participant_first_name=p_first,
+                participant_last_name=p_last,
+            )
+        )
+    return response
 
 
 @router.get(

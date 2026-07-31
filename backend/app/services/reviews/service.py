@@ -67,3 +67,15 @@ async def get_participant_reviews(
         .order_by(Review.created_at.desc())
     )
     return list(result.scalars().all())
+
+
+async def get_task_reviews(
+    db: AsyncSession, task_id: int
+) -> list[Review]:
+    result = await db.execute(
+        select(Review)
+        .where(Review.task_id == task_id)
+        .options(selectinload(Review.participant_profile))
+        .order_by(Review.created_at.desc())
+    )
+    return list(result.scalars().all())

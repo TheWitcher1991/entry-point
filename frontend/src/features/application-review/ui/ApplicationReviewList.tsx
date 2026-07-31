@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import {
@@ -9,11 +10,16 @@ import {
 } from "@entities/application";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Briefcase, ExternalLink, Check, X as XIcon } from "@shared/ui/Icons";
 import type { ApplicationStatus } from "@entities/application";
 
 export function ApplicationReviewList() {
   const queryClient = useQueryClient();
+  const [rejectTarget, setRejectTarget] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["company-applications"],
@@ -155,7 +161,10 @@ export function ApplicationReviewList() {
                 </button>
                 <button
                   onClick={() =>
-                    statusMutation.mutate({ id: app.id, status: "rejected" })
+                    setRejectTarget({
+                      id: app.id,
+                      name: `${app.participant_first_name || ""} ${app.participant_last_name || ""}`.trim() || "Кандидат",
+                    })
                   }
                   disabled={statusMutation.isPending}
                   className="inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium text-red-600 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-[10px] transition-colors cursor-pointer disabled:opacity-50"
@@ -168,6 +177,20 @@ export function ApplicationReviewList() {
           </div>
         </div>
       ))}
+
+      <ConfirmDialog
+        open={!!rejectTarget}
+        onOpenChange={(open) => !open && setRejectTarget(null)}
+        title="Отклонить заявку?"
+        description={`${rejectTarget?.name} получит отказ. Решение необратимо, заявку нельзя будет одобрить повторно.`}
+        confirmLabel="Отклонить"
+        onConfirm={() => {
+          if (rejectTarget) {
+            statusMutation.mutate({ id: rejectTarget.id, status: "rejected" });
+            setRejectTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }

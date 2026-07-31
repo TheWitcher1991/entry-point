@@ -13,6 +13,9 @@ backend/.pytest_cache/
 backend/htmlcov/
 backend/.ruff_cache/
 
+.ruff_cache/
+.mypy_cache/
+
 __pycache__/
 **/__pycache__/
 

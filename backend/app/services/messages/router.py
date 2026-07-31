@@ -8,7 +8,11 @@ from app.core.dependencies import get_current_user
 from app.services.auth.models import User
 from app.services.companies.models import Company
 from app.services.messages.models import TaskMessage
-from app.services.messages.schemas import MessageCreate, MessageResponse
+from app.services.messages.schemas import (
+    ConversationParticipantOut,
+    MessageCreate,
+    MessageResponse,
+)
 from app.services.messages.service import create_message, get_task_messages
 from app.services.participants.models import ParticipantProfile
 from app.services.participations.models import Participation
@@ -73,14 +77,31 @@ async def _get_participant_by_user(db: AsyncSession, user_id: int) -> Participan
     return result.scalar_one_or_none()
 
 
+def _participant_names(profile: ParticipantProfile) -> tuple[str, str]:
+    """Return (first_name, last_name) with a fallback for empty profiles."""
+    first = profile.first_name or ""
+    last = profile.last_name or ""
+    if not first and not last:
+        first = f"Участник #{profile.id}"
+    return first, last
+
+
 def _enrich_message(msg: TaskMessage) -> MessageResponse:
+    sender = msg.sender
+    first_name: str | None = None
+    last_name: str | None = None
+    if sender is not None:
+        if sender.role == "participant" and sender.participant_profile:
+            first_name, last_name = _participant_names(sender.participant_profile)
+        elif sender.role == "company" and sender.company:
+            first_name = sender.company.name
     return MessageResponse(
         id=msg.id,
         task_id=msg.task_id,
         sender_id=msg.sender_id,
-        sender_first_name=msg.sender.first_name if msg.sender else None,
-        sender_last_name=msg.sender.last_name if msg.sender else None,
-        sender_role=msg.sender.role if msg.sender else None,
+        sender_first_name=first_name,
+        sender_last_name=last_name,
+        sender_role=str(sender.role) if sender else None,
         participant_profile_id=msg.participant_profile_id,
         text=msg.text,
         created_at=msg.created_at,
@@ -129,6 +150,20 @@ async def send_message(
             detail="participant_profile_id is required for company messages",
         )
 
+    if current_user.role == "company":
+        p_result = await db.execute(
+            select(Participation).where(
+                Participation.task_id == task_id,
+                Participation.participant_id == participant_profile_id,
+                Participation.status.in_(["active", "completed"]),
+            )
+        )
+        if p_result.scalar_one_or_none() is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Participant is not in this task",
+            )
+
     msg = await create_message(
         db,
         task_id=task_id,
@@ -139,12 +174,12 @@ async def send_message(
     return _enrich_message(msg)
 
 
-@router.get("/participants", response_model=list[dict[str, object]])
+@router.get("/participants", response_model=list[ConversationParticipantOut])
 async def list_conversation_participants(
     task_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> list[dict[str, object]]:
+) -> list[ConversationParticipantOut]:
     """List distinct participants the company can chat with about this task."""
     await _check_task_access(db, task_id, current_user)
 
@@ -153,9 +188,28 @@ async def list_conversation_participants(
             status_code=status.HTTP_403_FORBIDDEN, detail="Only company can list participants"
         )
 
-    from app.services.messages.models import TaskMessage
+    result: dict[int, ConversationParticipantOut] = {}
 
-    # Get distinct participant_profile_ids from messages for this task
+    # Participants with active/completed participation
+    p_result = await db.execute(
+        select(ParticipantProfile)
+        .options(selectinload(ParticipantProfile.user))
+        .join(Participation, Participation.participant_id == ParticipantProfile.id)
+        .where(
+            Participation.task_id == task_id,
+            Participation.status.in_(["active", "completed"]),
+        )
+        .distinct()
+    )
+    for profile in p_result.scalars().all():
+        first_name, last_name = _participant_names(profile)
+        result[profile.id] = ConversationParticipantOut(
+            id=profile.id,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+    # Participants from message history that may have left the task
     msg_result = await db.execute(
         select(TaskMessage.participant_profile_id)
         .where(
@@ -164,50 +218,17 @@ async def list_conversation_participants(
         )
         .distinct()
     )
-    participant_ids = [row[0] for row in msg_result.all()]
-
-    # Also get active participations
-    p_result = await db.execute(
-        select(Participation).options(
-            selectinload(Participation.participant_profile)
-        ).where(
-            Participation.task_id == task_id,
-            Participation.status.in_(["active", "completed"]),
-        )
-    )
-    participations = p_result.scalars().all()
-
-    seen = set(participant_ids)
-    result = []
-    for p in participations:
-        pp = p.participant_profile
-        if pp is None or pp.id in seen:
+    for (pid,) in msg_result.all():
+        if pid in result:
             continue
-        seen.add(pp.id)
-        user = pp.user
-        result.append({
-            "id": pp.id,
-            "first_name": user.first_name if user else "",
-            "last_name": user.last_name if user else "",
-        })
-
-    # Add participants from messages that might not have active participation
-    for pid in participant_ids:
-        if pid is None or pid in {r["id"] for r in result}:
+        history_profile = await db.get(ParticipantProfile, pid)
+        if history_profile is None:
             continue
-        query = (
-            select(ParticipantProfile)
-            .options(selectinload(ParticipantProfile.user))
-            .where(ParticipantProfile.id == pid)
+        first_name, last_name = _participant_names(history_profile)
+        result[history_profile.id] = ConversationParticipantOut(
+            id=history_profile.id,
+            first_name=first_name,
+            last_name=last_name,
         )
-        pp_result = await db.execute(query)
-        pp = pp_result.scalar_one_or_none()
-        if pp and pp.user:
-            if pid not in {r["id"] for r in result}:
-                result.append({
-                    "id": pp.id,
-                    "first_name": pp.user.first_name or "",
-                    "last_name": pp.user.last_name or "",
-                })
 
-    return result
+    return list(result.values())

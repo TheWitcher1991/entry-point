@@ -5,13 +5,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUnit } from "effector-react";
 import { $user } from "@features/auth";
 import { getTaskMessages, sendMessage, getConversationParticipants } from "@entities/message";
-import { Send, ChevronDown, MessageSquare } from "@shared/ui/Icons";
+import { Send, ChevronDown, MessageSquare, Building, Users } from "@shared/ui/Icons";
 
 interface ChatProps {
   taskId: number;
+  companyName?: string | null;
 }
 
-export function Chat({ taskId }: ChatProps) {
+export function Chat({ taskId, companyName }: ChatProps) {
   const user = useUnit($user);
   const queryClient = useQueryClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -23,7 +24,7 @@ export function Chat({ taskId }: ChatProps) {
   const isCompany = user?.role === "company";
 
   // ── Participants (company only) ──
-  const { data: participants = [] } = useQuery({
+  const { data: participants = [], isLoading: participantsLoading } = useQuery({
     queryKey: ["conversation-participants", taskId],
     queryFn: () => getConversationParticipants(taskId),
     enabled: isCompany,
@@ -37,10 +38,19 @@ export function Chat({ taskId }: ChatProps) {
     }
   }, [isCompany, participants, selectedParticipantId]);
 
+  const canSend = isCompany ? selectedParticipantId != null : true;
+
+  const inputHint = participantsLoading
+    ? "Загрузка участников..."
+    : participants.length === 0
+      ? "Нет участников для чата — дождитесь одобренных заявок"
+      : "Выберите участника, чтобы написать сообщение";
+
   // ── Messages ──
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ["task-messages", taskId, selectedParticipantId],
     queryFn: () => getTaskMessages(taskId, isCompany ? selectedParticipantId : undefined),
+    enabled: !isCompany || selectedParticipantId != null,
     refetchInterval: 10_000,
   });
 
@@ -109,53 +119,72 @@ export function Chat({ taskId }: ChatProps) {
     <div className="flex flex-col flex-1 overflow-hidden bg-card">
       {/* ── Company: participant selector ── */}
       {isCompany && (
-        <div className="px-4 py-3 border-b border-border">
-          {participants.length > 0 ? (
-            <div className="relative">
-              <button
-                onClick={() => setParticipantDropdownOpen(!participantDropdownOpen)}
-                className="w-full flex items-center justify-between h-[38px] px-3 rounded-[12px] bg-muted text-[13px] text-foreground font-medium hover:bg-muted/70 transition-colors cursor-pointer"
-              >
-                <span className="truncate">
-                  {selectedParticipant
-                    ? `${selectedParticipant.first_name} ${selectedParticipant.last_name}`
-                    : "Выберите участника"}
-                </span>
-                <ChevronDown
-                  size={14}
-                  className={`shrink-0 transition-transform duration-150 ${participantDropdownOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              {participantDropdownOpen && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setParticipantDropdownOpen(false)} />
-                  <div className="absolute top-full left-0 right-0 mt-1 z-20 rounded-[12px] bg-card border border-border shadow-lg py-1 max-h-[200px] overflow-y-auto">
-                    {participants.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => {
-                          setSelectedParticipantId(p.id);
-                          setParticipantDropdownOpen(false);
-                        }}
-                        className={`w-full px-3 py-2.5 text-left text-[13px] hover:bg-muted transition-colors cursor-pointer ${
-                          p.id === selectedParticipantId
-                            ? "text-primary font-medium bg-primary/5"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {p.first_name} {p.last_name}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+        <div className="px-4 py-3 border-b border-border shrink-0">
+          {participantsLoading ? (
+            <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+              <div className="w-3.5 h-3.5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+              Загрузка участников...
+            </div>
+          ) : participants.length > 0 ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/70 mb-1.5 px-1">
+                Чат с участником
+              </p>
+              <div className="relative">
+                <button
+                  onClick={() => setParticipantDropdownOpen(!participantDropdownOpen)}
+                  className="w-full flex items-center justify-between h-[38px] px-3 rounded-[12px] bg-muted text-[13px] text-foreground font-medium hover:bg-muted/70 transition-colors cursor-pointer"
+                >
+                  <span className="truncate">
+                    {selectedParticipant
+                      ? `${selectedParticipant.first_name} ${selectedParticipant.last_name}`.trim()
+                      : "Выберите участника"}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`shrink-0 transition-transform duration-150 ${participantDropdownOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {participantDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setParticipantDropdownOpen(false)} />
+                    <div className="absolute top-full left-0 right-0 mt-1 z-20 rounded-[12px] bg-card border border-border shadow-lg py-1 max-h-[200px] overflow-y-auto">
+                      {participants.map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => {
+                            setSelectedParticipantId(p.id);
+                            setParticipantDropdownOpen(false);
+                          }}
+                          className={`w-full px-3 py-2.5 text-left text-[13px] hover:bg-muted transition-colors cursor-pointer ${
+                            p.id === selectedParticipantId
+                              ? "text-primary font-medium bg-primary/5"
+                              : "text-foreground"
+                          }`}
+                        >
+                          {`${p.first_name} ${p.last_name}`.trim()}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           ) : (
             <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-              <MessageSquare size={14} strokeWidth={1.5} />
+              <Users size={14} strokeWidth={1.5} />
               Нет участников для чата
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── Participant: company identity ── */}
+      {!isCompany && companyName && (
+        <div className="px-4 py-2 border-b border-border shrink-0 flex items-center gap-2 min-w-0 bg-muted/30">
+          <Building size={14} strokeWidth={1.5} className="text-primary shrink-0" />
+          <span className="text-[11px] text-muted-foreground shrink-0">Чат с компанией</span>
+          <span className="text-[13px] font-medium text-foreground truncate">{companyName}</span>
         </div>
       )}
 
@@ -176,13 +205,15 @@ export function Chat({ taskId }: ChatProps) {
               </div>
               <p className="text-[13px] text-muted-foreground leading-relaxed">
                 {isCompany
-                  ? "Напишите участнику первым"
+                  ? participants.length === 0
+                    ? "Здесь появится переписка с участниками после одобрения заявок"
+                    : "Напишите участнику первым"
                   : "Напишите компании — задайте вопросы по задаче"}
               </p>
             </div>
           </div>
         ) : (
-          groupedMessages.map((group, gi) => {
+          groupedMessages.map((group) => {
             const firstMsg = group.msgs[0];
             return (
               <div
@@ -235,33 +266,42 @@ export function Chat({ taskId }: ChatProps) {
       </div>
 
       {/* ── Input area ── */}
-      <div className="px-4 py-3 border-t border-border">
-        <div className="flex items-end gap-2">
-          <div className="flex-1 relative">
-            <textarea
-              ref={textareaRef}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Написать сообщение..."
-              rows={1}
-              className="w-full min-h-[40px] max-h-[120px] px-3.5 py-2.5 rounded-[14px] bg-muted text-[13px] text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-1 focus:ring-primary/30 transition-shadow resize-none overflow-y-auto leading-[1.4]"
-            />
+      {isCompany && !canSend ? (
+        <div className="px-4 py-3 border-t border-border shrink-0">
+          <div className="flex items-center gap-2 px-3.5 py-3 rounded-[14px] bg-muted/60 text-[12px] text-muted-foreground">
+            <Users size={14} strokeWidth={1.5} className="shrink-0" />
+            <span>{inputHint}</span>
           </div>
-          <button
-            onClick={handleSend}
-            disabled={!text.trim() || sendMutation.isPending}
-            className="shrink-0 w-[40px] h-[40px] inline-flex items-center justify-center rounded-[12px] bg-primary text-white hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-            aria-label="Отправить"
-          >
-            {sendMutation.isPending ? (
-              <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Send size={16} strokeWidth={2} />
-            )}
-          </button>
         </div>
-      </div>
+      ) : (
+        <div className="px-4 py-3 border-t border-border shrink-0">
+          <div className="flex items-end gap-2">
+            <div className="flex-1 relative">
+              <textarea
+                ref={textareaRef}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Написать сообщение..."
+                rows={1}
+                className="w-full min-h-[40px] max-h-[120px] px-3.5 py-2.5 rounded-[14px] bg-muted text-[13px] text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-1 focus:ring-primary/30 transition-shadow resize-none overflow-y-auto leading-[1.4]"
+              />
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={!text.trim() || sendMutation.isPending}
+              className="shrink-0 w-[40px] h-[40px] inline-flex items-center justify-center rounded-[12px] bg-primary text-white hover:opacity-90 transition-[scale,opacity] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Отправить"
+            >
+              {sendMutation.isPending ? (
+                <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Send size={16} strokeWidth={2} />
+              )}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -67,7 +67,7 @@ export function ChatDrawer() {
 
         <div className="flex-1 overflow-hidden flex flex-col">
           {context.taskId ? (
-            <Chat taskId={context.taskId} />
+            <Chat taskId={context.taskId} companyName={task?.company_name} />
           ) : (
             <div className="flex-1 flex items-center justify-center p-6">
               <div className="text-center">

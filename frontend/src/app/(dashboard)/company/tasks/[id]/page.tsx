@@ -1,14 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTask, getTaskParticipants, updateTaskStatus, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
-import { getTaskApplications, updateApplicationStatus, APPLICATION_STATUS_LABELS } from "@entities/application";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { getTask, getTaskParticipants, updateTaskStatus, removeTaskParticipant, updateTaskParticipantStatus, TASK_STATUS_LABELS, TASK_DIFFICULTY_LABELS, TASK_FORMAT_LABELS } from "@entities/task";
+import { getTaskApplications, updateApplicationStatus, enrollApplication, APPLICATION_STATUS_LABELS } from "@entities/application";
+import { getTaskSubmissions } from "@entities/submission";
+import { ReviewSection } from "@features/task-review";
 import { Header } from "@widgets/header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon, MessageSquare, Search } from "@shared/ui/Icons";
+import { Edit, Eye, ArrowRight, Clock, Layers, UserPlus, FileText, Check, X as XIcon, MessageSquare, Search, Delete } from "@shared/ui/Icons";
 import { openChatDrawer } from "@widgets/chat/model/stores";
 import type { ApplicationStatus } from "@entities/application";
 
@@ -59,12 +63,53 @@ export default function CompanyTaskDetailPage() {
     enabled: !Number.isNaN(taskId) && !!task,
   });
 
+  const { data: submissions = [] } = useQuery({
+    queryKey: ["task-submissions", taskId],
+    queryFn: () => getTaskSubmissions(taskId),
+    enabled: !Number.isNaN(taskId) && !!task,
+  });
+
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: ApplicationStatus }) =>
       updateApplicationStatus(id, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task-applications", taskId] });
       queryClient.invalidateQueries({ queryKey: ["company-applications"] });
+      queryClient.invalidateQueries({ queryKey: ["task-participants", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+    },
+  });
+
+  const enrollMutation = useMutation({
+    mutationFn: (applicationId: number) => enrollApplication(applicationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task-participants", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task-applications", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+    },
+  });
+
+  const participantStatusMutation = useMutation({
+    mutationFn: ({
+      participantId,
+      status,
+    }: {
+      participantId: number;
+      status: "active" | "completed";
+    }) => updateTaskParticipantStatus(taskId, participantId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task-participants", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task-submissions", taskId] });
+    },
+  });
+
+  const removeParticipantMutation = useMutation({
+    mutationFn: (participantId: number) =>
+      removeTaskParticipant(taskId, participantId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task-participants", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task-applications", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task", taskId] });
     },
   });
 
@@ -75,6 +120,16 @@ export default function CompanyTaskDetailPage() {
       queryClient.invalidateQueries({ queryKey: ["company-tasks"] });
     },
   });
+
+  const [excludeTarget, setExcludeTarget] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [rejectTarget, setRejectTarget] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [archiveOpen, setArchiveOpen] = useState(false);
 
   if (Number.isNaN(taskId)) {
     return (
@@ -157,6 +212,7 @@ export default function CompanyTaskDetailPage() {
     : null;
 
   const pendingApplications = applications.filter((a) => a.status === "pending");
+  const participantIds = new Set(participants.map((p) => p.participant_id));
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -329,7 +385,7 @@ export default function CompanyTaskDetailPage() {
                       </div>
 
                       {app.cover_letter && (
-                        <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed line-clamp-2 ml-[52px]">
+                        <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed ml-[52px]">
                           {app.cover_letter}
                         </p>
                       )}
@@ -345,13 +401,38 @@ export default function CompanyTaskDetailPage() {
                             Одобрить
                           </button>
                           <button
-                            onClick={() => statusMutation.mutate({ id: app.id, status: "rejected" })}
+                            onClick={() =>
+                              setRejectTarget({
+                                id: app.id,
+                                name: `${app.participant_first_name || ""} ${app.participant_last_name || ""}`.trim() || "Кандидат",
+                              })
+                            }
                             disabled={statusMutation.isPending}
                             className="inline-flex items-center gap-1 px-3.5 py-1.5 text-[12px] font-medium text-red-600 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-[8px] transition-colors cursor-pointer disabled:opacity-50"
                           >
                             <XIcon size={12} />
                             Отклонить
                           </button>
+                        </div>
+                      )}
+
+                      {app.status === "approved" && (
+                        <div className="mt-3 ml-[52px]">
+                          {participantIds.has(app.participant_id) ? (
+                            <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-emerald-600">
+                              <Check size={12} />
+                              В участниках
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => enrollMutation.mutate(app.id)}
+                              disabled={enrollMutation.isPending}
+                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[12px] font-medium text-primary bg-primary/10 hover:bg-primary/20 rounded-[8px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                            >
+                              <UserPlus size={12} />
+                              Добавить в участники
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
@@ -380,34 +461,100 @@ export default function CompanyTaskDetailPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="flex flex-col gap-2">
                   {participants.map((p) => (
-                    <Link
+                    <div
                       key={p.id}
-                      href={`/participants/${p.participant_id}`}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted transition-colors no-underline group"
+                      className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-border hover:bg-muted/50 transition-colors"
                     >
-                      <Avatar className="w-10 h-10 shrink-0">
-                        {p.participant_avatar_url ? (
-                          <AvatarImage src={p.participant_avatar_url} alt={p.participant_first_name || ""} />
-                        ) : null}
-                        <AvatarFallback className="text-sm">
-                          {p.participant_first_name?.[0] || "?"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <p className="text-[14px] font-medium text-foreground group-hover:text-primary transition-colors truncate">
-                          {p.participant_first_name} {p.participant_last_name}
-                        </p>
-                        <p className="text-[12px] text-muted-foreground">
-                          {p.status === "active" ? "Активен" : p.status}
-                        </p>
+                      <Link
+                        href={`/participants/${p.participant_id}`}
+                        className="flex items-center gap-3 min-w-0 flex-1 no-underline group"
+                      >
+                        <Avatar className="w-10 h-10 shrink-0">
+                          {p.participant_avatar_url ? (
+                            <AvatarImage src={p.participant_avatar_url} alt={p.participant_first_name || ""} />
+                          ) : null}
+                          <AvatarFallback className="text-sm">
+                            {p.participant_first_name?.[0] || "?"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <p className="text-[14px] font-medium text-foreground group-hover:text-primary transition-colors truncate">
+                            {p.participant_first_name} {p.participant_last_name}
+                          </p>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                            p.status === "completed"
+                              ? "bg-muted text-muted-foreground"
+                              : "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+                          }`}>
+                            {p.status === "completed" ? "Завершил" : "Активен"}
+                          </span>
+                        </div>
+                      </Link>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {p.status === "active" ? (
+                          <button
+                            onClick={() => participantStatusMutation.mutate({
+                              participantId: p.participant_id,
+                              status: "completed",
+                            })}
+                            disabled={participantStatusMutation.isPending}
+                            title="Отметить завершившим"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[12px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[8px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                          >
+                            <Check size={12} />
+                            Завершить
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => participantStatusMutation.mutate({
+                              participantId: p.participant_id,
+                              status: "active",
+                            })}
+                            disabled={participantStatusMutation.isPending}
+                            title="Вернуть в работу"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[12px] font-medium text-foreground bg-transparent border border-border hover:bg-muted rounded-[8px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                          >
+                            <ArrowRight size={12} />
+                            Вернуть
+                          </button>
+                        )}
+                        <button
+                          onClick={() =>
+                            setExcludeTarget({
+                              id: p.participant_id,
+                              name: `${p.participant_first_name || ""} ${p.participant_last_name || ""}`.trim() || "Участник",
+                            })
+                          }
+                          disabled={removeParticipantMutation.isPending}
+                          title="Исключить из задачи"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[12px] font-medium text-red-600 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-[8px] transition-[scale,background-color] duration-150 ease-out active:scale-[0.96] cursor-pointer disabled:opacity-50"
+                        >
+                          <Delete size={12} />
+                          Исключить
+                        </button>
                       </div>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* Results & Reviews Section */}
+            {(participants.length > 0 || submissions.length > 0) && (
+              <div className="p-6 rounded-3xl bg-card border border-border shadow-sm">
+                <ReviewSection
+                  taskId={task.id}
+                  skillNames={task.skills.map(
+                    (s) => s.skill_name || `Навык #${s.skill_id}`,
+                  )}
+                  participants={participants}
+                  contained
+                />
+              </div>
+            )}
 
           </div>
 
@@ -524,7 +671,7 @@ export default function CompanyTaskDetailPage() {
                 {/* completed/cancelled → archived */}
                 {(task.status === "completed" || task.status === "cancelled") && (
                   <button
-                    onClick={() => taskStatusMutation.mutate("archived")}
+                    onClick={() => setArchiveOpen(true)}
                     disabled={taskStatusMutation.isPending}
                     className="w-full h-[44px] inline-flex items-center justify-center gap-2 text-[14px] font-medium text-muted-foreground bg-transparent border border-border hover:bg-muted rounded-[14px] transition-colors cursor-pointer disabled:opacity-50"
                   >
@@ -603,6 +750,46 @@ export default function CompanyTaskDetailPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={!!rejectTarget}
+        onOpenChange={(open) => !open && setRejectTarget(null)}
+        title="Отклонить заявку?"
+        description={`${rejectTarget?.name} получит отказ. Решение необратимо, заявку нельзя будет одобрить повторно.`}
+        confirmLabel="Отклонить"
+        onConfirm={() => {
+          if (rejectTarget) {
+            statusMutation.mutate({ id: rejectTarget.id, status: "rejected" });
+            setRejectTarget(null);
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!excludeTarget}
+        onOpenChange={(open) => !open && setExcludeTarget(null)}
+        title="Исключить участника?"
+        description={`${excludeTarget?.name} будет исключён из задачи, а его отклик станет отклонённым.`}
+        confirmLabel="Исключить"
+        onConfirm={() => {
+          if (excludeTarget) {
+            removeParticipantMutation.mutate(excludeTarget.id);
+            setExcludeTarget(null);
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={archiveOpen}
+        onOpenChange={setArchiveOpen}
+        title="Архивировать задачу?"
+        description="Задача исчезнет из каталога и списков, но останется доступной для восстановления."
+        confirmLabel="Архивировать"
+        onConfirm={() => {
+          taskStatusMutation.mutate("archived");
+          setArchiveOpen(false);
+        }}
+      />
     </div>
   );
 }

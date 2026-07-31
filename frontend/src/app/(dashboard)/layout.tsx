@@ -6,6 +6,7 @@ import { useUnit } from "effector-react";
 import {
   $user,
   $isHydrated,
+  getMeFx,
 } from "@features/auth";
 import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,30 +16,35 @@ import { ChatDrawer } from "@widgets/chat";
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const user = useUnit($user);
   const isHydrated = useUnit($isHydrated);
+  const isAuthPending = useUnit(getMeFx.pending);
   const router = useRouter();
   const pathname = usePathname();
 
   // Redirect to login if not authenticated after hydration
   useEffect(() => {
-    if (isHydrated && !user) {
+    // Wait for the /users/me fetch to settle — otherwise we'd bounce
+    // authenticated users through /login → role mismatch redirects
+    if (!isHydrated || isAuthPending) {
+      return;
+    }
+
+    if (!user) {
       router.replace("/login");
       return;
     }
 
     // Role mismatch safety check
-    if (isHydrated && user) {
-      const isCompanyPath = pathname.startsWith("/company");
-      const isParticipantPath = pathname.startsWith("/participant");
+    const isCompanyPath = pathname.startsWith("/company");
+    const isParticipantPath = pathname.startsWith("/participant");
 
-      if (user.role === "company" && isParticipantPath) {
-        router.replace("/company");
-      } else if (user.role === "participant" && isCompanyPath) {
-        router.replace("/participant");
-      }
+    if (user.role === "company" && isParticipantPath) {
+      router.replace("/company");
+    } else if (user.role === "participant" && isCompanyPath) {
+      router.replace("/participant");
     }
-  }, [isHydrated, user, pathname, router]);
+  }, [isHydrated, isAuthPending, user, pathname, router]);
 
-  if (!isHydrated) {
+  if (!isHydrated || isAuthPending) {
     return (
       <div className="min-h-screen flex flex-col">
         <header className="h-16 border-b border-border bg-background/80 backdrop-blur-md flex items-center justify-between px-6">

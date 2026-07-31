@@ -184,16 +184,17 @@ async def list_tasks(
 async def get_task_participants(
     db: AsyncSession, task_id: int
 ) -> list[Any]:
-    """Get all active participations for a task with eager-loaded profiles."""
+    """Get all participations for a task (active + completed) with eager-loaded profiles."""
     from app.services.participations.models import Participation
 
     result = await db.execute(
         select(Participation)
         .where(
             Participation.task_id == task_id,
-            Participation.status == "active",
+            Participation.status.in_(["active", "completed"]),
         )
         .options(selectinload(Participation.participant_profile))
+        .order_by(Participation.created_at.asc())
     )
     return list(result.scalars().all())
 
@@ -308,6 +309,109 @@ async def get_submission_by_id(
     return result.scalar_one_or_none()
 
 
+async def _recompute_task_progress(
+    db: AsyncSession, task: ProjectTask
+) -> None:
+    """Recompute the task status after an approval.
+
+    The task is closed only when every remaining active participant has an
+    approved submission; if any submission is on rework the task goes to
+    'rework'; otherwise it stays as-is (in progress).
+    """
+    from app.services.participations.models import Participation
+
+    active_result = await db.execute(
+        select(Participation).where(
+            Participation.task_id == task.id,
+            Participation.status == "active",
+        )
+    )
+    active_participants = active_result.scalars().all()
+
+    approved_result = await db.execute(
+        select(TaskSubmission.participant_id).where(
+            TaskSubmission.task_id == task.id,
+            TaskSubmission.status == "approved",
+        )
+    )
+    approved_ids = set(approved_result.scalars().all())
+
+    rejected_result = await db.execute(
+        select(TaskSubmission).where(
+            TaskSubmission.task_id == task.id,
+            TaskSubmission.status == "rejected",
+        )
+    )
+    has_rejected = rejected_result.scalars().first() is not None
+
+    all_done = all(
+        p.participant_id in approved_ids for p in active_participants
+    )
+    if all_done:
+        task.status = "completed"
+    elif has_rejected:
+        task.status = "rework"
+
+
+async def approve_participant_without_submission(
+    db: AsyncSession,
+    task_id: int,
+    participant_id: int,
+) -> TaskSubmission | None:
+    """Approve a participant who never submitted a result.
+
+    Creates an approved submission record (empty content) so the company can
+    leave a review and the participant gets verified experience. Returns None
+    when the participant is not active in the task or already has a submission.
+    """
+    from app.services.participations.service import (
+        get_participation,
+        update_participation_status,
+    )
+
+    part = await get_participation(db, task_id, participant_id)
+    if part is None or part.status != "active":
+        return None
+
+    existing = await db.execute(
+        select(TaskSubmission).where(
+            TaskSubmission.task_id == task_id,
+            TaskSubmission.participant_id == participant_id,
+        )
+    )
+    if existing.scalar_one_or_none() is not None:
+        return None
+
+    task = await db.get(ProjectTask, task_id)
+    if task is None:
+        return None
+
+    sub = TaskSubmission(
+        task_id=task_id,
+        participant_id=participant_id,
+        description=None,
+        result_links=None,
+        status="approved",
+    )
+    db.add(sub)
+    await db.flush()
+
+    await update_participation_status(db, part.id, "completed")
+    await _recompute_task_progress(db, task)
+
+    logger.info(
+        "Participant approved without submission: task_id=%d participant_id=%d",
+        task_id, participant_id,
+    )
+
+    result = await db.execute(
+        select(TaskSubmission)
+        .where(TaskSubmission.id == sub.id)
+        .options(selectinload(TaskSubmission.participant_profile))
+    )
+    return result.scalar_one()
+
+
 async def review_submission(
     db: AsyncSession,
     submission_id: int,
@@ -329,14 +433,17 @@ async def review_submission(
     task = await db.get(ProjectTask, sub.task_id)
     if task is not None:
         if status == "approved":
-            task.status = "completed"
-            # Update participation status to completed
+            # Mark this participant as completed
             part = await get_participation(db, task.id, sub.participant_id)
             if part is not None:
                 await update_participation_status(db, part.id, "completed")
+
+            # Close the task only when every remaining participant already has
+            # an approved submission. Partial results must not close the task.
+            await _recompute_task_progress(db, task)
             logger.info(
-                "Submission approved: id=%d task_id=%d participant_id=%d",
-                submission_id, sub.task_id, sub.participant_id,
+                "Submission approved: id=%d task_id=%d participant_id=%d task_status=%s",
+                submission_id, sub.task_id, sub.participant_id, task.status,
             )
         elif status == "rejected":
             task.status = "rework"

@@ -143,7 +143,9 @@ async def stats(db: AsyncSession = Depends(get_db)) -> dict[str, int]:
 
     active_tasks = (
         await db.execute(
-            select(func.count(ProjectTask.id)).where(ProjectTask.status.in_(["open", "in_progress"]))
+            select(func.count(ProjectTask.id)).where(
+                ProjectTask.status.in_(["open", "in_progress"])
+            )
         )
     ).scalar() or 0
 

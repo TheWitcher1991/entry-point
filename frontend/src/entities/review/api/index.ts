@@ -26,3 +26,27 @@ export async function getMyReviews(): Promise<Review[]> {
   const { data } = await api.get<Review[]>("/participants/me/reviews");
   return data;
 }
+
+export async function getTaskReviews(taskId: number): Promise<Review[]> {
+  const { data } = await api.get<Review[]>(`/tasks/${taskId}/reviews`);
+  return data;
+}
+
+export async function updateReview(
+  taskId: number,
+  reviewId: number,
+  payload: ReviewCreatePayload,
+): Promise<Review> {
+  const { data } = await api.patch<Review>(
+    `/tasks/${taskId}/reviews/${reviewId}`,
+    payload,
+  );
+  return data;
+}
+
+export async function deleteReview(
+  taskId: number,
+  reviewId: number,
+): Promise<void> {
+  await api.delete(`/tasks/${taskId}/reviews/${reviewId}`);
+}

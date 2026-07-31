@@ -567,6 +567,94 @@ class TestSubmissions:
         task_resp = await client.get(f"/api/v1/tasks/{task_id}")
         assert task_resp.json()["status"] == "rework"
 
+    async def test_review_approve_partial_keeps_task_open(
+        self, client: AsyncClient
+    ) -> None:
+        """Approving one of two participants must NOT close the task.
+
+        The task stays in progress until every participant has an approved
+        submission.
+        """
+        ct, _ = await register_company(client, "multi@test.com")
+        create = await client.post(
+            "/api/v1/tasks",
+            json={"title": "Multi Task", "status": "open", "participant_limit": 2},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        task_id = create.json()["id"]
+
+        tokens: list[str] = []
+        for i in (1, 2):
+            pt, _ = await register_participant(client, f"multip{i}@test.com")
+            await client.patch(
+                "/api/v1/participants/me",
+                json={"first_name": f"Парт{i}", "last_name": "Мульти"},
+                headers={"Authorization": f"Bearer {pt}"},
+            )
+            app_resp = await client.post(
+                "/api/v1/applications",
+                json={"task_id": task_id},
+                headers={"Authorization": f"Bearer {pt}"},
+            )
+            app_id = app_resp.json()["id"]
+            await client.patch(
+                f"/api/v1/applications/{app_id}/status",
+                json={"status": "approved"},
+                headers={"Authorization": f"Bearer {ct}"},
+            )
+            tokens.append(pt)
+
+        await client.patch(
+            f"/api/v1/tasks/{task_id}/status",
+            json={"status": "in_progress"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+
+        # First participant submits and is approved
+        sub_resp = await client.post(
+            f"/api/v1/tasks/{task_id}/submit",
+            json={"description": "First result"},
+            headers={"Authorization": f"Bearer {tokens[0]}"},
+        )
+        assert sub_resp.status_code == 201
+        sub_id = sub_resp.json()["id"]
+        review_resp = await client.patch(
+            f"/api/v1/tasks/{task_id}/submissions/{sub_id}/review",
+            json={"status": "approved", "review_comment": "Great"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert review_resp.status_code == 200
+
+        # Task stays in progress — the second participant hasn't submitted
+        task_resp = await client.get(f"/api/v1/tasks/{task_id}")
+        assert task_resp.json()["status"] == "in_progress"
+
+        # First participant completed, second still active
+        parts = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        statuses = {p["status"] for p in parts.json()}
+        assert statuses == {"active", "completed"}
+
+        # Second participant submits and is approved → task completed
+        sub_resp2 = await client.post(
+            f"/api/v1/tasks/{task_id}/submit",
+            json={"description": "Second result"},
+            headers={"Authorization": f"Bearer {tokens[1]}"},
+        )
+        assert sub_resp2.status_code == 201
+        sub_id2 = sub_resp2.json()["id"]
+        review_resp2 = await client.patch(
+            f"/api/v1/tasks/{task_id}/submissions/{sub_id2}/review",
+            json={"status": "approved", "review_comment": "Also great"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert review_resp2.status_code == 200
+
+        task_resp2 = await client.get(f"/api/v1/tasks/{task_id}")
+        assert task_resp2.json()["status"] == "completed"
+
 
 # ── Directory info in task responses ──
 
@@ -599,3 +687,345 @@ class TestTaskDirectoryInfo:
         resp = await client.get("/api/v1/tasks")
         for task in resp.json():
             assert "company_name" in task
+
+
+class TestTaskParticipants:
+    async def _setup_active(
+        self, client: AsyncClient, email: str
+    ) -> tuple[str, str, int]:
+        """Create task with one approved application → active participation."""
+        ct, _ = await register_company(client, email)
+        create = await client.post(
+            "/api/v1/tasks",
+            json={"title": "Parts Task", "status": "open", "participant_limit": 1},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        task_id = create.json()["id"]
+
+        pt, _ = await register_participant(client, f"p-{email}")
+        await client.patch(
+            "/api/v1/participants/me",
+            json={"first_name": "Петя", "last_name": "Петров"},
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        app_resp = await client.post(
+            "/api/v1/applications",
+            json={"task_id": task_id},
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        app_id = app_resp.json()["id"]
+        await client.patch(
+            f"/api/v1/applications/{app_id}/status",
+            json={"status": "approved"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        return ct, pt, task_id
+
+    async def test_participants_after_approval(
+        self, client: AsyncClient
+    ) -> None:
+        """Approved application → participant visible with status active."""
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts1@test.com"
+        )
+        resp = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["status"] == "active"
+        assert data[0]["participant_first_name"] == "Петя"
+
+    async def test_participants_after_submission_approved(
+        self, client: AsyncClient
+    ) -> None:
+        """Participant stays visible (status completed) after submission approved."""
+        ct, pt, task_id = await self._setup_active(
+            client, "parts2@test.com"
+        )
+        # Start work + submit + approve
+        await client.patch(
+            f"/api/v1/tasks/{task_id}/status",
+            json={"status": "in_progress"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        sub_resp = await client.post(
+            f"/api/v1/tasks/{task_id}/submit",
+            json={"description": "Done", "result_links": "https://example.com"},
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        sub_id = sub_resp.json()["id"]
+        await client.patch(
+            f"/api/v1/tasks/{task_id}/submissions/{sub_id}/review",
+            json={"status": "approved", "review_comment": "Great"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+
+        resp = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["status"] == "completed"
+        assert data[0]["participant_first_name"] == "Петя"
+
+    async def test_participants_participant_forbidden(
+        self, client: AsyncClient
+    ) -> None:
+        ct, pt, task_id = await self._setup_active(
+            client, "parts3@test.com"
+        )
+        resp = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        assert resp.status_code == 403
+
+    async def test_remove_participant(self, client: AsyncClient) -> None:
+        """Removing a participant deletes participation, rejects the
+        application and recomputes participant_count."""
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts4@test.com"
+        )
+        resp = await client.delete(
+            f"/api/v1/tasks/{task_id}/participants/1",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 204
+
+        # Participant gone from the list
+        list_resp = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert list_resp.status_code == 200
+        assert list_resp.json() == []
+
+        # Application rejected, count recomputed
+        task_resp = await client.get(
+            f"/api/v1/tasks/{task_id}",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert task_resp.json()["participant_count"] == 0
+
+    async def test_remove_participant_wrong_participant_id(
+        self, client: AsyncClient
+    ) -> None:
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts5@test.com"
+        )
+        resp = await client.delete(
+            f"/api/v1/tasks/{task_id}/participants/999",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 404
+
+    async def test_remove_participant_participant_forbidden(
+        self, client: AsyncClient
+    ) -> None:
+        ct, pt, task_id = await self._setup_active(
+            client, "parts6@test.com"
+        )
+        resp = await client.delete(
+            f"/api/v1/tasks/{task_id}/participants/1",
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        assert resp.status_code == 403
+
+    async def test_remove_participant_wrong_company(
+        self, client: AsyncClient
+    ) -> None:
+        """Another company cannot remove a participant from a foreign task."""
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts7@test.com"
+        )
+        ct2, _ = await register_company(client, "parts7b@test.com")
+        resp = await client.delete(
+            f"/api/v1/tasks/{task_id}/participants/1",
+            headers={"Authorization": f"Bearer {ct2}"},
+        )
+        assert resp.status_code == 404
+
+    async def test_update_participant_status(self, client: AsyncClient) -> None:
+        """Owner can flip participant status active -> completed."""
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts8@test.com"
+        )
+        resp = await client.patch(
+            f"/api/v1/tasks/{task_id}/participants/1/status",
+            json={"status": "completed"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "completed"
+        assert data["participant_first_name"] == "Петя"
+        assert data["participant_last_name"] == "Петров"
+
+    async def test_update_participant_status_invalid(
+        self, client: AsyncClient
+    ) -> None:
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts9@test.com"
+        )
+        resp = await client.patch(
+            f"/api/v1/tasks/{task_id}/participants/1/status",
+            json={"status": "fired"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 422
+
+    async def test_approve_without_submission(
+        self, client: AsyncClient
+    ) -> None:
+        """Company can approve a participant who never submitted and leave a review."""
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts10@test.com"
+        )
+        resp = await client.post(
+            f"/api/v1/tasks/{task_id}/participants/1/approve",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 200
+        sub = resp.json()
+        assert sub["status"] == "approved"
+        assert sub["participant_first_name"] == "Петя"
+
+        # Participation is completed
+        parts = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert parts.json()[0]["status"] == "completed"
+
+        # Review can be left right away
+        review_resp = await client.post(
+            f"/api/v1/tasks/{task_id}/submissions/{sub['id']}/review",
+            json={"rating": 5, "text": "Accepted without result"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert review_resp.status_code == 201
+
+    async def test_approve_without_submission_partial(
+        self, client: AsyncClient
+    ) -> None:
+        """Approving one of two participants without result keeps the task open."""
+        ct, _ = await register_company(client, "parts10b@test.com")
+        create = await client.post(
+            "/api/v1/tasks",
+            json={"title": "Parts Task 10b", "status": "open", "participant_limit": 2},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        task_id = create.json()["id"]
+
+        for i in (1, 2):
+            pt, _ = await register_participant(client, f"parts10b{i}@test.com")
+            await client.patch(
+                "/api/v1/participants/me",
+                json={"first_name": f"Уч{i}", "last_name": "Тест"},
+                headers={"Authorization": f"Bearer {pt}"},
+            )
+            app_resp = await client.post(
+                "/api/v1/applications",
+                json={"task_id": task_id},
+                headers={"Authorization": f"Bearer {pt}"},
+            )
+            await client.patch(
+                f"/api/v1/applications/{app_resp.json()['id']}/status",
+                json={"status": "approved"},
+                headers={"Authorization": f"Bearer {ct}"},
+            )
+
+        await client.patch(
+            f"/api/v1/tasks/{task_id}/status",
+            json={"status": "in_progress"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+
+        resp = await client.post(
+            f"/api/v1/tasks/{task_id}/participants/1/approve",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 200
+
+        # Task stays in progress — participant 2 still hasn't anything
+        task_resp = await client.get(f"/api/v1/tasks/{task_id}")
+        assert task_resp.json()["status"] == "in_progress"
+
+        # Second participant approved too → task completed
+        resp2 = await client.post(
+            f"/api/v1/tasks/{task_id}/participants/2/approve",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp2.status_code == 200
+        task_resp2 = await client.get(f"/api/v1/tasks/{task_id}")
+        assert task_resp2.json()["status"] == "completed"
+
+    async def test_approve_without_submission_existing_submission(
+        self, client: AsyncClient
+    ) -> None:
+        """Cannot approve without result when the participant already submitted."""
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts11@test.com"
+        )
+        await client.patch(
+            f"/api/v1/tasks/{task_id}/status",
+            json={"status": "in_progress"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        pt2, _ = await register_participant(client, "parts11p@test.com")
+        await client.patch(
+            "/api/v1/participants/me",
+            json={"first_name": "Петя", "last_name": "Петров"},
+            headers={"Authorization": f"Bearer {pt2}"},
+        )
+        app_resp = await client.post(
+            "/api/v1/applications",
+            json={"task_id": task_id},
+            headers={"Authorization": f"Bearer {pt2}"},
+        )
+        await client.patch(
+            f"/api/v1/applications/{app_resp.json()['id']}/status",
+            json={"status": "approved"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        await client.post(
+            f"/api/v1/tasks/{task_id}/submit",
+            json={"description": "Real result"},
+            headers={"Authorization": f"Bearer {pt2}"},
+        )
+
+        resp = await client.post(
+            f"/api/v1/tasks/{task_id}/participants/2/approve",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 400
+
+    async def test_approve_without_submission_participant_forbidden(
+        self, client: AsyncClient
+    ) -> None:
+        ct, pt, task_id = await self._setup_active(
+            client, "parts12@test.com"
+        )
+        resp = await client.post(
+            f"/api/v1/tasks/{task_id}/participants/1/approve",
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        assert resp.status_code == 403
+
+    async def test_approve_without_submission_wrong_company(
+        self, client: AsyncClient
+    ) -> None:
+        ct, _pt, task_id = await self._setup_active(
+            client, "parts13@test.com"
+        )
+        ct2, _ = await register_company(client, "parts13b@test.com")
+        resp = await client.post(
+            f"/api/v1/tasks/{task_id}/participants/1/approve",
+            headers={"Authorization": f"Bearer {ct2}"},
+        )
+        assert resp.status_code == 404

@@ -45,3 +45,13 @@ export async function reviewSubmission(
   );
   return data;
 }
+
+export async function approveParticipantWithoutResult(
+  taskId: number,
+  participantId: number,
+): Promise<Submission> {
+  const { data } = await api.post<Submission>(
+    `/tasks/${taskId}/participants/${participantId}/approve`,
+  );
+  return data;
+}

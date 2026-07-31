@@ -1,4 +1,5 @@
 import { api } from "@shared/api/axios";
+import type { TaskParticipant } from "@entities/task";
 import type {
   Application,
   ApplicationCreatePayload,
@@ -38,6 +39,15 @@ export async function updateApplicationStatus(
   const { data } = await api.patch<Application>(
     `/applications/${applicationId}/status`,
     payload,
+  );
+  return data;
+}
+
+export async function enrollApplication(
+  applicationId: number,
+): Promise<TaskParticipant> {
+  const { data } = await api.post<TaskParticipant>(
+    `/applications/${applicationId}/enroll`,
   );
   return data;
 }

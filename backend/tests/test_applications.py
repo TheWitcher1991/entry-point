@@ -4,6 +4,7 @@ All tests use real PostgreSQL (see conftest.py).
 """
 
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def _create_task(token, client, **overrides) -> dict:
@@ -324,6 +325,126 @@ class TestApplicationStatus:
         resp = await client.patch(
             "/api/v1/applications/99999/status",
             json={"status": "approved"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 404
+
+
+class TestEnrollApprovedApplication:
+    async def _setup_approved(
+        self, client: AsyncClient, email: str
+    ) -> tuple[str, str, int, int]:
+        """Create task + apply + approve. Returns (ct, pt, task_id, app_id)."""
+        ct = await _register_company(client, f"{email}@test.com")
+        task = await _create_task(client=client, token=ct)
+        task_id = task["id"]
+
+        pt = await _register_participant(client, f"p-{email}@test.com")
+        app_resp = await client.post(
+            "/api/v1/applications",
+            json={"task_id": task_id},
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        app_id = app_resp.json()["id"]
+        await client.patch(
+            f"/api/v1/applications/{app_id}/status",
+            json={"status": "approved"},
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        return ct, pt, task_id, app_id
+
+    async def test_enroll_success(
+        self, client: AsyncClient, db_session: AsyncSession
+    ) -> None:
+        ct, pt, task_id, app_id = await self._setup_approved(client, "enroll1")
+
+        # Simulate the mismatch: approved application without participation
+        from sqlalchemy import delete
+
+        from app.services.participations.models import Participation
+
+        await db_session.execute(
+            delete(Participation).where(Participation.task_id == task_id)
+        )
+
+        resp = await client.post(
+            f"/api/v1/applications/{app_id}/enroll",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "active"
+
+        # Participant now appears in the list
+        parts = await client.get(
+            f"/api/v1/tasks/{task_id}/participants",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert len(parts.json()) == 1
+
+        # participant_count incremented
+        task_resp = await client.get(f"/api/v1/tasks/{task_id}")
+        assert task_resp.json()["participant_count"] == 1
+
+    async def test_enroll_idempotent(self, client: AsyncClient) -> None:
+        ct, pt, task_id, app_id = await self._setup_approved(client, "enroll2")
+
+        resp1 = await client.post(
+            f"/api/v1/applications/{app_id}/enroll",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        resp2 = await client.post(
+            f"/api/v1/applications/{app_id}/enroll",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp1.status_code == 200
+        assert resp2.status_code == 200
+        assert resp1.json()["id"] == resp2.json()["id"]
+
+    async def test_enroll_pending_application_forbidden(
+        self, client: AsyncClient
+    ) -> None:
+        ct = await _register_company(client, "enroll3@test.com")
+        task = await _create_task(client=client, token=ct)
+        pt = await _register_participant(client, "p-enroll3@test.com")
+        app_resp = await client.post(
+            "/api/v1/applications",
+            json={"task_id": task["id"]},
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        app_id = app_resp.json()["id"]
+
+        resp = await client.post(
+            f"/api/v1/applications/{app_id}/enroll",
+            headers={"Authorization": f"Bearer {ct}"},
+        )
+        assert resp.status_code == 400
+
+    async def test_enroll_wrong_company_forbidden(
+        self, client: AsyncClient
+    ) -> None:
+        ct, pt, task_id, app_id = await self._setup_approved(client, "enroll4")
+        ct2 = await _register_company(client, "other-enroll@test.com")
+        resp = await client.post(
+            f"/api/v1/applications/{app_id}/enroll",
+            headers={"Authorization": f"Bearer {ct2}"},
+        )
+        assert resp.status_code == 403
+
+    async def test_enroll_participant_forbidden(
+        self, client: AsyncClient
+    ) -> None:
+        ct, pt, task_id, app_id = await self._setup_approved(client, "enroll5")
+        resp = await client.post(
+            f"/api/v1/applications/{app_id}/enroll",
+            headers={"Authorization": f"Bearer {pt}"},
+        )
+        assert resp.status_code == 403
+
+    async def test_enroll_not_found(self, client: AsyncClient) -> None:
+        ct = await _register_company(client, "enroll6@test.com")
+        resp = await client.post(
+            "/api/v1/applications/99999/enroll",
             headers={"Authorization": f"Bearer {ct}"},
         )
         assert resp.status_code == 404

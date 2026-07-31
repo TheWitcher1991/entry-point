@@ -79,3 +79,22 @@ export async function getTaskParticipants(
   );
   return data;
 }
+
+export async function removeTaskParticipant(
+  taskId: number,
+  participantId: number,
+): Promise<void> {
+  await api.delete(`/tasks/${taskId}/participants/${participantId}`);
+}
+
+export async function updateTaskParticipantStatus(
+  taskId: number,
+  participantId: number,
+  status: "active" | "completed",
+): Promise<TaskParticipant> {
+  const { data } = await api.patch<TaskParticipant>(
+    `/tasks/${taskId}/participants/${participantId}/status`,
+    { status },
+  );
+  return data;
+}

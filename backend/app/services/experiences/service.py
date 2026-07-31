@@ -84,3 +84,60 @@ async def get_experience_by_id(
         .options(selectinload(VerifiedExperience.skills))
     )
     return result.scalar_one_or_none()
+
+
+async def update_experience_from_review(
+    db: AsyncSession,
+    *,
+    review_id: int,
+    rating: int,
+    review_text: str | None,
+    skills_confirmed: str | None,
+) -> VerifiedExperience | None:
+    """Sync the verified experience when a review is edited."""
+    result = await db.execute(
+        select(VerifiedExperience)
+        .where(VerifiedExperience.review_id == review_id)
+        .options(selectinload(VerifiedExperience.skills))
+    )
+    experience = result.scalar_one_or_none()
+    if experience is None:
+        return None
+
+    experience.rating = rating
+    experience.review_text = review_text
+
+    for skill in list(experience.skills):
+        await db.delete(skill)
+    if skills_confirmed:
+        for skill_name in (s.strip() for s in skills_confirmed.split(",") if s.strip()):
+            db.add(VerifiedSkill(experience_id=experience.id, skill_name=skill_name))
+
+    await db.flush()
+    logger.info(
+        "Experience updated: experience_id=%d review_id=%d rating=%d",
+        experience.id, review_id, rating,
+    )
+    return experience
+
+
+async def delete_experience_by_review(
+    db: AsyncSession,
+    *,
+    review_id: int,
+) -> None:
+    """Remove the verified experience (and its skills) when a review is deleted."""
+    result = await db.execute(
+        select(VerifiedExperience)
+        .where(VerifiedExperience.review_id == review_id)
+        .options(selectinload(VerifiedExperience.skills))
+    )
+    experience = result.scalar_one_or_none()
+    if experience is None:
+        return
+
+    for skill in list(experience.skills):
+        await db.delete(skill)
+    await db.delete(experience)
+    await db.flush()
+    logger.info("Experience deleted: review_id=%d", review_id)

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -21,7 +21,8 @@ from app.services.applications.service import (
 from app.services.auth.models import User, UserRole
 from app.services.companies.models import Company
 from app.services.participants.models import ParticipantProfile
-from app.services.tasks.models import ProjectTask
+from app.services.participations.schemas import ParticipantsResponse
+from app.services.tasks.models import ProjectTask, TaskSubmission
 
 router = APIRouter(prefix="/applications", tags=["applications"])
 
@@ -187,6 +188,89 @@ async def get_company_applications(
             resp.participant_last_name = profile.last_name
         result.append(resp)
     return result
+
+
+# ── Enroll approved application (reconciliation) ──
+
+
+@router.post("/{application_id}/enroll", response_model=ParticipantsResponse)
+async def enroll_approved_application(
+    application_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ParticipantsResponse:
+    """Add the participant of an approved application to the task participants.
+
+    Reconciliation for approved applications that have no participation row
+    (older data created before participations existed). Idempotent: if the
+    participant is already enrolled, the existing participation is returned.
+    """
+    company_id = await _require_company(current_user, db)
+
+    app = await get_application_by_id(db, application_id)
+    if app is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Application not found",
+        )
+
+    task = app.task
+    if task is None or task.company_id != company_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Application not for your task",
+        )
+
+    if app.status != "approved":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only approved applications can be added to participants",
+        )
+
+    from app.services.participations.models import Participation
+    from app.services.participations.service import (
+        create_participation,
+        get_participation,
+    )
+
+    part = await get_participation(db, app.task_id, app.participant_id)
+    if part is None:
+        # Status mirrors the real flow: completed if the submission was approved
+        sub_result = await db.execute(
+            select(TaskSubmission).where(
+                TaskSubmission.task_id == app.task_id,
+                TaskSubmission.participant_id == app.participant_id,
+                TaskSubmission.status == "approved",
+            )
+        )
+        has_approved_sub = sub_result.scalar_one_or_none() is not None
+
+        part = await create_participation(db, app.task_id, app.participant_id)
+        part.status = "completed" if has_approved_sub else "active"
+        await db.flush()
+        await db.refresh(part)
+
+        # Mirror approval side effects
+        if task.status == "open":
+            task.status = "selected"
+
+        # Recompute the count from actual participations — the approved
+        # application may already have been counted before (mismatch repair).
+        count_result = await db.execute(
+            select(func.count())
+            .select_from(Participation)
+            .where(Participation.task_id == app.task_id)
+        )
+        task.participant_count = count_result.scalar() or 0
+        await db.flush()
+
+    resp = ParticipantsResponse.model_validate(part)
+    profile = app.participant_profile
+    if profile:
+        resp.participant_first_name = profile.first_name
+        resp.participant_last_name = profile.last_name
+        resp.participant_avatar_url = profile.avatar_url
+    return resp
 
 
 # ── Status update (company approves/rejects, participant withdraws) ──
